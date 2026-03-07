@@ -1,0 +1,25 @@
+{
+  "sources": [
+    {
+      "source_key": "her_hoop_stats",
+      "source_name": "Her Hoop Stats",
+      "source_url": "https://herhoopstats.com/bracketology/",
+      "parser": "herhoopstats",
+      "use_playwright_fallback": false
+    },
+    {
+      "source_key": "espn",
+      "source_name": "ESPN",
+      "source_url": "https://www.espn.com/espn/feature/story/_/id/30423107/ncaa-women-bracketology-2026-women-college-basketball-projections",
+      "parser": "espn",
+      "use_playwright_fallback": true
+    },
+    {
+      "source_key": "college_sports_madness",
+      "source_name": "College Sports Madness",
+      "source_url": "https://www.collegesportsmadness.com/womens-basketball/bracketology",
+      "parser": "collegesportsmadness",
+      "use_playwright_fallback": false
+    }
+  ]
+}
