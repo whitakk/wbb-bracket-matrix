@@ -1,0 +1,8 @@
+{
+  "retention_days": 365,
+  "request_timeout_seconds": 20,
+  "fuzzy_threshold": 94,
+  "fuzzy_review_threshold": 86,
+  "fuzzy_ambiguous_margin": 3,
+  "user_agent": "Mozilla/5.0 (compatible; WBBBracketMatrix/0.1; +https://github.com/)"
+}
