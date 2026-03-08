@@ -36,6 +36,33 @@ def test_parse_college_sports_madness_fixture():
     assert any(row.team_raw == "Texas" and row.seed == 1 for row in result.rows)
 
 
+def test_parse_college_sports_madness_extracts_multiple_pairs_per_table_row():
+    html = """
+    <html>
+      <body>
+        <table>
+          <tr><td>1</td><td>South Carolina</td><td>16</td><td>Howard</td></tr>
+          <tr><td>8</td><td>Iowa</td><td>9</td><td>Colorado</td></tr>
+        </table>
+      </body>
+    </html>
+    """
+
+    result = parse_college_sports_madness(
+        source_key="college_sports_madness",
+        source_name="College Sports Madness",
+        source_url="https://example.com",
+        html=html,
+        scraped_at_iso="2026-03-06T00:00:00+00:00",
+    )
+
+    parsed = {(row.seed, row.team_raw) for row in result.rows}
+    assert (1, "South Carolina") in parsed
+    assert (16, "Howard") in parsed
+    assert (8, "Iowa") in parsed
+    assert (9, "Colorado") in parsed
+
+
 def test_parse_espn_blocked_page_returns_no_rows():
     blocked = _read("espn_blocked.html")
     result = parse_espn(

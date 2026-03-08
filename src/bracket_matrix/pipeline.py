@@ -120,10 +120,13 @@ def run_scrape(
             updated_at_raw = result.updated_at_raw
             updated_at_iso = result.updated_at_iso
 
+            min_rows_for_fallback = int(source.get("min_rows_for_playwright_fallback", 0) or 0)
+            too_few_rows = min_rows_for_fallback > 0 and len(source_rows) < min_rows_for_fallback
+
             should_try_playwright = (
                 enable_playwright_fallback
                 and bool(source.get("use_playwright_fallback", False))
-                and (not source_rows or (parser_key == "espn" and is_probably_blocked(html)))
+                and (not source_rows or too_few_rows or (parser_key == "espn" and is_probably_blocked(html)))
             )
             if should_try_playwright:
                 html_pw = playwright_fetcher(

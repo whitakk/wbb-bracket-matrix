@@ -91,27 +91,36 @@ def extract_seed_team_pairs(soup: BeautifulSoup) -> list[tuple[int, str, bool]]:
         cells = [normalize_ws(cell.get_text(" ", strip=True)) for cell in row.select("th,td")]
         if len(cells) < 2:
             continue
-        seed_index = None
-        seed_value = None
+
+        seed_entries: list[tuple[int, int]] = []
         for idx, cell in enumerate(cells):
             parsed = parse_seed(cell)
             if parsed is not None:
-                seed_index = idx
-                seed_value = parsed
-                break
-        if seed_index is None or seed_value is None:
+                seed_entries.append((idx, parsed))
+
+        if not seed_entries:
             continue
 
-        team_candidates = [cell for i, cell in enumerate(cells) if i != seed_index and cell]
-        for team_text in sorted(team_candidates, key=len, reverse=True):
-            team_list = split_team_group(team_text)
-            valid_teams = [team for team in team_list if _looks_like_valid_team(team)]
-            if not valid_teams:
-                continue
-            is_play_in = len(valid_teams) > 1
-            for team in valid_teams:
-                pairs.append((seed_value, team, is_play_in))
-            break
+        seed_indices = {seed_index for seed_index, _ in seed_entries}
+
+        for seed_index, seed_value in seed_entries:
+            candidate_indices = [seed_index + 1, seed_index - 1]
+            candidate_indices.extend(i for i in range(len(cells)) if i not in seed_indices and i not in candidate_indices)
+
+            for candidate_index in candidate_indices:
+                if candidate_index < 0 or candidate_index >= len(cells):
+                    continue
+                team_text = cells[candidate_index]
+                if not team_text:
+                    continue
+                team_list = split_team_group(team_text)
+                valid_teams = [team for team in team_list if _looks_like_valid_team(team)]
+                if not valid_teams:
+                    continue
+                is_play_in = len(valid_teams) > 1
+                for team in valid_teams:
+                    pairs.append((seed_value, team, is_play_in))
+                break
 
     # Supplemental parsing for list/prose items that look like explicit seed/team entries.
     for node in soup.select("li,p,h3,h4,span"):

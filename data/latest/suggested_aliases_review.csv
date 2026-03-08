@@ -1,0 +1,10 @@
+alias,canonical_slug,team_display,rationale,confidence
+Col. of Charleston,charleston,Charleston,Same program name variant,high
+College of Charleston,charleston,Charleston,Expanded punctuation variant,high
+Cal Bap,ca-baptist,CA Baptist,Common abbreviation,high
+Connecticut,uconn,UConn,Formal name vs common athletic name,high
+GA Southern,georgia-southern,Georgia Southern,Abbreviation vs full school name,high
+LMU,loyola-marymount,Loyola Marymount,School abbreviation,high
+Mississippi,ole-miss,Ole Miss,Formal name vs common athletic name,high
+Southern California,usc,USC,Formal name vs abbreviation,high
+Western Ill.,western-illinois,Western Illinois,Abbreviation punctuation variant,high
