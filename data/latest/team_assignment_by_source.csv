@@ -1,0 +1,81 @@
+canonical_slug,team_display,her_hoop_stats_raw,espn_raw,college_sports_madness_raw,her_hoop_stats_seed,espn_seed,college_sports_madness_seed,source_count,missing_sources
+abilene-christian,Abilene Christian,Abilene Christian,,,15,,,1,"espn, college_sports_madness"
+alabama,Alabama,Alabama,Alabama,Alabama,6,6,8,3,
+alabama-a-and-m,Alabama A&M,Alabama A&M,Alabama A&M,Alabama A&M,16,16,16,3,
+arizona-state,Arizona St,Arizona St.,Arizona St,Arizona St.,11,11,11,3,
+army-west-point,Army West Point,Army West Point,,,16,,,1,"espn, college_sports_madness"
+ball-state,Ball St.,Ball St.,,,12,,,1,"espn, college_sports_madness"
+baylor,Baylor,Baylor,Baylor,Baylor,6,6,5,3,
+ca-baptist,CA Baptist,,CA Baptist,Cal Bap,,16,16,2,her_hoop_stats
+charleston,Charleston,Col. of Charleston,Charleston,Charleston,15,14,14,3,
+chattanooga,Chattanooga,Chattanooga,Chattanooga,Chattanooga,16,16,16,3,
+clemson,Clemson,Clemson,Clemson,Clemson,10,10,9,3,
+colorado,Colorado,Colorado,Colorado,Colorado,10,10,11,3,
+colorado-state,Colorado St.,Colorado St.,,,13,,,1,"espn, college_sports_madness"
+columbia,Columbia,,,Columbia,,,11,1,"her_hoop_stats, espn"
+duke,Duke,Duke,Duke,Duke,3,3,3,3,
+e-kentucky,Eastern Kentucky,,,E. Kentucky,,,15,1,"her_hoop_stats, espn"
+fairfield,Fairfield,Fairfield,Fairfield,Fairfield,11,10,11,3,
+fdu,FDU,FDU,FDU,FDU,16,16,16,3,
+georgia,Georgia,Georgia,Georgia,Georgia,7,7,7,3,
+georgia-southern,Georgia Southern,,GA Southern,Georgia Southern,,13,12,2,her_hoop_stats
+gonzaga,Gonzaga,Gonzaga,,,12,,,1,"espn, college_sports_madness"
+green-bay,Green Bay,Green Bay,Green Bay,Green Bay,15,13,13,3,
+high-point,High Point,High Point,High Point,High Point,16,16,16,3,
+howard,Howard,Howard,Howard,Howard,16,16,16,3,
+idaho,Idaho,,Idaho,Idaho,,14,15,2,her_hoop_stats
+illinois,Illinois,Illinois,Illinois,Illinois,7,7,10,3,
+iowa,Iowa,Iowa,Iowa,Iowa,2,2,2,3,
+iowa-state,Iowa St.,Iowa St.,Iowa State,Iowa State,9,9,7,3,
+jacksonville,Jacksonville,Jacksonville,Jacksonville,,15,15,,2,college_sports_madness
+james-madison,James Madison,James Madison,,,12,,,1,"espn, college_sports_madness"
+kentucky,Kentucky,Kentucky,Kentucky,Kentucky,5,4,5,3,
+louisiana-tech,Louisiana Tech,Louisiana Tech,Louisiana Tech,Louisiana Tech,13,13,13,3,
+louisville,Louisville,Louisville,Louisville,Louisville,2,3,3,3,
+loyola-marymount,Loyola Marymount,,LMU,Loyola Marymount,,15,15,2,her_hoop_stats
+lsu,LSU,LSU,LSU,LSU,2,2,2,3,
+maryland,Maryland,Maryland,Maryland,Maryland,4,4,5,3,
+mcneese,McNeese,McNeese,McNeese,McNeese,14,14,14,3,
+miami-oh,Miami (OH),,Miami OH,Miami (OH),,12,13,2,her_hoop_stats
+michigan,Michigan,Michigan,Michigan,Michigan,3,3,2,3,
+michigan-state,Michigan St,Michigan St.,Michigan St,Michigan State,5,5,5,3,
+minnesota,Minnesota,Minnesota,Minnesota,Minnesota,4,4,4,3,
+montana-state,Montana St.,Montana St.,,,12,,,1,"espn, college_sports_madness"
+murray-state,Murray St,Murray St.,Murray St,Murray State,14,12,12,3,
+n-dakota-state,N Dakota St,,N Dakota St,N. Dakota St.,,11,12,2,her_hoop_stats
+navy,Navy,,Navy,Navy,,15,15,2,her_hoop_stats
+nebraska,Nebraska,Nebraska,Nebraska,,11,11,,2,college_sports_madness
+north-carolina,North Carolina,North Carolina,North Carolina,North Carolina,4,5,4,3,
+north-carolina-state,NC State,NC State,NC State,NC State,6,8,6,3,
+notre-dame,Notre Dame,Notre Dame,Notre Dame,Notre Dame,6,6,6,3,
+ohio-state,Ohio St.,Ohio St.,Ohio State,Ohio State,3,3,4,3,
+oklahoma,Oklahoma,Oklahoma,Oklahoma,Oklahoma,4,4,3,3,
+oklahoma-state,Oklahoma St,Oklahoma St.,Oklahoma St,Oklahoma St.,9,8,8,3,
+ole-miss,Ole Miss,Ole Miss,Ole Miss,Mississippi,5,5,6,3,
+oregon,Oregon,Oregon,Oregon,Oregon,8,7,9,3,
+princeton,Princeton,Princeton,Princeton,Princeton,9,10,10,3,
+rhode-island,Rhode Island,Rhode Island,Rhode Island,Rhode Island,10,11,10,3,
+rice,Rice,,Rice,Rice,,12,11,2,her_hoop_stats
+richmond,Richmond,Richmond,Richmond,,11,11,,2,college_sports_madness
+san-diego-state,San Diego St,,San Diego St,San Diego St.,,12,12,2,her_hoop_stats
+south-carolina,South Carolina,South Carolina,South Carolina,South Carolina,1,1,1,3,
+south-dakota-state,South Dakota St.,South Dakota St.,,,11,,,1,"espn, college_sports_madness"
+south-fla,South Fla.,South Fla.,,,13,,,1,"espn, college_sports_madness"
+stanford,Stanford,,,Stanford,,,11,1,"her_hoop_stats, espn"
+syracuse,Syracuse,Syracuse,Syracuse,Syracuse,10,9,10,3,
+tcu,TCU,TCU,TCU,TCU,3,2,3,3,
+tennessee,Tennessee,Tennessee,Tennessee,Tennessee,8,8,7,3,
+texas,Texas,Texas,Texas,Texas,1,1,1,3,
+texas-tech,Texas Tech,Texas Tech,Texas Tech,Texas Tech,7,6,6,3,
+uc-irvine,UC Irvine,UC Irvine,UC Irvine,UC Irvine,13,13,14,3,
+ucla,UCLA,UCLA,UCLA,UCLA,1,1,1,3,
+uconn,UConn,UConn,UConn,Connecticut,1,1,1,3,
+usc,USC,Southern California,USC,USC,9,9,8,3,
+vanderbilt,Vanderbilt,Vanderbilt,Vanderbilt,Vanderbilt,2,2,2,3,
+vermont,Vermont,Vermont,Vermont,Vermont,14,14,13,3,
+villanova,Villanova,Villanova,Villanova,Villanova,8,8,9,3,
+virginia,Virginia,Virginia,Virginia,Virginia,11,11,9,3,
+virginia-tech,Virginia Tech,Virginia Tech,Virginia Tech,Virginia Tech,8,9,8,3,
+washington,Washington,Washington,Washington,Washington,7,7,7,3,
+west-virginia,West Virginia,West Virginia,West Virginia,West Virginia,5,5,4,3,
+western-illinois,Western Illinois,Western Ill.,W Illinois,Western Illinois,14,15,14,3,

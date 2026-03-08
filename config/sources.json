@@ -19,7 +19,8 @@
       "source_name": "College Sports Madness",
       "source_url": "https://www.collegesportsmadness.com/womens-basketball/bracketology",
       "parser": "collegesportsmadness",
-      "use_playwright_fallback": false
+      "use_playwright_fallback": true,
+      "min_rows_for_playwright_fallback": 60
     }
   ]
 }
