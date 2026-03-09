@@ -2,6 +2,9 @@
 
 Women's college basketball "bracket matrix" aggregator. This project scrapes public bracketology pages, normalizes team names, builds a merged seed matrix, renders a static web page, and stores timestamped snapshots.
 
+## Live Site
+<https://whitakk.github.io/wbb-bracket-matrix/>
+
 ## Sources (v1)
 - Her Hoop Stats: <https://herhoopstats.com/bracketology/>
 - ESPN: <https://www.espn.com/espn/feature/story/_/id/30423107/ncaa-women-bracketology-2026-women-college-basketball-projections>
@@ -87,16 +90,15 @@ Manual Athletic HTML fallback for blocked scraping:
 ```bash
 # Save latest article page HTML here:
 data/manual/the_athletic_latest.html
-
-# Save matching article URL here (single line):
-data/manual/the_athletic_latest_url.txt
 ```
+
+The pipeline derives the article URL from saved HTML (via `<meta property="og:url">`
+or canonical link) and uses that for Athletic source attribution.
 
 When `data/manual/the_athletic_latest.html` exists, the `the_athletic` source uses it during
 `scrape` / `run-all` instead of fetching the tag page or article URL.
 
-The update checker uses `data/manual/the_athletic_latest_url.txt` as the baseline and does not
-auto-update that file. Update it manually when you replace the manual HTML.
+The update checker compares the latest tag-page URL against your manual HTML URL when available.
 
 `run-all` now also performs this Athletic update check automatically when `the_athletic`
 is present in `config/sources.json`.

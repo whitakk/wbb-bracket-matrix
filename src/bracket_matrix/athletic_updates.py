@@ -6,7 +6,7 @@ from email.message import EmailMessage
 from pathlib import Path
 
 from bracket_matrix.config import get_default_paths
-from bracket_matrix.scrapers.common import fetch_html, fetch_html_playwright, normalize_ws
+from bracket_matrix.scrapers.common import fetch_html, fetch_html_playwright, normalize_ws, to_soup
 from bracket_matrix.scrapers.theathletic import _find_latest_bracket_watch_article_url
 
 
@@ -17,10 +17,34 @@ def default_state_file() -> Path:
     return get_default_paths().data_dir / "manual" / "the_athletic_latest_url.txt"
 
 
+def default_manual_html_file() -> Path:
+    return get_default_paths().data_dir / "manual" / "the_athletic_latest.html"
+
+
 def _read_last_seen_url(state_file: Path) -> str:
     if not state_file.exists():
         return ""
     return normalize_ws(state_file.read_text(encoding="utf-8"))
+
+
+def _extract_article_url_from_manual_html(manual_html_path: Path) -> str:
+    if not manual_html_path.exists():
+        return ""
+
+    soup = to_soup(manual_html_path.read_text(encoding="utf-8"))
+    for selector, attribute in [
+        ("meta[property='og:url']", "content"),
+        ("meta[name='og:url']", "content"),
+        ("link[rel='canonical']", "href"),
+    ]:
+        node = soup.select_one(selector)
+        if node is None:
+            continue
+        value = normalize_ws(str(node.attrs.get(attribute, "")))
+        if value:
+            return value
+
+    return ""
 
 
 def _notification_email_from_env() -> str:
@@ -56,11 +80,13 @@ def send_email_notification(*, to_email: str, subject: str, body: str) -> None:
 def check_for_new_athletic_update(
     *,
     state_file: Path | None = None,
+    manual_html_path: Path | None = None,
     notify_email: str = "",
     use_playwright: bool = False,
     timeout_seconds: int = 20,
 ) -> dict[str, str]:
     target_state_file = state_file or default_state_file()
+    target_manual_html_path = manual_html_path or default_manual_html_file()
 
     if use_playwright:
         html = fetch_html_playwright(ATHLETIC_TAG_URL, timeout_seconds=timeout_seconds)
@@ -76,6 +102,8 @@ def check_for_new_athletic_update(
         raise RuntimeError("Could not find latest Women's Bracket Watch URL on The Athletic tag page")
 
     previous_url = _read_last_seen_url(target_state_file)
+    if not previous_url:
+        previous_url = _extract_article_url_from_manual_html(target_manual_html_path)
     if not previous_url:
         return {
             "status": "missing_manual_url",
