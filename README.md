@@ -43,6 +43,7 @@ python -m bracket_matrix scrape
 python -m bracket_matrix build
 python -m bracket_matrix publish
 python -m bracket_matrix run-all
+python -m bracket_matrix refresh-conferences --season 2026
 ```
 
 Optional flags:
@@ -62,11 +63,21 @@ Key files:
 - `data/latest/resolved_rows_latest.csv`
 - `data/latest/matrix_latest.csv`
 - `data/latest/unresolved_matches_latest.csv`
+- `data/team_conferences.csv`
 
 ## Config
 - Sources: `config/sources.json`
 - Pipeline settings: `config/settings.json`
 - Alias overrides: `data/aliases.csv`
+
+## Conference mapping
+- Team conference mapping is read from the static file `data/team_conferences.csv` during `build`.
+- It is not fetched automatically in `run-all` so runs stay deterministic and fast.
+- Refresh it manually at season rollover with:
+
+```bash
+python -m bracket_matrix refresh-conferences --season 2026
+```
 
 ## GitHub Actions
 - CI tests: `.github/workflows/ci.yml`

@@ -3,7 +3,8 @@ from __future__ import annotations
 import argparse
 from pathlib import Path
 
-from bracket_matrix.pipeline import run_all, run_build, run_publish, run_scrape
+from bracket_matrix.conferences import DEFAULT_BART_SEASON
+from bracket_matrix.pipeline import run_all, run_build, run_publish, run_refresh_conferences, run_scrape
 
 
 def _load_dotenv_if_available() -> None:
@@ -28,6 +29,16 @@ def build_parser() -> argparse.ArgumentParser:
 
     subparsers.add_parser("build", help="build merged matrix from latest scrape")
     subparsers.add_parser("publish", help="render site from latest merged matrix")
+    refresh_conf_parser = subparsers.add_parser(
+        "refresh-conferences",
+        help="refresh static team conference mappings from Bart Torvik",
+    )
+    refresh_conf_parser.add_argument(
+        "--season",
+        type=int,
+        default=DEFAULT_BART_SEASON,
+        help="season year for Bart Torvik team results CSV",
+    )
 
     run_all_parser = subparsers.add_parser("run-all", help="run scrape, build, publish, and retention cleanup")
     run_all_parser.add_argument(
@@ -57,6 +68,8 @@ def main() -> None:
         run_build()
     elif args.command == "publish":
         run_publish()
+    elif args.command == "refresh-conferences":
+        run_refresh_conferences(season=args.season)
     elif args.command == "run-all":
         run_all(
             enable_playwright_fallback=not args.disable_playwright_fallback,

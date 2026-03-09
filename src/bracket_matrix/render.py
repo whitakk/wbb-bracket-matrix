@@ -10,6 +10,41 @@ def _format_seed(seed: int | None) -> str:
     return "" if seed is None else str(int(seed))
 
 
+def split_projected_field(matrix_rows: list[MatrixRow], field_size: int = 68) -> tuple[list[MatrixRow], list[MatrixRow]]:
+    conference_winners: list[MatrixRow] = []
+    winner_slugs: set[str] = set()
+
+    rows_by_conference: dict[str, list[MatrixRow]] = {}
+    for row in matrix_rows:
+        conference = row.conference.strip()
+        if not conference:
+            continue
+        rows_by_conference.setdefault(conference, []).append(row)
+
+    for conference in sorted(rows_by_conference):
+        candidates = rows_by_conference[conference]
+        winner = min(
+            candidates,
+            key=lambda item: (-item.appearances, item.avg_seed, item.team_display.lower()),
+        )
+        conference_winners.append(winner)
+        winner_slugs.add(winner.canonical_slug)
+
+    remaining = [row for row in matrix_rows if row.canonical_slug not in winner_slugs]
+    remaining.sort(key=lambda item: (-item.appearances, item.avg_seed, item.team_display.lower()))
+
+    projected = conference_winners[:field_size]
+    remaining_slots = max(0, field_size - len(projected))
+    projected.extend(remaining[:remaining_slots])
+
+    projected_slugs = {row.canonical_slug for row in projected}
+    other_candidates = [row for row in matrix_rows if row.canonical_slug not in projected_slugs]
+
+    projected.sort(key=lambda item: (item.avg_seed, item.team_display.lower()))
+    other_candidates.sort(key=lambda item: (item.avg_seed, item.team_display.lower()))
+    return projected, other_candidates
+
+
 def render_index_html(
     *,
     matrix_rows: list[MatrixRow],
@@ -35,13 +70,30 @@ def render_index_html(
 
     table_header = "".join(f"<th>{escape(source_key_to_name.get(key, key))}</th>" for key in source_keys)
 
-    table_rows_html = ""
-    for idx, row in enumerate(matrix_rows, start=1):
+    projected_field, other_candidates = split_projected_field(matrix_rows)
+
+    projected_rows_html = ""
+    for idx, row in enumerate(projected_field, start=1):
         source_cells = "".join(f"<td>{_format_seed(row.source_seeds.get(source_key))}</td>" for source_key in source_keys)
-        table_rows_html += (
+        projected_rows_html += (
             "<tr>"
             f"<td>{idx}</td>"
             f"<td>{escape(row.team_display)}</td>"
+            f"<td>{escape(row.conference)}</td>"
+            f"<td>{row.avg_seed:.2f}</td>"
+            f"<td>{row.appearances}</td>"
+            f"{source_cells}"
+            "</tr>"
+        )
+
+    other_rows_html = ""
+    for idx, row in enumerate(other_candidates, start=1):
+        source_cells = "".join(f"<td>{_format_seed(row.source_seeds.get(source_key))}</td>" for source_key in source_keys)
+        other_rows_html += (
+            "<tr>"
+            f"<td>{idx}</td>"
+            f"<td>{escape(row.team_display)}</td>"
+            f"<td>{escape(row.conference)}</td>"
             f"<td>{row.avg_seed:.2f}</td>"
             f"<td>{row.appearances}</td>"
             f"{source_cells}"
@@ -67,6 +119,7 @@ def render_index_html(
     body {{ margin: 0; font-family: "Source Sans 3", "Segoe UI", sans-serif; background: radial-gradient(circle at top right, #e9f2e6, var(--bg)); color: var(--ink); }}
     .wrap {{ max-width: 1200px; margin: 0 auto; padding: 24px 16px 48px; }}
     h1 {{ margin: 0 0 8px; font-size: 2rem; letter-spacing: 0.02em; }}
+    h2 {{ margin: 18px 0 10px; font-size: 1.2rem; letter-spacing: 0.01em; }}
     .meta {{ color: var(--muted); margin: 0 0 16px; }}
     .card {{ background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 12px; overflow-x: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.05); }}
     table {{ width: 100%; border-collapse: collapse; }}
@@ -75,6 +128,7 @@ def render_index_html(
     td:nth-child(2), th:nth-child(2) {{ text-align: left; min-width: 200px; }}
     .sources {{ margin-bottom: 14px; }}
     .sources td:first-child {{ text-align: left; }}
+    .divider {{ border: 0; border-top: 2px solid var(--line); margin: 18px 0 12px; }}
     a {{ color: var(--accent); text-decoration: none; }}
     a:hover {{ text-decoration: underline; }}
   </style>
@@ -96,18 +150,38 @@ def render_index_html(
     </div>
 
     <div class=\"card\" style=\"margin-top:14px;\">
+      <h2>Projected Field</h2>
       <table>
         <thead>
           <tr>
             <th>Rank</th>
             <th>Team</th>
+            <th>Conference</th>
             <th>Avg Seed</th>
             <th>Appearances</th>
             {table_header}
           </tr>
         </thead>
         <tbody>
-          {table_rows_html}
+          {projected_rows_html}
+        </tbody>
+      </table>
+
+      <hr class=\"divider\" />
+      <h2>Other Candidates</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Team</th>
+            <th>Conference</th>
+            <th>Avg Seed</th>
+            <th>Appearances</th>
+            {table_header}
+          </tr>
+        </thead>
+        <tbody>
+          {other_rows_html}
         </tbody>
       </table>
     </div>

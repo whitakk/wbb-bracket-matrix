@@ -1,86 +1,86 @@
-canonical_slug,team_display,ncaa_id,espn_id,appearances,avg_seed,her_hoop_stats,espn,college_sports_madness,the_ix,cbssports
-south-carolina,South Carolina,,,5,1,1,1,1,1,1
-texas,Texas,,,5,1,1,1,1,1,1
-ucla,UCLA,,,5,1,1,1,1,1,1
-uconn,UConn,,,5,1,1,1,1,1,1
-iowa,Iowa,,,5,2,2,2,2,2,2
-lsu,LSU,,,5,2,2,2,2,2,2
-vanderbilt,Vanderbilt,,,5,2,2,2,2,2,2
-michigan,Michigan,,,5,2.4,3,3,2,2,2
-duke,Duke,,,5,2.6,2,2,3,3,3
-louisville,Louisville,,,5,3,3,3,3,3,3
-tcu,TCU,,,5,3,3,3,3,3,3
-ohio-state,Ohio St.,,,5,3.2,3,3,4,3,3
-oklahoma,Oklahoma,,,5,3.8,4,4,3,4,4
-maryland,Maryland,,,5,4.2,4,4,5,4,4
-minnesota,Minnesota,,,5,4.2,4,4,4,5,4
-west-virginia,West Virginia,,,5,4.2,4,4,4,4,5
-north-carolina,North Carolina,,,5,4.4,5,5,4,4,4
-kentucky,Kentucky,,,5,5,5,5,5,5,5
-michigan-state,Michigan St,,,5,5,5,5,5,5,5
-notre-dame,Notre Dame,,,5,5.6,6,6,6,5,5
-ole-miss,Ole Miss,,,5,5.6,5,5,6,6,6
-baylor,Baylor,,,5,5.8,6,6,5,6,6
-alabama,Alabama,,,5,6.4,6,6,8,6,6
-texas-tech,Texas Tech,,,5,6.6,7,6,6,7,7
-washington,Washington,,,5,6.6,7,7,7,6,6
-north-carolina-state,NC State,,,5,6.8,6,8,6,7,7
-georgia,Georgia,,,5,7,7,7,7,7,7
-oregon,Oregon,,,5,7.6,8,7,9,7,7
-tennessee,Tennessee,,,5,7.8,8,8,7,8,8
-illinois,Illinois,,,5,8,7,7,10,8,8
-usc,USC,,,5,8.4,9,9,8,8,8
-virginia-tech,Virginia Tech,,,5,8.4,8,9,8,8,9
-oklahoma-state,Oklahoma St,,,5,8.6,9,8,8,9,9
-iowa-state,Iowa St.,,,5,8.8,9,9,7,10,9
-villanova,Villanova,,,5,9,8,8,9,10,10
-syracuse,Syracuse,,,5,9.2,10,9,10,9,8
-clemson,Clemson,,,5,9.6,10,10,9,9,10
-princeton,Princeton,,,5,9.6,9,10,10,10,9
-colorado,Colorado,,,5,10,10,10,11,9,10
-south-dakota-state,South Dakota St,,,4,10.25,11,10,,10,10
-rhode-island,Rhode Island,,,5,10.6,10,11,10,11,11
-nebraska,Nebraska,,,4,10.75,11,11,,11,10
-virginia,Virginia,,,4,10.75,11,12,9,11,
-arizona-state,Arizona St,,,5,11,11,12,11,11,10
-fairfield,Fairfield,,,5,11,11,11,11,11,11
-columbia,Columbia,,,2,11,,,11,,11
-richmond,Richmond,,,2,11,11,11,,,
-stanford,Stanford,,,1,11,,,11,,
-rice,Rice,,,4,11.25,,11,11,11,12
-n-dakota-state,N Dakota St,,,2,11.5,,,12,,11
-georgia-southern,Georgia Southern,,,2,12,,,12,,12
-san-diego-state,San Diego St.,,,2,12,,,12,,12
-ball-state,Ball St.,,,1,12,12,,,,
-gonzaga,Gonzaga,,,1,12,12,,,,
-james-madison,James Madison,,,1,12,12,,,,
-montana-state,Montana St.,,,1,12,12,,,,
-quinnipiac,Quinnipiac,,,1,12,,,,12,
-miami-oh,Miami (OH),,,4,12.5,,12,13,12,13
-murray-state,Murray St,,,5,12.8,14,12,12,14,12
-louisiana-tech,Louisiana Tech,,,4,13,13,13,13,13,
-troy,Troy,,,2,13,,13,,13,
-colorado-state,Colorado St.,,,1,13,13,,,,
-la-tech,La. Tech,,,1,13,,,,,13
-south-fla,South Fla.,,,1,13,13,,,,
-uc-irvine,UC Irvine,,,5,13.2,13,13,14,12,14
-vermont,Vermont,,,5,13.4,14,14,13,12,14
-unlv,UNLV,,,2,13.5,,13,,14,
-mcneese-state,McNeese St,,,5,13.6,14,14,14,13,13
-green-bay,Green Bay,,,5,13.8,15,12,13,14,15
-western-illinois,Western Illinois,,,5,14,14,15,14,13,14
-charleston,Charleston,,,5,14.2,15,14,14,15,13
-idaho,Idaho,,,4,14.25,,14,15,14,14
-loyola-marymount,Loyola Marymount,,,4,15,,15,15,15,15
-navy,Navy,,,4,15,,15,15,15,15
-abilene-christian,Abilene Christian,,,1,15,15,,,,
-e-kentucky,Eastern Kentucky,,,1,15,,,15,,
-jacksonville,Jacksonville,,,4,15.5,15,15,,16,16
-fdu,FDU,,,5,15.6,16,16,16,15,15
-alabama-a-and-m,Alabama A&M,,,5,16,16,16,16,16,16
-high-point,High Point,,,5,16,16,16,16,16,16
-howard,Howard,,,5,16,16,16,16,16,16
-ca-baptist,CA Baptist,,,4,16,,16,16,16,16
-samford,Samford,,,3,16,16,16,,16,
-chattanooga,Chattanooga,,,2,16,,,16,,16
-army-west-point,Army West Point,,,1,16,16,,,,
+canonical_slug,team_display,ncaa_id,espn_id,appearances,avg_seed,conference,her_hoop_stats,espn,college_sports_madness,the_ix,cbssports
+south-carolina,South Carolina,,,5,1,SEC,1,1,1,1,1
+texas,Texas,,,5,1,SEC,1,1,1,1,1
+ucla,UCLA,,,5,1,B10,1,1,1,1,1
+uconn,UConn,,,5,1,BE,1,1,1,1,1
+iowa,Iowa,,,5,2,B10,2,2,2,2,2
+lsu,LSU,,,5,2,SEC,2,2,2,2,2
+vanderbilt,Vanderbilt,,,5,2,SEC,2,2,2,2,2
+michigan,Michigan,,,5,2.4,B10,3,3,2,2,2
+duke,Duke,,,5,2.6,ACC,2,2,3,3,3
+louisville,Louisville,,,5,3,ACC,3,3,3,3,3
+tcu,TCU,,,5,3,B12,3,3,3,3,3
+ohio-state,Ohio St.,,,5,3.2,B10,3,3,4,3,3
+oklahoma,Oklahoma,,,5,3.8,SEC,4,4,3,4,4
+maryland,Maryland,,,5,4.2,B10,4,4,5,4,4
+minnesota,Minnesota,,,5,4.2,B10,4,4,4,5,4
+west-virginia,West Virginia,,,5,4.2,B12,4,4,4,4,5
+north-carolina,North Carolina,,,5,4.4,ACC,5,5,4,4,4
+kentucky,Kentucky,,,5,5,SEC,5,5,5,5,5
+michigan-state,Michigan St,,,5,5,B10,5,5,5,5,5
+notre-dame,Notre Dame,,,5,5.6,ACC,6,6,6,5,5
+ole-miss,Ole Miss,,,5,5.6,SEC,5,5,6,6,6
+baylor,Baylor,,,5,5.8,B12,6,6,5,6,6
+alabama,Alabama,,,5,6.4,SEC,6,6,8,6,6
+texas-tech,Texas Tech,,,5,6.6,B12,7,6,6,7,7
+washington,Washington,,,5,6.6,B10,7,7,7,6,6
+north-carolina-state,NC State,,,5,6.8,ACC,6,8,6,7,7
+georgia,Georgia,,,5,7,SEC,7,7,7,7,7
+oregon,Oregon,,,5,7.6,B10,8,7,9,7,7
+tennessee,Tennessee,,,5,7.8,SEC,8,8,7,8,8
+illinois,Illinois,,,5,8,B10,7,7,10,8,8
+usc,USC,,,5,8.4,B10,9,9,8,8,8
+virginia-tech,Virginia Tech,,,5,8.4,ACC,8,9,8,8,9
+oklahoma-state,Oklahoma St,,,5,8.6,B12,9,8,8,9,9
+iowa-state,Iowa St.,,,5,8.8,B12,9,9,7,10,9
+villanova,Villanova,,,5,9,BE,8,8,9,10,10
+syracuse,Syracuse,,,5,9.2,ACC,10,9,10,9,8
+clemson,Clemson,,,5,9.6,ACC,10,10,9,9,10
+princeton,Princeton,,,5,9.6,Ivy,9,10,10,10,9
+colorado,Colorado,,,5,10,B12,10,10,11,9,10
+south-dakota-state,South Dakota St,,,4,10.25,Sum,11,10,,10,10
+rhode-island,Rhode Island,,,5,10.6,A10,10,11,10,11,11
+nebraska,Nebraska,,,4,10.75,B10,11,11,,11,10
+virginia,Virginia,,,4,10.75,ACC,11,12,9,11,
+arizona-state,Arizona St,,,5,11,B12,11,12,11,11,10
+fairfield,Fairfield,,,5,11,MAAC,11,11,11,11,11
+columbia,Columbia,,,2,11,Ivy,,,11,,11
+richmond,Richmond,,,2,11,A10,11,11,,,
+stanford,Stanford,,,1,11,ACC,,,11,,
+rice,Rice,,,4,11.25,Amer,,11,11,11,12
+n-dakota-state,N Dakota St,,,2,11.5,,,,12,,11
+georgia-southern,Georgia Southern,,,2,12,SB,,,12,,12
+san-diego-state,San Diego St.,,,2,12,MWC,,,12,,12
+ball-state,Ball St.,,,1,12,MAC,12,,,,
+gonzaga,Gonzaga,,,1,12,WCC,12,,,,
+james-madison,James Madison,,,1,12,SB,12,,,,
+montana-state,Montana St.,,,1,12,BSky,12,,,,
+quinnipiac,Quinnipiac,,,1,12,MAAC,,,,12,
+miami-oh,Miami (OH),,,4,12.5,MAC,,12,13,12,13
+murray-state,Murray St,,,5,12.8,MVC,14,12,12,14,12
+louisiana-tech,Louisiana Tech,,,4,13,CUSA,13,13,13,13,
+troy,Troy,,,2,13,SB,,13,,13,
+colorado-state,Colorado St.,,,1,13,MWC,13,,,,
+la-tech,La. Tech,,,1,13,,,,,,13
+south-fla,South Fla.,,,1,13,,13,,,,
+uc-irvine,UC Irvine,,,5,13.2,BW,13,13,14,12,14
+vermont,Vermont,,,5,13.4,AE,14,14,13,12,14
+unlv,UNLV,,,2,13.5,MWC,,13,,14,
+mcneese-state,McNeese St,,,5,13.6,Slnd,14,14,14,13,13
+green-bay,Green Bay,,,5,13.8,Horz,15,12,13,14,15
+western-illinois,Western Illinois,,,5,14,OVC,14,15,14,13,14
+charleston,Charleston,,,5,14.2,CAA,15,14,14,15,13
+idaho,Idaho,,,4,14.25,BSky,,14,15,14,14
+loyola-marymount,Loyola Marymount,,,4,15,WCC,,15,15,15,15
+navy,Navy,,,4,15,Pat,,15,15,15,15
+abilene-christian,Abilene Christian,,,1,15,WAC,15,,,,
+e-kentucky,Eastern Kentucky,,,1,15,ASun,,,15,,
+jacksonville,Jacksonville,,,4,15.5,ASun,15,15,,16,16
+fdu,FDU,,,5,15.6,,16,16,16,15,15
+alabama-a-and-m,Alabama A&M,,,5,16,SWAC,16,16,16,16,16
+high-point,High Point,,,5,16,BSth,16,16,16,16,16
+howard,Howard,,,5,16,MEAC,16,16,16,16,16
+ca-baptist,CA Baptist,,,4,16,,,16,16,16,16
+samford,Samford,,,3,16,SC,16,16,,16,
+chattanooga,Chattanooga,,,2,16,SC,,,16,,16
+army-west-point,Army West Point,,,1,16,,16,,,,
