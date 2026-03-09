@@ -8,6 +8,8 @@ Women's college basketball "bracket matrix" aggregator. This project scrapes pub
 - College Sports Madness: <https://www.collegesportsmadness.com/womens-basketball/bracketology>
 - The IX: <https://www.theixsports.com/category/the-ix-basketball-newsroom/ncaa-basketball/bracketology/>
 - CBS Sports: <https://www.cbssports.com/womens-college-basketball/>
+- USA Today: <https://www.usatoday.com/sports/ncaaw/ncaa-womens-basketball-tournament/>
+- The Athletic: <https://www.nytimes.com/athletic/tag/bracketcentral/>
 
 ## Requirements
 - Python 3.11
@@ -44,6 +46,8 @@ python -m bracket_matrix build
 python -m bracket_matrix publish
 python -m bracket_matrix run-all
 python -m bracket_matrix refresh-conferences --season 2026
+python -m bracket_matrix auth-login --source the_athletic
+python -m bracket_matrix check-athletic-update --notify-email you@example.com
 ```
 
 Optional flags:
@@ -51,6 +55,44 @@ Optional flags:
 python -m bracket_matrix scrape --disable-playwright-fallback
 python -m bracket_matrix run-all --disable-playwright-fallback --retention-days 365
 ```
+
+The Athletic authentication (optional, for subscriber-only pages):
+```bash
+# 1) Run interactive browser login once (saves to data/the_athletic_storage_state.json by default).
+# Optional: use local Chrome instead of bundled Chromium.
+# export BRACKET_MATRIX_PLAYWRIGHT_CHANNEL=chrome
+python -m bracket_matrix auth-login --source the_athletic
+
+# 2) Reuse that state in scrapes.
+export BRACKET_MATRIX_PLAYWRIGHT_STORAGE_STATE=data/the_athletic_storage_state.json
+
+# Optional: run Playwright in headed mode for tougher anti-bot pages.
+# export BRACKET_MATRIX_PLAYWRIGHT_HEADLESS=false
+python -m bracket_matrix scrape
+```
+
+The Athletic update alert check (no full scrape required):
+```bash
+# First run initializes the last-seen URL state file.
+python -m bracket_matrix check-athletic-update
+
+# Later runs notify only when latest article URL changes.
+python -m bracket_matrix check-athletic-update --notify-email you@example.com
+
+# Optional: fetch tag page with Playwright instead of requests.
+python -m bracket_matrix check-athletic-update --use-playwright
+```
+
+`run-all` now also performs this Athletic update check automatically when `the_athletic`
+is present in `config/sources.json`.
+
+Optional env vars for `run-all` Athletic update notifications:
+- `BRACKET_MATRIX_CHECK_ATHLETIC_USE_PLAYWRIGHT` (`true`/`false` for tag page fetch mode)
+
+Gmail env vars for email notification (simple mode):
+- `GMAIL_USER` (your Gmail address)
+- `GMAIL_APP_PASSWORD` (Google app password)
+- `GMAIL_TO` (default recipient; optional if you pass `--notify-email`)
 
 ## Data outputs
 - Latest artifacts: `data/latest/`
@@ -78,6 +120,25 @@ Key files:
 ```bash
 python -m bracket_matrix refresh-conferences --season 2026
 ```
+
+If a team is missing a conference in `matrix_latest.csv`, it is usually a naming mismatch
+between source team labels and Bart Torvik names. Add/adjust aliases in `data/aliases.csv`,
+then rerun:
+
+```bash
+python -m bracket_matrix refresh-conferences --season 2026
+python -m bracket_matrix build
+python -m bracket_matrix publish
+```
+
+## Site presentation rules
+- The main table is split into `Projected Field` (68 teams) and `Other Candidates`.
+- `Projected Field` selection first takes one plurality winner per conference (tiebreakers:
+  lower avg seed, then alphabetical), then fills remaining spots by appearances, then avg seed.
+- Both sections are displayed sorted by avg seed (ascending).
+- Source columns (left-to-right) and source status rows (top-to-bottom) are ordered by most
+  recent `source_updated_at_iso`.
+- Source `Latest Update` is shown in compact month/day format (for example, `3/9`).
 
 ## GitHub Actions
 - CI tests: `.github/workflows/ci.yml`

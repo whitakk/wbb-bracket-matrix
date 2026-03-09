@@ -4,6 +4,7 @@ from bracket_matrix.scrapers import cbssports
 from bracket_matrix.scrapers.collegesportsmadness import parse_college_sports_madness
 from bracket_matrix.scrapers.espn import parse_espn
 from bracket_matrix.scrapers.herhoopstats import parse_her_hoop_stats
+from bracket_matrix.scrapers import theathletic
 from bracket_matrix.scrapers import theix
 from bracket_matrix.scrapers import usatoday
 
@@ -249,6 +250,43 @@ def test_parse_usatoday_skips_when_no_bracketology_link_found():
     assert result.rows == []
     assert result.updated_at_raw == ""
     assert result.updated_at_iso == ""
+
+
+def test_theathletic_finds_latest_womens_bracket_watch_article_url():
+    url = theathletic._find_latest_bracket_watch_article_url(
+        _read("theathletic_tag.html"),
+        "https://www.nytimes.com/athletic/tag/bracketcentral/",
+    )
+
+    assert url == "https://www.nytimes.com/athletic/7092398/2026/03/06/women-ncaa-tournament-bracket-watch-uconn-ucla/"
+
+
+def test_parse_theathletic_uses_latest_article_and_parses_rows(monkeypatch):
+    hub_html = _read("theathletic_tag.html")
+    article_html = _read("theathletic_article.html")
+    resolved_url = "https://www.nytimes.com/athletic/7092398/2026/03/06/women-ncaa-tournament-bracket-watch-uconn-ucla/"
+
+    def fake_fetch_html_response(url: str) -> tuple[str, str]:
+        assert url == resolved_url
+        return resolved_url, article_html
+
+    monkeypatch.setattr(theathletic, "_fetch_html_response", fake_fetch_html_response)
+
+    result = theathletic.parse_the_athletic(
+        source_key="the_athletic",
+        source_name="The Athletic",
+        source_url="https://www.nytimes.com/athletic/tag/bracketcentral/",
+        html=hub_html,
+        scraped_at_iso="2026-03-08T20:00:00+00:00",
+    )
+
+    parsed = {(row.seed, row.team_raw, row.is_play_in) for row in result.rows}
+    assert (1, "UConn", False) in parsed
+    assert (1, "UCLA", False) in parsed
+    assert (2, "South Carolina", False) in parsed
+    assert (11, "Princeton", True) in parsed
+    assert (11, "Villanova", True) in parsed
+    assert all(row.source_url == resolved_url for row in result.rows)
 
 
 def test_theix_finds_latest_bracketology_article_url():

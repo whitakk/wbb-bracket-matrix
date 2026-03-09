@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 import re
 from datetime import UTC
 from typing import Iterable
@@ -36,11 +37,29 @@ def fetch_html_playwright(url: str, timeout_seconds: int) -> str:
     except ImportError as exc:
         raise RuntimeError("Playwright is not installed") from exc
 
+    storage_state_path = normalize_ws(os.getenv("BRACKET_MATRIX_PLAYWRIGHT_STORAGE_STATE", ""))
+    channel = normalize_ws(os.getenv("BRACKET_MATRIX_PLAYWRIGHT_CHANNEL", ""))
+    headless_raw = normalize_ws(os.getenv("BRACKET_MATRIX_PLAYWRIGHT_HEADLESS", "true")).lower()
+    headless = headless_raw not in {"0", "false", "no", "off"}
+
+    launch_kwargs: dict[str, object] = {
+        "headless": headless,
+        "args": ["--disable-blink-features=AutomationControlled"],
+    }
+    if channel:
+        launch_kwargs["channel"] = channel
+
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(headless=True)
-        page = browser.new_page()
+        browser = playwright.chromium.launch(**launch_kwargs)
+        if storage_state_path:
+            context = browser.new_context(storage_state=storage_state_path)
+        else:
+            context = browser.new_context()
+        page = context.new_page()
+        page.add_init_script("Object.defineProperty(navigator, 'webdriver', {get: () => undefined})")
         page.goto(url, timeout=timeout_seconds * 1000, wait_until="networkidle")
         html = page.content()
+        context.close()
         browser.close()
     return html
 

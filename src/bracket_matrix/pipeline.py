@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import os
 from dataclasses import asdict
 from pathlib import Path
 from typing import Callable
@@ -363,10 +364,35 @@ def run_all(
 ) -> dict[str, Path]:
     active_paths = paths or get_default_paths()
     settings = load_settings(active_paths)
+    sources = load_sources(active_paths)
 
     run_scrape(paths=active_paths, enable_playwright_fallback=enable_playwright_fallback)
     run_build(paths=active_paths)
     output = run_publish(paths=active_paths)
+
+    has_athletic_source = any(source.get("source_key") == "the_athletic" for source in sources)
+    if has_athletic_source:
+        notify_email = os.getenv("GMAIL_TO", "")
+        use_playwright_check = os.getenv("BRACKET_MATRIX_CHECK_ATHLETIC_USE_PLAYWRIGHT", "").strip().lower() in {
+            "1",
+            "true",
+            "yes",
+            "on",
+        }
+        try:
+            from bracket_matrix.athletic_updates import check_for_new_athletic_update
+
+            check_result = check_for_new_athletic_update(
+                notify_email=notify_email,
+                use_playwright=use_playwright_check,
+            )
+            print(
+                "[athletic-update] "
+                f"status={check_result['status']} "
+                f"latest_url={check_result['latest_url']}"
+            )
+        except Exception as exc:  # noqa: BLE001
+            print(f"[athletic-update] check failed: {exc}")
 
     days = retention_days if retention_days is not None else int(settings["retention_days"])
     for prefix in [

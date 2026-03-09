@@ -42,6 +42,14 @@
       "source_url": "https://www.usatoday.com/sports/ncaaw/ncaa-womens-basketball-tournament/",
       "parser": "usatoday",
       "use_playwright_fallback": false
+    },
+    {
+      "source_key": "the_athletic",
+      "source_name": "The Athletic",
+      "source_url": "https://www.nytimes.com/athletic/tag/bracketcentral/",
+      "parser": "theathletic",
+      "use_playwright_fallback": true,
+      "min_rows_for_playwright_fallback": 60
     }
   ]
 }
