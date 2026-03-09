@@ -39,6 +39,7 @@ class MatrixRow:
     espn_id: str
     appearances: int
     avg_seed: float
+    conference: str = ""
     source_seeds: dict[str, int | None] = field(default_factory=dict)
 
     def to_flat_dict(self, source_keys: list[str]) -> dict[str, Any]:
@@ -49,6 +50,7 @@ class MatrixRow:
             "espn_id": self.espn_id,
             "appearances": self.appearances,
             "avg_seed": round(self.avg_seed, 3),
+            "conference": self.conference,
         }
         for source_key in source_keys:
             seed = self.source_seeds.get(source_key)

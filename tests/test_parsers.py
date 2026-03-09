@@ -82,6 +82,30 @@ def test_parse_college_sports_madness_extracts_multiple_pairs_per_table_row():
     assert (9, "Colorado") in parsed
 
 
+def test_parse_college_sports_madness_extracts_bracket_breakdown_date():
+    html = """
+    <html>
+      <body>
+        <h2>3/5 Bracket Breakdown</h2>
+        <table>
+          <tr><td>1</td><td>Texas</td></tr>
+        </table>
+      </body>
+    </html>
+    """
+
+    result = parse_college_sports_madness(
+        source_key="college_sports_madness",
+        source_name="College Sports Madness",
+        source_url="https://example.com",
+        html=html,
+        scraped_at_iso="2026-03-06T00:00:00+00:00",
+    )
+
+    assert result.updated_at_raw == "3/5/2026"
+    assert result.updated_at_iso.startswith("2026-03-05T")
+
+
 def test_parse_espn_blocked_page_returns_no_rows():
     blocked = _read("espn_blocked.html")
     result = parse_espn(

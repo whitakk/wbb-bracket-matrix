@@ -4,6 +4,13 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Callable
 
+from bracket_matrix.conferences import (
+    DEFAULT_BART_SEASON,
+    TEAM_CONFERENCE_FIELDNAMES,
+    build_team_conference_rows_from_bart,
+    fetch_bart_team_results_csv,
+    load_team_conferences,
+)
 from bracket_matrix.config import PipelinePaths, get_default_paths, load_settings, load_sources
 from bracket_matrix.io_utils import cleanup_old_csv, ensure_dirs, read_dict_csv, utc_compact_timestamp, utc_now_iso, write_dict_csv
 from bracket_matrix.merge import build_matrix_rows
@@ -201,6 +208,10 @@ def run_build(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
 
     matrix_input_rows = [row for row in filtered_rows if row.team_raw in resolved]
     matrix_rows = build_matrix_rows(matrix_input_rows, resolved, source_keys)
+    team_conferences = load_team_conferences(active_paths.data_dir / "team_conferences.csv")
+
+    for matrix_row in matrix_rows:
+        matrix_row.conference = team_conferences.get(matrix_row.canonical_slug, "")
 
     resolved_rows: list[dict[str, str | int | float]] = []
     for row in matrix_input_rows:
@@ -212,6 +223,7 @@ def run_build(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
                 "team_display": resolution.identity.team_display,
                 "ncaa_id": resolution.identity.ncaa_id,
                 "espn_id": resolution.identity.espn_id,
+                "conference": team_conferences.get(resolution.identity.canonical_slug, ""),
                 "resolution_method": resolution.method,
                 "resolution_confidence": round(resolution.confidence, 2),
             }
@@ -235,6 +247,7 @@ def run_build(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
         "team_display",
         "ncaa_id",
         "espn_id",
+        "conference",
         "resolution_method",
         "resolution_confidence",
     ]
@@ -246,6 +259,7 @@ def run_build(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
         "espn_id",
         "appearances",
         "avg_seed",
+        "conference",
     ] + source_keys
 
     unresolved_fields = [
@@ -294,6 +308,7 @@ def run_publish(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
                 espn_id=row.get("espn_id", ""),
                 appearances=int(row.get("appearances", 0)),
                 avg_seed=float(row.get("avg_seed", 99)),
+                conference=row.get("conference", ""),
                 source_seeds=source_seeds,
             )
         )
@@ -315,6 +330,29 @@ def run_publish(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
             dst.write_text(src.read_text(encoding="utf-8"), encoding="utf-8")
 
     return {"site_index": active_paths.site_dir / "index.html"}
+
+
+def run_refresh_conferences(
+    *,
+    paths: PipelinePaths | None = None,
+    season: int = DEFAULT_BART_SEASON,
+) -> Path:
+    active_paths = paths or get_default_paths()
+    settings = load_settings(active_paths)
+
+    csv_text = fetch_bart_team_results_csv(
+        season=season,
+        timeout_seconds=int(settings["request_timeout_seconds"]),
+        user_agent=str(settings["user_agent"]),
+    )
+    rows = build_team_conference_rows_from_bart(
+        csv_text,
+        aliases_path=active_paths.data_dir / "aliases.csv",
+    )
+
+    output_path = active_paths.data_dir / "team_conferences.csv"
+    write_dict_csv(output_path, rows, fieldnames=TEAM_CONFERENCE_FIELDNAMES)
+    return output_path
 
 
 def run_all(
