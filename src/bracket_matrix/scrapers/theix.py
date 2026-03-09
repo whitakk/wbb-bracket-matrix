@@ -199,6 +199,17 @@ def _extract_pairs_from_ocr_text(ocr_text: str) -> list[tuple[int, str, bool]]:
     pairs: list[tuple[int, str, bool]] = []
     seen: set[tuple[int, str]] = set()
 
+    def add_pair(seed: int, team_text: str) -> None:
+        team = _clean_team_name(team_text.strip(" -:.;,|_"))
+        if not _looks_like_team_name(team):
+            return
+        key = (seed, team.lower())
+        if key in seen:
+            return
+        seen.add(key)
+        pairs.append((seed, team, False))
+
+    cleaned_lines: list[str] = []
     for raw_line in ocr_text.splitlines():
         line = normalize_ws(raw_line)
         if not line:
@@ -208,17 +219,28 @@ def _extract_pairs_from_ocr_text(ocr_text: str) -> list[tuple[int, str, bool]]:
         line = normalize_ws(line)
         if not line:
             continue
+        cleaned_lines.append(line)
 
-        for match in re.finditer(r"(?<!\d)(1[0-6]|[1-9])\s+([A-Za-z][A-Za-z&'().\-\s]{1,45}?)(?=\s+(?:1[0-6]|[1-9])\s+|$)", line):
-            seed = int(match.group(1))
-            team = _clean_team_name(match.group(2).strip(" -:.;,|_"))
-            if not _looks_like_team_name(team):
-                continue
-            key = (seed, team.lower())
-            if key in seen:
-                continue
-            seen.add(key)
-            pairs.append((seed, team, False))
+        for match in re.finditer(
+            r"(?<!\d)(1[0-6]|[1-9])\s+([A-Za-z][A-Za-z&'().\-\s]{1,45}?)(?=\s+(?:1[0-6]|[1-9])\s+|$)",
+            line,
+        ):
+            add_pair(int(match.group(1)), match.group(2))
+
+    combined = " | ".join(cleaned_lines)
+    for match in re.finditer(
+        r"(?<!\d)(1[0-6]|[1-9])(?:\s+|\s*[|/:;,.-]\s*)([A-Za-z][A-Za-z&'().\-\s]{1,45}?)(?=(?:\s+|\s*[|/:;,.-]\s*)(?:1[0-6]|[1-9])(?:\s+|$)|$)",
+        combined,
+    ):
+        add_pair(int(match.group(1)), match.group(2))
+
+    for index, line in enumerate(cleaned_lines[:-1]):
+        if not re.fullmatch(r"1[0-6]|[1-9]", line):
+            continue
+        next_line = cleaned_lines[index + 1]
+        if re.match(r"^(1[0-6]|[1-9])\b", next_line):
+            continue
+        add_pair(int(line), next_line)
 
     return pairs
 

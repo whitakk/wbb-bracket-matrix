@@ -223,6 +223,25 @@ def test_theix_extracts_seed_team_pairs_from_ocr_text():
     assert (9, "Colorado", False) in pairs
 
 
+def test_theix_extracts_pairs_when_seed_and_team_are_split_lines():
+    ocr_text = """
+    1
+    UCLA
+    16
+    Norfolk State
+    8 Iowa State
+    9
+    Colorado
+    """
+
+    pairs = theix._extract_pairs_from_ocr_text(ocr_text)
+
+    assert (1, "UCLA", False) in pairs
+    assert (16, "Norfolk State", False) in pairs
+    assert (8, "Iowa State", False) in pairs
+    assert (9, "Colorado", False) in pairs
+
+
 def test_theix_cleans_common_ocr_team_artifacts():
     ocr_text = """
     2 lowa
