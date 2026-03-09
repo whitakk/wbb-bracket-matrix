@@ -28,6 +28,13 @@
       "source_url": "https://www.theixsports.com/category/the-ix-basketball-newsroom/ncaa-basketball/bracketology/",
       "parser": "theix",
       "use_playwright_fallback": false
+    },
+    {
+      "source_key": "cbssports",
+      "source_name": "CBS Sports",
+      "source_url": "https://www.cbssports.com/womens-college-basketball/",
+      "parser": "cbssports",
+      "use_playwright_fallback": false
     }
   ]
 }

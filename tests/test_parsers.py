@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from bracket_matrix.scrapers import cbssports
 from bracket_matrix.scrapers.collegesportsmadness import parse_college_sports_madness
 from bracket_matrix.scrapers.espn import parse_espn
 from bracket_matrix.scrapers.herhoopstats import parse_her_hoop_stats
@@ -91,6 +92,79 @@ def test_parse_espn_blocked_page_returns_no_rows():
         scraped_at_iso="2026-03-06T00:00:00+00:00",
     )
     assert len(result.rows) == 0
+
+
+def test_cbssports_finds_bracketology_menu_url():
+    url = cbssports._find_bracketology_menu_url(
+        _read("cbssports_hub.html"),
+        "https://www.cbssports.com/womens-college-basketball/",
+    )
+
+    assert url == "https://www.cbssports.com/womens-college-basketball/bracketology/"
+
+
+def test_parse_cbssports_uses_menu_link_and_parses_article(monkeypatch):
+    hub_html = _read("cbssports_hub.html")
+    article_html = _read("cbssports_article.html")
+    resolved_url = (
+        "https://www.cbssports.com/womens-college-basketball/news/"
+        "womens-bracketology-ncaa-tournament-projections-arizona-state-march-7/"
+    )
+
+    def fake_fetch_html_response(url: str) -> tuple[str, str]:
+        assert url == "https://www.cbssports.com/womens-college-basketball/bracketology/"
+        return resolved_url, article_html
+
+    monkeypatch.setattr(cbssports, "_fetch_html_response", fake_fetch_html_response)
+
+    result = cbssports.parse_cbssports(
+        source_key="cbssports",
+        source_name="CBS Sports",
+        source_url="https://www.cbssports.com/womens-college-basketball/",
+        html=hub_html,
+        scraped_at_iso="2026-03-07T20:00:00+00:00",
+    )
+
+    parsed = {(row.seed, row.team_raw, row.is_play_in) for row in result.rows}
+    assert (1, "UCLA", False) in parsed
+    assert (2, "South Carolina", False) in parsed
+    assert (11, "Princeton", True) in parsed
+    assert (11, "Villanova", True) in parsed
+    assert (16, "Southern", False) in parsed
+    assert all(row.source_url == resolved_url for row in result.rows)
+
+
+def test_cbssports_extracts_rows_from_projection_table():
+    html = """
+    <html>
+      <body>
+        <div class="ArticleContentTable">
+          <table class="team-picks-authors">
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td><div class="team-name">UConn</div></td>
+                <td><div class="team-name">UCLA</div></td>
+              </tr>
+              <tr>
+                <td>11</td>
+                <td><div class="team-name">Princeton / Villanova</div></td>
+                <td><div class="team-name">Rhode Island</div></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </body>
+    </html>
+    """
+
+    pairs = cbssports._extract_pairs_from_projection_table(cbssports.to_soup(html))
+
+    assert (1, "UConn", False) in pairs
+    assert (1, "UCLA", False) in pairs
+    assert (11, "Princeton", True) in pairs
+    assert (11, "Villanova", True) in pairs
+    assert (11, "Rhode Island", False) in pairs
 
 
 def test_theix_finds_latest_bracketology_article_url():

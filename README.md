@@ -7,6 +7,7 @@ Women's college basketball "bracket matrix" aggregator. This project scrapes pub
 - ESPN: <https://www.espn.com/espn/feature/story/_/id/30423107/ncaa-women-bracketology-2026-women-college-basketball-projections>
 - College Sports Madness: <https://www.collegesportsmadness.com/womens-basketball/bracketology>
 - The IX: <https://www.theixsports.com/category/the-ix-basketball-newsroom/ncaa-basketball/bracketology/>
+- CBS Sports: <https://www.cbssports.com/womens-college-basketball/>
 
 ## Requirements
 - Python 3.11
