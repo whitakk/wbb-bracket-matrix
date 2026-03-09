@@ -94,6 +94,8 @@ Gmail env vars for email notification (simple mode):
 - `GMAIL_APP_PASSWORD` (Google app password)
 - `GMAIL_TO` (default recipient; optional if you pass `--notify-email`)
 
+For GitHub Actions, set `GMAIL_USER`, `GMAIL_APP_PASSWORD`, and `GMAIL_TO` as repository secrets.
+
 ## Data outputs
 - Latest artifacts: `data/latest/`
 - Snapshot history: `data/snapshots/`

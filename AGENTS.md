@@ -35,6 +35,7 @@
 ## Commit & Pull Request Guidelines
 - Use concise, imperative commit messages (examples from history: `Implement bracket matrix pipeline...`, `Update bracket matrix data`).
 - Keep unrelated changes in separate commits.
+- Never push directly to `main`; always create/use a feature branch and open a PR.
 - PRs should include: purpose, key changes, test results (`pytest -q`), and any data/schema impact.
 - Include screenshots or rendered output notes when changing `publish`/HTML behavior.
 
@@ -42,3 +43,11 @@
 - Do not hardcode source URLs; update `config/sources.json`.
 - Keep alias overrides in `data/aliases.csv` and document non-obvious mappings in PR descriptions.
 - Avoid deleting historical snapshots unless retention behavior is the explicit change.
+
+## Current Pipeline Behavior Notes
+- Conference mapping is static per season in `data/team_conferences.csv` and is loaded during
+  `build`; it is refreshed manually via `python -m bracket_matrix refresh-conferences --season <year>`.
+- When conference data is missing for a team, first fix name mapping in `data/aliases.csv`, then
+  refresh conferences and rebuild artifacts.
+- Site output currently splits teams into `Projected Field` and `Other Candidates`, and orders
+  source columns/rows by source recency with `Latest Update` displayed as `M/D`.

@@ -391,6 +391,8 @@ def run_all(
                 f"status={check_result['status']} "
                 f"latest_url={check_result['latest_url']}"
             )
+            if check_result.get("status") == "updated" and not notify_email:
+                print("[athletic-update] update detected but email skipped (GMAIL_TO not set)")
         except Exception as exc:  # noqa: BLE001
             print(f"[athletic-update] check failed: {exc}")
 
