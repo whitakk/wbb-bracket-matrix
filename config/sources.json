@@ -35,6 +35,13 @@
       "source_url": "https://www.cbssports.com/womens-college-basketball/",
       "parser": "cbssports",
       "use_playwright_fallback": false
+    },
+    {
+      "source_key": "usatoday",
+      "source_name": "USA Today",
+      "source_url": "https://www.usatoday.com/sports/ncaaw/ncaa-womens-basketball-tournament/",
+      "parser": "usatoday",
+      "use_playwright_fallback": false
     }
   ]
 }
