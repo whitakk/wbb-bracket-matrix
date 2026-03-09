@@ -48,7 +48,7 @@ columbia,Columbia,,,2,11,Ivy,,,11,,11
 richmond,Richmond,,,2,11,A10,11,11,,,
 stanford,Stanford,,,1,11,ACC,,,11,,
 rice,Rice,,,4,11.25,Amer,,11,11,11,12
-n-dakota-state,N Dakota St,,,2,11.5,,,,12,,11
+n-dakota-state,N Dakota St,,,2,11.5,Sum,,,12,,11
 georgia-southern,Georgia Southern,,,2,12,SB,,,12,,12
 san-diego-state,San Diego St.,,,2,12,MWC,,,12,,12
 ball-state,Ball St.,,,1,12,MAC,12,,,,
@@ -58,11 +58,10 @@ montana-state,Montana St.,,,1,12,BSky,12,,,,
 quinnipiac,Quinnipiac,,,1,12,MAAC,,,,12,
 miami-oh,Miami (OH),,,4,12.5,MAC,,12,13,12,13
 murray-state,Murray St,,,5,12.8,MVC,14,12,12,14,12
-louisiana-tech,Louisiana Tech,,,4,13,CUSA,13,13,13,13,
+la-tech,La. Tech,,,5,13,CUSA,13,13,13,13,13
 troy,Troy,,,2,13,SB,,13,,13,
 colorado-state,Colorado St.,,,1,13,MWC,13,,,,
-la-tech,La. Tech,,,1,13,,,,,,13
-south-fla,South Fla.,,,1,13,,13,,,,
+south-fla,South Fla.,,,1,13,Amer,13,,,,
 uc-irvine,UC Irvine,,,5,13.2,BW,13,13,14,12,14
 vermont,Vermont,,,5,13.4,AE,14,14,13,12,14
 unlv,UNLV,,,2,13.5,MWC,,13,,14,
@@ -76,11 +75,11 @@ navy,Navy,,,4,15,Pat,,15,15,15,15
 abilene-christian,Abilene Christian,,,1,15,WAC,15,,,,
 e-kentucky,Eastern Kentucky,,,1,15,ASun,,,15,,
 jacksonville,Jacksonville,,,4,15.5,ASun,15,15,,16,16
-fdu,FDU,,,5,15.6,,16,16,16,15,15
+fdu,FDU,,,5,15.6,NEC,16,16,16,15,15
 alabama-a-and-m,Alabama A&M,,,5,16,SWAC,16,16,16,16,16
 high-point,High Point,,,5,16,BSth,16,16,16,16,16
 howard,Howard,,,5,16,MEAC,16,16,16,16,16
-ca-baptist,CA Baptist,,,4,16,,,16,16,16,16
+ca-baptist,CA Baptist,,,4,16,WAC,,16,16,16,16
 samford,Samford,,,3,16,SC,16,16,,16,
 chattanooga,Chattanooga,,,2,16,SC,,,16,,16
-army-west-point,Army West Point,,,1,16,,16,,,,
+army-west-point,Army West Point,,,1,16,Pat,16,,,,

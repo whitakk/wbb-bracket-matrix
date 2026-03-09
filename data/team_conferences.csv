@@ -14,7 +14,7 @@ arizona-state,Arizona St.,B12,Arizona St.,B12
 arkansas,Arkansas,SEC,Arkansas,SEC
 arkansas-pine-bluff,Arkansas Pine Bluff,SWAC,Arkansas Pine Bluff,SWAC
 arkansas-state,Arkansas St.,SB,Arkansas St.,SB
-army,Army,Pat,Army,Pat
+army-west-point,Army West Point,Pat,Army,Pat
 auburn,Auburn,SEC,Auburn,SEC
 austin-peay,Austin Peay,ASun,Austin Peay,ASun
 ball-state,Ball St.,MAC,Ball St.,MAC
@@ -34,7 +34,7 @@ bucknell,Bucknell,Pat,Bucknell,Pat
 buffalo,Buffalo,MAC,Buffalo,MAC
 butler,Butler,BE,Butler,BE
 byu,BYU,B12,BYU,B12
-cal-baptist,Cal Baptist,WAC,Cal Baptist,WAC
+ca-baptist,CA Baptist,WAC,Cal Baptist,WAC
 cal-poly,Cal Poly,BW,Cal Poly,BW
 cal-state-bakersfield,Cal St. Bakersfield,BW,Cal St. Bakersfield,BW
 cal-state-fullerton,Cal St. Fullerton,BW,Cal St. Fullerton,BW
@@ -83,7 +83,7 @@ eastern-washington,Eastern Washington,BSky,Eastern Washington,BSky
 elon,Elon,CAA,Elon,CAA
 evansville,Evansville,MVC,Evansville,MVC
 fairfield,Fairfield,MAAC,Fairfield,MAAC
-fairleigh-dickinson,Fairleigh Dickinson,NEC,Fairleigh Dickinson,NEC
+fdu,FDU,NEC,Fairleigh Dickinson,NEC
 fiu,FIU,CUSA,FIU,CUSA
 florida,Florida,SEC,Florida,SEC
 florida-a-and-m,Florida A&M,SWAC,Florida A&M,SWAC
@@ -136,6 +136,7 @@ kennesaw-state,Kennesaw St.,CUSA,Kennesaw St.,CUSA
 kent-state,Kent St.,MAC,Kent St.,MAC
 kentucky,Kentucky,SEC,Kentucky,SEC
 la-salle,La Salle,A10,La Salle,A10
+la-tech,La. Tech,CUSA,Louisiana Tech,CUSA
 lafayette,Lafayette,Pat,Lafayette,Pat
 lamar,Lamar,Slnd,Lamar,Slnd
 le-moyne,Le Moyne,NEC,Le Moyne,NEC
@@ -149,7 +150,6 @@ long-beach-state,Long Beach St.,BW,Long Beach St.,BW
 longwood,Longwood,BSth,Longwood,BSth
 louisiana,Louisiana,SB,Louisiana,SB
 louisiana-monroe,Louisiana Monroe,SB,Louisiana Monroe,SB
-louisiana-tech,Louisiana Tech,CUSA,Louisiana Tech,CUSA
 louisville,Louisville,ACC,Louisville,ACC
 loyola-chicago,Loyola Chicago,A10,Loyola Chicago,A10
 loyola-marymount,Loyola Marymount,WCC,Loyola Marymount,WCC
@@ -186,6 +186,7 @@ morehead-state,Morehead St.,OVC,Morehead St.,OVC
 morgan-state,Morgan St.,MEAC,Morgan St.,MEAC
 mount-state-mary-s,Mount St. Mary's,MAAC,Mount St. Mary's,MAAC
 murray-state,Murray St.,MVC,Murray St.,MVC
+n-dakota-state,N Dakota St,Sum,North Dakota St.,Sum
 navy,Navy,Pat,Navy,Pat
 north-carolina-state,NC State,ACC,N.C. State,ACC
 nebraska,Nebraska,B10,Nebraska,B10
@@ -205,7 +206,6 @@ north-carolina,North Carolina,ACC,North Carolina,ACC
 north-carolina-a-and-t,North Carolina A&T,CAA,North Carolina A&T,CAA
 north-carolina-central,North Carolina Central,MEAC,North Carolina Central,MEAC
 north-dakota,North Dakota,Sum,North Dakota,Sum
-north-dakota-state,North Dakota St.,Sum,North Dakota St.,Sum
 north-florida,North Florida,ASun,North Florida,ASun
 north-texas,North Texas,Amer,North Texas,Amer
 northeastern,Northeastern,CAA,Northeastern,CAA
@@ -273,7 +273,7 @@ south-carolina,South Carolina,SEC,South Carolina,SEC
 south-carolina-state,South Carolina St.,MEAC,South Carolina St.,MEAC
 south-dakota,South Dakota,Sum,South Dakota,Sum
 south-dakota-state,South Dakota St,Sum,South Dakota St.,Sum
-south-florida,South Florida,Amer,South Florida,Amer
+south-fla,South Fla.,Amer,South Florida,Amer
 southeast-missouri-state,Southeast Missouri St.,OVC,Southeast Missouri St.,OVC
 southeastern-louisiana,Southeastern Louisiana,Slnd,Southeastern Louisiana,Slnd
 southern,Southern,SWAC,Southern,SWAC
