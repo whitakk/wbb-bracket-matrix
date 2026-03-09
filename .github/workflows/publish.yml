@@ -36,8 +36,65 @@ jobs:
       - name: Install Playwright browser
         run: python -m playwright install --with-deps chromium
 
+      - name: Install Tesseract OCR
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y tesseract-ocr
+
       - name: Run pipeline
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          OPENAI_MODEL: ${{ vars.OPENAI_MODEL }}
         run: python -m bracket_matrix run-all --retention-days 365
+
+      - name: Fail on scrape errors
+        run: |
+          python - <<'PY'
+          import csv
+          import os
+          import sys
+
+          path = "data/latest/source_status_latest.csv"
+          with open(path, newline="", encoding="utf-8") as handle:
+              rows = list(csv.DictReader(handle))
+
+          summary_path = os.getenv("GITHUB_STEP_SUMMARY")
+
+          def write_summary(lines: list[str]) -> None:
+              if not summary_path:
+                  return
+              with open(summary_path, "a", encoding="utf-8") as summary:
+                  summary.write("\n".join(lines) + "\n")
+
+          bad_rows = [
+              row for row in rows
+              if row.get("status", "").strip().lower() not in {"ok"}
+          ]
+
+          if not bad_rows:
+              print("All sources scraped successfully.")
+              write_summary([
+                  "## Scrape status",
+                  "✅ All sources scraped successfully.",
+              ])
+              sys.exit(0)
+
+          print("Scrape errors detected:")
+          summary_lines = [
+              "## Scrape status",
+              "❌ Scrape errors detected:",
+          ]
+          for row in bad_rows:
+              source_key = row.get("source_key", "")
+              status = row.get("status", "")
+              error_message = row.get("error_message", "")
+              print(f"- {source_key}: {status} :: {error_message}")
+              summary_lines.append(f"- `{source_key}`: `{status}` — {error_message}")
+
+          write_summary(summary_lines)
+
+          sys.exit(1)
+          PY
 
       - name: Commit data snapshots and latest outputs
         run: |

@@ -147,6 +147,7 @@ def run_scrape(
         except Exception as exc:  # noqa: BLE001
             status = "error"
             error_message = str(exc)
+            print(f"[scrape] {source_key} error: {error_message}")
 
         all_rows.extend(_serialize_row(row) for row in source_rows)
         all_meta.append(
