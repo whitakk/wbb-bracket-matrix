@@ -6,10 +6,14 @@ Women's college basketball "bracket matrix" aggregator. This project scrapes pub
 - Her Hoop Stats: <https://herhoopstats.com/bracketology/>
 - ESPN: <https://www.espn.com/espn/feature/story/_/id/30423107/ncaa-women-bracketology-2026-women-college-basketball-projections>
 - College Sports Madness: <https://www.collegesportsmadness.com/womens-basketball/bracketology>
+- The IX: <https://www.theixsports.com/category/the-ix-basketball-newsroom/ncaa-basketball/bracketology/>
 
 ## Requirements
 - Python 3.11
 - Dependencies in `requirements.txt`
+- Tesseract OCR installed on system PATH (required for The IX image parsing)
+- Optional: `OPENAI_API_KEY` to use OpenAI vision extraction for The IX (recommended)
+- Optional: `OPENAI_MODEL` (defaults to `gpt-4.1`, then falls back to `gpt-4o` and `gpt-4o-mini`)
 
 ## Install
 ```bash
@@ -18,6 +22,12 @@ pip install -r requirements.txt
 pip install -e .
 python -m playwright install chromium
 ```
+
+To enable OpenAI extraction for The IX, copy `.env.example` to `.env` and set `OPENAI_API_KEY`.
+
+Note: The IX currently includes a temporary source-specific correction for one known
+model misread (`Illinois State` -> `Illinois`). We should revisit this with a more
+robust image extraction approach.
 
 If Chromium install permissions are restricted, set a local browser path first:
 ```bash

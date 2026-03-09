@@ -21,6 +21,13 @@
       "parser": "collegesportsmadness",
       "use_playwright_fallback": true,
       "min_rows_for_playwright_fallback": 60
+    },
+    {
+      "source_key": "the_ix",
+      "source_name": "The IX",
+      "source_url": "https://www.theixsports.com/category/the-ix-basketball-newsroom/ncaa-basketball/bracketology/",
+      "parser": "theix",
+      "use_playwright_fallback": false
     }
   ]
 }

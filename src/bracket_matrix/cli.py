@@ -1,8 +1,18 @@
 from __future__ import annotations
 
 import argparse
+from pathlib import Path
 
 from bracket_matrix.pipeline import run_all, run_build, run_publish, run_scrape
+
+
+def _load_dotenv_if_available() -> None:
+    try:
+        from dotenv import load_dotenv
+    except ImportError:
+        return
+
+    load_dotenv(dotenv_path=Path.cwd() / ".env", override=False)
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -36,6 +46,8 @@ def build_parser() -> argparse.ArgumentParser:
 
 
 def main() -> None:
+    _load_dotenv_if_available()
+
     parser = build_parser()
     args = parser.parse_args()
 
