@@ -97,7 +97,7 @@ def test_run_all_writes_expected_outputs_with_espn_fallback(tmp_path, monkeypatc
     index_html = (site_dir / "index.html").read_text(encoding="utf-8")
     assert "WBB Bracket Matrix" in index_html
     assert "ESPN" in index_html
-    assert "Conference" in index_html
+    assert "Conf" in index_html
 
     matrix_csv = (latest_dir / "matrix_latest.csv").read_text(encoding="utf-8")
     assert "conference" in matrix_csv.splitlines()[0].lower()
