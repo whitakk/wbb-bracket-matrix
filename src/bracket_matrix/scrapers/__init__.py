@@ -3,6 +3,7 @@ from .collegesportsmadness import parse_college_sports_madness
 from .espn import parse_espn
 from .herhoopstats import parse_her_hoop_stats
 from .theix import parse_the_ix
+from .usatoday import parse_usatoday
 
 PARSERS = {
     "herhoopstats": parse_her_hoop_stats,
@@ -10,4 +11,5 @@ PARSERS = {
     "collegesportsmadness": parse_college_sports_madness,
     "theix": parse_the_ix,
     "cbssports": parse_cbssports,
+    "usatoday": parse_usatoday,
 }

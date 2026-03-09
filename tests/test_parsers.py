@@ -5,6 +5,7 @@ from bracket_matrix.scrapers.collegesportsmadness import parse_college_sports_ma
 from bracket_matrix.scrapers.espn import parse_espn
 from bracket_matrix.scrapers.herhoopstats import parse_her_hoop_stats
 from bracket_matrix.scrapers import theix
+from bracket_matrix.scrapers import usatoday
 
 
 FIXTURE_DIR = Path(__file__).parent / "fixtures"
@@ -189,6 +190,65 @@ def test_cbssports_extracts_rows_from_projection_table():
     assert (11, "Princeton", True) in pairs
     assert (11, "Villanova", True) in pairs
     assert (11, "Rhode Island", False) in pairs
+
+
+def test_usatoday_finds_latest_bracketology_article_url():
+    url = usatoday._find_latest_bracketology_article_url(
+        _read("usatoday_hub.html"),
+        "https://www.usatoday.com/sports/ncaaw/ncaa-womens-basketball-tournament/",
+    )
+
+    assert (
+        url
+        == "https://www.usatoday.com/story/sports/ncaaw/2026/03/08/"
+        "womens-college-basketball-bracketology-post-power-4-conference-tournaments/89059166007/"
+    )
+
+
+def test_parse_usatoday_uses_latest_article_and_parses_rows(monkeypatch):
+    hub_html = _read("usatoday_hub.html")
+    article_html = _read("usatoday_article.html")
+    resolved_url = (
+        "https://www.usatoday.com/story/sports/ncaaw/2026/03/08/"
+        "womens-college-basketball-bracketology-post-power-4-conference-tournaments/89059166007/"
+    )
+
+    def fake_fetch_html_response(url: str) -> tuple[str, str]:
+        assert url == resolved_url
+        return resolved_url, article_html
+
+    monkeypatch.setattr(usatoday, "_fetch_html_response", fake_fetch_html_response)
+
+    result = usatoday.parse_usatoday(
+        source_key="usatoday",
+        source_name="USA Today",
+        source_url="https://www.usatoday.com/sports/ncaaw/ncaa-womens-basketball-tournament/",
+        html=hub_html,
+        scraped_at_iso="2026-03-08T20:00:00+00:00",
+    )
+
+    parsed = {(row.seed, row.team_raw, row.is_play_in) for row in result.rows}
+    assert (1, "UCLA", False) in parsed
+    assert (1, "South Carolina", False) in parsed
+    assert (2, "Texas", False) in parsed
+    assert (11, "Princeton", True) in parsed
+    assert (11, "Villanova", True) in parsed
+    assert (16, "Southern", False) in parsed
+    assert all(row.source_url == resolved_url for row in result.rows)
+
+
+def test_parse_usatoday_skips_when_no_bracketology_link_found():
+    result = usatoday.parse_usatoday(
+        source_key="usatoday",
+        source_name="USA Today",
+        source_url="https://www.usatoday.com/sports/ncaaw/ncaa-womens-basketball-tournament/",
+        html="<html><body><a href='/story/sports/ncaaw/2026/03/08/recap/123/'>Recap</a></body></html>",
+        scraped_at_iso="2026-03-08T20:00:00+00:00",
+    )
+
+    assert result.rows == []
+    assert result.updated_at_raw == ""
+    assert result.updated_at_iso == ""
 
 
 def test_theix_finds_latest_bracketology_article_url():
