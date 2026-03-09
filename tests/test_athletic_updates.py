@@ -10,7 +10,7 @@ def _read(name: str) -> str:
     return (FIXTURE_DIR / name).read_text(encoding="utf-8")
 
 
-def test_check_for_new_athletic_update_initializes_state(monkeypatch, tmp_path):
+def test_check_for_new_athletic_update_reports_missing_manual_url(monkeypatch, tmp_path):
     state_file = tmp_path / "athletic_last_seen.txt"
     tag_html = _read("theathletic_tag.html")
 
@@ -22,9 +22,9 @@ def test_check_for_new_athletic_update_initializes_state(monkeypatch, tmp_path):
 
     result = athletic_updates.check_for_new_athletic_update(state_file=state_file)
 
-    assert result["status"] == "initialized"
+    assert result["status"] == "missing_manual_url"
     assert "women-ncaa-tournament-bracket-watch" in result["latest_url"]
-    assert state_file.read_text(encoding="utf-8").strip() == result["latest_url"]
+    assert not state_file.exists()
 
 
 def test_check_for_new_athletic_update_detects_new_article(monkeypatch, tmp_path):
@@ -59,6 +59,7 @@ def test_check_for_new_athletic_update_detects_new_article(monkeypatch, tmp_path
     assert sent["to_email"] == "me@example.com"
     assert "New The Athletic Women's Bracket Watch update" in sent["subject"]
     assert result["latest_url"] in sent["body"]
+    assert state_file.read_text(encoding="utf-8").strip().startswith("https://www.nytimes.com/athletic/7061111/")
 
 
 def test_check_for_new_athletic_update_no_change(monkeypatch, tmp_path):

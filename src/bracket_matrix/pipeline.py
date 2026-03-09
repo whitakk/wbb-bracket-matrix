@@ -112,15 +112,42 @@ def run_scrape(
         error_message = ""
 
         try:
-            html = fetcher(
-                source_url,
-                timeout_seconds=int(settings["request_timeout_seconds"]),
-                user_agent=str(settings["user_agent"]),
-            )
+            manual_html_path_raw = str(source.get("manual_html_path", "") or "").strip()
+            html = ""
+            parse_source_url = source_url
+
+            if manual_html_path_raw:
+                manual_html_path = Path(manual_html_path_raw)
+                if not manual_html_path.is_absolute():
+                    manual_html_path = active_paths.root_dir / manual_html_path
+
+                if manual_html_path.exists():
+                    html = manual_html_path.read_text(encoding="utf-8")
+
+                    manual_article_url_path_raw = str(source.get("manual_article_url_path", "") or "").strip()
+                    manual_article_url = str(source.get("manual_article_url", "") or "").strip()
+
+                    if manual_article_url_path_raw:
+                        manual_article_url_path = Path(manual_article_url_path_raw)
+                        if not manual_article_url_path.is_absolute():
+                            manual_article_url_path = active_paths.root_dir / manual_article_url_path
+                        if manual_article_url_path.exists():
+                            manual_article_url = manual_article_url_path.read_text(encoding="utf-8").strip()
+
+                    if manual_article_url:
+                        parse_source_url = manual_article_url
+
+            if not html:
+                html = fetcher(
+                    source_url,
+                    timeout_seconds=int(settings["request_timeout_seconds"]),
+                    user_agent=str(settings["user_agent"]),
+                )
+
             result = parser_fn(
                 source_key=source_key,
                 source_name=source_name,
-                source_url=source_url,
+                source_url=parse_source_url,
                 html=html,
                 scraped_at_iso=scraped_at_iso,
             )
@@ -391,6 +418,13 @@ def run_all(
                 f"status={check_result['status']} "
                 f"latest_url={check_result['latest_url']}"
             )
+            if check_result.get("status") == "missing_manual_url":
+                print(
+                    "[athletic-update] manual url file missing/empty; "
+                    f"set {check_result['state_file']}"
+                )
+            if check_result.get("status") == "updated" and not notify_email:
+                print("[athletic-update] update detected but email skipped (GMAIL_TO not set)")
         except Exception as exc:  # noqa: BLE001
             print(f"[athletic-update] check failed: {exc}")
 

@@ -289,6 +289,39 @@ def test_parse_theathletic_uses_latest_article_and_parses_rows(monkeypatch):
     assert all(row.source_url == resolved_url for row in result.rows)
 
 
+def test_parse_theathletic_parses_direct_article_html_without_hub_lookup():
+    article_html = _read("theathletic_article.html")
+    article_url = "https://www.nytimes.com/athletic/7092398/2026/03/06/women-ncaa-tournament-bracket-watch-uconn-ucla/"
+
+    result = theathletic.parse_the_athletic(
+        source_key="the_athletic",
+        source_name="The Athletic",
+        source_url=article_url,
+        html=article_html,
+        scraped_at_iso="2026-03-08T20:00:00+00:00",
+    )
+
+    parsed = {(row.seed, row.team_raw, row.is_play_in) for row in result.rows}
+    assert (1, "UConn", False) in parsed
+    assert (1, "UCLA", False) in parsed
+    assert (2, "South Carolina", False) in parsed
+    assert (11, "Princeton", True) in parsed
+    assert (11, "Villanova", True) in parsed
+    assert all(row.source_url == article_url for row in result.rows)
+    assert result.updated_at_raw == "3/6/2026"
+    assert result.updated_at_iso.startswith("2026-03-06T")
+
+
+def test_theathletic_extracts_pairs_from_bracket_canvas_html():
+    pairs = theathletic._extract_seed_team_pairs_from_bracket_canvas(_read("theathletic_bracket_canvas.html"))
+
+    assert (1, "UConn", False) in pairs
+    assert (11, "Richmond", True) in pairs
+    assert (11, "Virginia", True) in pairs
+    assert (16, "Alabama A&M", True) in pairs
+    assert (16, "Chattanooga", True) in pairs
+
+
 def test_theix_finds_latest_bracketology_article_url():
     url = theix._find_latest_article_url(
         _read("theix_category.html"),

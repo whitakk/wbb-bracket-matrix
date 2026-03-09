@@ -90,7 +90,7 @@ def build_parser() -> argparse.ArgumentParser:
         "--state-file",
         type=Path,
         default=default_state_file(),
-        help="path to file storing last seen article URL",
+        help="path to manual in-use Athletic article URL file",
     )
     check_athletic_parser.add_argument(
         "--use-playwright",

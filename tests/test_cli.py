@@ -37,5 +37,5 @@ def test_cli_check_athletic_update_defaults():
 
     assert args.command == "check-athletic-update"
     assert args.notify_email == ""
-    assert str(args.state_file).endswith("data/latest/the_athletic_last_seen_url.txt")
+    assert str(args.state_file).endswith("data/manual/the_athletic_latest_url.txt")
     assert args.use_playwright is False

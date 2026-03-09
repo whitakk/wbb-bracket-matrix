@@ -63,6 +63,7 @@ def test_abbrev_source_label_prefers_short_initials_when_long():
     assert _abbrev_source_label("College Sports Madness") == "CSM"
     assert _abbrev_source_label("CBS Sports") == "CBS"
     assert _abbrev_source_label("USA Today") == "USAT"
+    assert _abbrev_source_label("The Athletic") == "ATH"
     assert _abbrev_source_label("ESPN") == "ESPN"
 
 

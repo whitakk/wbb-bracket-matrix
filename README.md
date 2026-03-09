@@ -73,15 +73,30 @@ python -m bracket_matrix scrape
 
 The Athletic update alert check (no full scrape required):
 ```bash
-# First run initializes the last-seen URL state file.
+# Compare tag-page latest URL against your manual in-use URL file.
 python -m bracket_matrix check-athletic-update
 
-# Later runs notify only when latest article URL changes.
+# Notify when manual in-use URL is behind latest URL.
 python -m bracket_matrix check-athletic-update --notify-email you@example.com
 
 # Optional: fetch tag page with Playwright instead of requests.
 python -m bracket_matrix check-athletic-update --use-playwright
 ```
+
+Manual Athletic HTML fallback for blocked scraping:
+```bash
+# Save latest article page HTML here:
+data/manual/the_athletic_latest.html
+
+# Save matching article URL here (single line):
+data/manual/the_athletic_latest_url.txt
+```
+
+When `data/manual/the_athletic_latest.html` exists, the `the_athletic` source uses it during
+`scrape` / `run-all` instead of fetching the tag page or article URL.
+
+The update checker uses `data/manual/the_athletic_latest_url.txt` as the baseline and does not
+auto-update that file. Update it manually when you replace the manual HTML.
 
 `run-all` now also performs this Athletic update check automatically when `the_athletic`
 is present in `config/sources.json`.
@@ -93,6 +108,8 @@ Gmail env vars for email notification (simple mode):
 - `GMAIL_USER` (your Gmail address)
 - `GMAIL_APP_PASSWORD` (Google app password)
 - `GMAIL_TO` (default recipient; optional if you pass `--notify-email`)
+
+For GitHub Actions, set `GMAIL_USER`, `GMAIL_APP_PASSWORD`, and `GMAIL_TO` as repository secrets.
 
 ## Data outputs
 - Latest artifacts: `data/latest/`
