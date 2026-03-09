@@ -17,6 +17,8 @@ def _abbrev_source_label(source_name: str, max_len: int = 6) -> str:
         return "CBS"
     if cleaned.lower() == "usa today":
         return "USAT"
+    if cleaned.lower() == "the athletic":
+        return "ATH"
     if len(cleaned) <= max_len:
         return cleaned
 

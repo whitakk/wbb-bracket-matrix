@@ -49,7 +49,9 @@
       "source_url": "https://www.nytimes.com/athletic/tag/bracketcentral/",
       "parser": "theathletic",
       "use_playwright_fallback": true,
-      "min_rows_for_playwright_fallback": 60
+      "min_rows_for_playwright_fallback": 60,
+      "manual_html_path": "data/manual/the_athletic_latest.html",
+      "manual_article_url_path": "data/manual/the_athletic_latest_url.txt"
     }
   ]
 }

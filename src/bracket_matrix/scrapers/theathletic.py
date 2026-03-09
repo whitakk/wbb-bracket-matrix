@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import re
+from datetime import UTC, datetime
 from urllib.parse import urljoin
 
 import requests
@@ -22,6 +23,22 @@ from bracket_matrix.types import ScrapeResult
 DEFAULT_TIMEOUT_SECONDS = 20
 DEFAULT_USER_AGENT = "Mozilla/5.0 (compatible; WBBBracketMatrix/0.1; +https://github.com/)"
 PLAYWRIGHT_STORAGE_STATE_ENV = "BRACKET_MATRIX_PLAYWRIGHT_STORAGE_STATE"
+
+
+def _updated_from_article_url(url: str) -> tuple[str, str]:
+    match = re.search(r"/athletic/\d+/(\d{4})/(\d{2})/(\d{2})/", normalize_ws(url))
+    if not match:
+        return "", ""
+
+    year = int(match.group(1))
+    month = int(match.group(2))
+    day = int(match.group(3))
+    try:
+        parsed = datetime(year, month, day, tzinfo=UTC)
+    except ValueError:
+        return "", ""
+
+    return f"{month}/{day}/{year}", parsed.replace(microsecond=0).isoformat()
 
 
 def _uses_authenticated_playwright() -> bool:
@@ -157,6 +174,55 @@ def _extract_seed_team_pairs_from_text(text: str) -> list[tuple[int, str, bool]]
     return list(deduped.values())
 
 
+def _extract_seed_team_pairs_from_bracket_canvas(html: str) -> list[tuple[int, str, bool]]:
+    soup = to_soup(html)
+    pairs: list[tuple[int, str, bool]] = []
+
+    for container in soup.select(".bracket-canvas .seed-team-container"):
+        seed_node = container.select_one(".seed")
+        team_name_node = container.select_one(".team-name")
+        if seed_node is None or team_name_node is None:
+            continue
+
+        seed_text = normalize_ws(seed_node.get_text(" ", strip=True))
+        seed_match = re.search(r"^(1[0-6]|[1-9])\b", seed_text)
+        if not seed_match:
+            continue
+        seed = int(seed_match.group(1))
+
+        team_candidates: list[str] = []
+        child_divs = team_name_node.find_all("div", recursive=False)
+        if child_divs:
+            team_candidates.extend(normalize_ws(div.get_text(" ", strip=True)) for div in child_divs)
+        else:
+            team_candidates.append(normalize_ws(team_name_node.get_text(" ", strip=True)))
+
+        teams: list[str] = []
+        for candidate in team_candidates:
+            if not candidate:
+                continue
+            for split_team in split_team_group(candidate):
+                if _looks_like_team_name(split_team):
+                    teams.append(split_team)
+
+        unique_teams = list(dict.fromkeys(teams))
+        if not unique_teams:
+            continue
+
+        is_play_in = len(unique_teams) > 1
+        for team in unique_teams:
+            pairs.append((seed, team, is_play_in))
+
+    deduped: dict[tuple[int, str], tuple[int, str, bool]] = {}
+    for seed, team, is_play_in in pairs:
+        cleaned = normalize_ws(team)
+        key = (seed, cleaned.lower())
+        if key not in deduped:
+            deduped[key] = (seed, cleaned, is_play_in)
+
+    return list(deduped.values())
+
+
 def parse_the_athletic(
     *,
     source_key: str,
@@ -165,6 +231,28 @@ def parse_the_athletic(
     html: str,
     scraped_at_iso: str,
 ) -> ScrapeResult:
+    direct_soup = to_soup(html)
+    direct_pairs = _extract_seed_team_pairs_from_bracket_canvas(html)
+    if not direct_pairs:
+        direct_pairs = extract_seed_team_pairs(direct_soup)
+    if not direct_pairs:
+        direct_pairs = _extract_seed_team_pairs_from_text(direct_soup.get_text("\n", strip=True))
+    if direct_pairs:
+        direct_updated_raw, direct_updated_iso = _updated_from_article_url(source_url)
+        if not direct_updated_iso:
+            direct_updated_raw = find_updated_date_raw(direct_soup)
+            direct_updated_iso = parse_datetime_iso(direct_updated_raw)
+        direct_rows = rows_from_pairs(
+            source_key=source_key,
+            source_name=source_name,
+            source_url=source_url,
+            source_updated_at_raw=direct_updated_raw,
+            source_updated_at_iso=direct_updated_iso,
+            scraped_at_iso=scraped_at_iso,
+            pairs=direct_pairs,
+        )
+        return ScrapeResult(rows=direct_rows, updated_at_raw=direct_updated_raw, updated_at_iso=direct_updated_iso)
+
     latest_article_url = _find_latest_bracket_watch_article_url(html, source_url)
 
     if not latest_article_url and _uses_authenticated_playwright():
@@ -177,14 +265,18 @@ def parse_the_athletic(
     resolved_article_url, article_html = _fetch_html_response(latest_article_url)
     soup = to_soup(article_html)
 
-    pairs = extract_seed_team_pairs(soup)
+    pairs = _extract_seed_team_pairs_from_bracket_canvas(article_html)
+    if not pairs:
+        pairs = extract_seed_team_pairs(soup)
     if not pairs:
         pairs = _extract_seed_team_pairs_from_text(soup.get_text("\n", strip=True))
     if not pairs:
         raise RuntimeError("The Athletic parser returned no seed/team rows")
 
-    updated_raw = find_updated_date_raw(soup)
-    updated_iso = parse_datetime_iso(updated_raw)
+    updated_raw, updated_iso = _updated_from_article_url(resolved_article_url)
+    if not updated_iso:
+        updated_raw = find_updated_date_raw(soup)
+        updated_iso = parse_datetime_iso(updated_raw)
 
     rows = rows_from_pairs(
         source_key=source_key,

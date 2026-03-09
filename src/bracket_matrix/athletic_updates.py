@@ -14,18 +14,13 @@ ATHLETIC_TAG_URL = "https://www.nytimes.com/athletic/tag/bracketcentral/"
 
 
 def default_state_file() -> Path:
-    return get_default_paths().latest_dir / "the_athletic_last_seen_url.txt"
+    return get_default_paths().data_dir / "manual" / "the_athletic_latest_url.txt"
 
 
 def _read_last_seen_url(state_file: Path) -> str:
     if not state_file.exists():
         return ""
     return normalize_ws(state_file.read_text(encoding="utf-8"))
-
-
-def _write_last_seen_url(state_file: Path, url: str) -> None:
-    state_file.parent.mkdir(parents=True, exist_ok=True)
-    state_file.write_text(f"{normalize_ws(url)}\n", encoding="utf-8")
 
 
 def _notification_email_from_env() -> str:
@@ -82,8 +77,12 @@ def check_for_new_athletic_update(
 
     previous_url = _read_last_seen_url(target_state_file)
     if not previous_url:
-        _write_last_seen_url(target_state_file, latest_url)
-        return {"status": "initialized", "latest_url": latest_url, "previous_url": "", "state_file": str(target_state_file)}
+        return {
+            "status": "missing_manual_url",
+            "latest_url": latest_url,
+            "previous_url": "",
+            "state_file": str(target_state_file),
+        }
 
     if previous_url == latest_url:
         return {
@@ -93,15 +92,15 @@ def check_for_new_athletic_update(
             "state_file": str(target_state_file),
         }
 
-    _write_last_seen_url(target_state_file, latest_url)
     if notify_email:
         send_email_notification(
             to_email=notify_email,
             subject="New The Athletic Women's Bracket Watch update",
             body=(
-                "A new Women's Bracket Watch article was found on The Athletic.\n\n"
-                f"Previous: {previous_url}\n"
-                f"Latest:   {latest_url}\n"
+                "The Athletic Women's Bracket Watch appears out of date in your manual file.\n\n"
+                f"Manual URL: {previous_url}\n"
+                f"Latest URL: {latest_url}\n"
+                f"Manual file: {target_state_file}\n"
             ),
         )
 

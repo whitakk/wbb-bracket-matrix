@@ -66,7 +66,7 @@ def test_run_all_triggers_athletic_update_check_when_source_enabled(tmp_path, mo
             "status": "no_change",
             "latest_url": "https://www.nytimes.com/athletic/7092398/2026/03/06/women-ncaa-tournament-bracket-watch-uconn-ucla/",
             "previous_url": "",
-            "state_file": str(data_dir / "latest" / "the_athletic_last_seen_url.txt"),
+            "state_file": str(data_dir / "manual" / "the_athletic_latest_url.txt"),
         }
 
     monkeypatch.setattr(
