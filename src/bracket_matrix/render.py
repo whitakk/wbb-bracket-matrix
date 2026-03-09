@@ -3,6 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from html import escape
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from bracket_matrix.types import MatrixRow
 
@@ -62,7 +63,61 @@ def _format_source_update_date(row: dict[str, str]) -> str:
     return ""
 
 
-def split_projected_field(matrix_rows: list[MatrixRow], field_size: int = 68) -> tuple[list[MatrixRow], list[MatrixRow]]:
+def _format_bracket_share(appearances: int, source_count: int) -> str:
+    if source_count <= 0:
+        return "0%"
+    return f"{(appearances / source_count) * 100:.0f}%"
+
+
+def _bracket_share_heat_class(appearances: int, source_count: int) -> str:
+    if source_count <= 0:
+        return "share-0"
+    percent = (appearances / source_count) * 100
+    if percent >= 85:
+        return "share-4"
+    if percent >= 70:
+        return "share-3"
+    if percent >= 50:
+        return "share-2"
+    if percent >= 30:
+        return "share-1"
+    return "share-0"
+
+
+def _format_generated_at_et(generated_at_iso: str) -> str:
+    try:
+        generated_at = datetime.fromisoformat(generated_at_iso)
+    except ValueError:
+        return generated_at_iso
+
+    if generated_at.tzinfo is None:
+        generated_at = generated_at.replace(tzinfo=ZoneInfo("UTC"))
+    generated_at_et = generated_at.astimezone(ZoneInfo("America/New_York"))
+    return f"{generated_at_et:%m/%d %H:%M} ET"
+
+
+def _best_inclusion_recency_rank(row: MatrixRow, ordered_source_keys: list[str]) -> int:
+    for recency_rank, source_key in enumerate(ordered_source_keys):
+        if row.source_seeds.get(source_key) is not None:
+            return recency_rank
+    return len(ordered_source_keys)
+
+
+def split_projected_field(
+    matrix_rows: list[MatrixRow],
+    source_keys_by_recency: list[str] | None = None,
+    field_size: int = 68,
+) -> tuple[list[MatrixRow], list[MatrixRow]]:
+    ordered_source_keys = source_keys_by_recency or []
+
+    def _inclusion_sort_key(item: MatrixRow) -> tuple[int, int, float, str]:
+        return (
+            -item.appearances,
+            _best_inclusion_recency_rank(item, ordered_source_keys),
+            item.avg_seed,
+            item.team_display.lower(),
+        )
+
     conference_winners: list[MatrixRow] = []
     winner_slugs: set[str] = set()
 
@@ -75,15 +130,12 @@ def split_projected_field(matrix_rows: list[MatrixRow], field_size: int = 68) ->
 
     for conference in sorted(rows_by_conference):
         candidates = rows_by_conference[conference]
-        winner = min(
-            candidates,
-            key=lambda item: (-item.appearances, item.avg_seed, item.team_display.lower()),
-        )
+        winner = min(candidates, key=_inclusion_sort_key)
         conference_winners.append(winner)
         winner_slugs.add(winner.canonical_slug)
 
     remaining = [row for row in matrix_rows if row.canonical_slug not in winner_slugs]
-    remaining.sort(key=lambda item: (-item.appearances, item.avg_seed, item.team_display.lower()))
+    remaining.sort(key=_inclusion_sort_key)
 
     projected = conference_winners[:field_size]
     remaining_slots = max(0, field_size - len(projected))
@@ -121,26 +173,39 @@ def render_index_html(
             f"<td>{updated}</td><td>{status}</td></tr>"
         )
 
-    table_header = "".join(
-        f"<th title=\"{escape(source_key_to_name.get(key, key))}\">{escape(_abbrev_source_label(source_key_to_name.get(key, key)))}</th>"
-        for key in ordered_source_keys
-    )
-    source_colgroup = "".join("<col class=\"source-col\" />" for _ in ordered_source_keys)
+    table_header = ""
+    for key in ordered_source_keys:
+        source_name = source_key_to_name.get(key, key)
+        source_url = (source_meta_lookup.get(key, {}).get("source_url", "") or "").strip()
+        source_label = escape(_abbrev_source_label(source_name))
+        if source_url:
+            source_label = (
+                f"<a href=\"{escape(source_url)}\" target=\"_blank\" rel=\"noopener noreferrer\">{source_label}</a>"
+            )
+        table_header += f"<th title=\"{escape(source_name)}\">{source_label}</th>"
 
-    projected_field, other_candidates = split_projected_field(matrix_rows)
+    source_colgroup = "".join("<col class=\"source-col\" />" for _ in ordered_source_keys)
+    source_count = len(ordered_source_keys)
+
+    projected_field, other_candidates = split_projected_field(
+        matrix_rows,
+        source_keys_by_recency=ordered_source_keys,
+    )
 
     projected_rows_html = ""
     for idx, row in enumerate(projected_field, start=1):
         source_cells = "".join(
             f"<td>{_format_seed(row.source_seeds.get(source_key))}</td>" for source_key in ordered_source_keys
         )
+        bracket_share = _format_bracket_share(row.appearances, source_count)
+        bracket_share_class = _bracket_share_heat_class(row.appearances, source_count)
         projected_rows_html += (
             "<tr>"
             f"<td>{idx}</td>"
             f"<td>{escape(row.team_display)}</td>"
             f"<td>{escape(row.conference)}</td>"
             f"<td>{row.avg_seed:.1f}</td>"
-            f"<td>{row.appearances}</td>"
+            f"<td class=\"bracket-share {bracket_share_class}\">{bracket_share}</td>"
             f"{source_cells}"
             "</tr>"
         )
@@ -150,13 +215,15 @@ def render_index_html(
         source_cells = "".join(
             f"<td>{_format_seed(row.source_seeds.get(source_key))}</td>" for source_key in ordered_source_keys
         )
+        bracket_share = _format_bracket_share(row.appearances, source_count)
+        bracket_share_class = _bracket_share_heat_class(row.appearances, source_count)
         other_rows_html += (
             "<tr>"
             f"<td>{idx}</td>"
             f"<td>{escape(row.team_display)}</td>"
             f"<td>{escape(row.conference)}</td>"
             f"<td>{row.avg_seed:.1f}</td>"
-            f"<td>{row.appearances}</td>"
+            f"<td class=\"bracket-share {bracket_share_class}\">{bracket_share}</td>"
             f"{source_cells}"
             "</tr>"
         )
@@ -184,27 +251,64 @@ def render_index_html(
     .meta {{ color: var(--muted); margin: 0 0 16px; }}
     .card {{ background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 12px; overflow-x: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.05); }}
     table {{ width: 100%; border-collapse: collapse; }}
-    th, td {{ border: 1px solid var(--line); padding: 6px 8px; text-align: center; white-space: nowrap; }}
+    th, td {{ border: 1px solid var(--line); padding: 6px 8px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
     th {{ background: #eef3ea; font-weight: 700; }}
+    .matrix thead th {{ position: sticky; top: 0; z-index: 2; }}
+    .matrix tbody tr:nth-child(odd) {{ background: #fbfdf9; }}
+    .matrix tbody tr:hover {{ background: #f0f6eb; }}
     td:nth-child(2), th:nth-child(2) {{ text-align: left; min-width: 200px; }}
+    .matrix td:nth-child(4), .matrix th:nth-child(4), .matrix td:nth-child(5), .matrix th:nth-child(5) {{ font-weight: 700; }}
     .matrix {{ table-layout: fixed; }}
     .matrix col.rank-col {{ width: 56px; }}
-    .matrix col.team-col {{ width: 220px; }}
+    .matrix col.team-col {{ width: 190px; }}
     .matrix col.conf-col {{ width: 90px; }}
     .matrix col.avg-col {{ width: 86px; }}
     .matrix col.app-col {{ width: 96px; }}
-    .matrix col.source-col {{ width: 72px; }}
+    .matrix col.source-col {{ width: 68px; }}
     .sources {{ margin-bottom: 14px; }}
     .sources td:first-child {{ text-align: left; }}
+    .bracket-share.share-0 {{ background: #f3f6f1; }}
+    .bracket-share.share-1 {{ background: #e6f0df; }}
+    .bracket-share.share-2 {{ background: #d7e9ce; }}
+    .bracket-share.share-3 {{ background: #c4ddb9; }}
+    .bracket-share.share-4 {{ background: #afcf9f; }}
     .divider {{ border: 0; border-top: 2px solid var(--line); margin: 18px 0 12px; }}
     a {{ color: var(--accent); text-decoration: none; }}
     a:hover {{ text-decoration: underline; }}
+    @media (max-width: 900px) {{
+      .wrap {{ padding: 18px 10px 28px; }}
+      h1 {{ font-size: 1.7rem; }}
+      h2 {{ margin: 14px 0 8px; }}
+      .meta {{ margin: 0 0 12px; font-size: 0.92rem; }}
+      .card {{ padding: 8px; border-radius: 10px; }}
+      th, td {{ padding: 5px 6px; font-size: 0.9rem; }}
+      .matrix col.team-col {{ width: 170px; }}
+      .matrix col.conf-col {{ width: 80px; }}
+      .matrix col.avg-col {{ width: 78px; }}
+      .matrix col.app-col {{ width: 88px; }}
+      .matrix col.source-col {{ width: 62px; }}
+      .matrix th:nth-child(1), .matrix td:nth-child(1) {{
+        position: sticky;
+        left: 0;
+        z-index: 3;
+        background: #eef3ea;
+      }}
+      .matrix th:nth-child(2), .matrix td:nth-child(2) {{
+        position: sticky;
+        left: 56px;
+        z-index: 3;
+        background: #f8fbf6;
+        box-shadow: 3px 0 0 rgba(206, 214, 201, 0.85);
+      }}
+      .matrix td:nth-child(1) {{ background: #f4f8f2; }}
+      .matrix tbody tr:nth-child(odd) td:nth-child(2) {{ background: #f2f7ee; }}
+    }}
   </style>
 </head>
 <body>
   <div class=\"wrap\">
     <h1>WBB Bracket Matrix</h1>
-    <p class=\"meta\">Generated at {escape(generated_at_iso)} (UTC)</p>
+    <p class=\"meta\">Updated at {escape(_format_generated_at_et(generated_at_iso))}</p>
 
     <div class=\"card\" style=\"margin-top:14px;\">
       <h2>Projected Field</h2>
@@ -221,9 +325,9 @@ def render_index_html(
           <tr>
             <th>Rank</th>
             <th>Team</th>
-            <th>Conference</th>
+            <th>Conf</th>
             <th>Avg Seed</th>
-            <th>Appearances</th>
+            <th>% Brackets</th>
             {table_header}
           </tr>
         </thead>
@@ -247,9 +351,9 @@ def render_index_html(
           <tr>
             <th>Rank</th>
             <th>Team</th>
-            <th>Conference</th>
+            <th>Conf</th>
             <th>Avg Seed</th>
-            <th>Appearances</th>
+            <th>% Brackets</th>
             {table_header}
           </tr>
         </thead>

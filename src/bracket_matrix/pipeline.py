@@ -18,7 +18,7 @@ from bracket_matrix.merge import build_matrix_rows
 from bracket_matrix.normalize import is_placeholder_team, load_aliases, resolve_team_names
 from bracket_matrix.render import render_index_html
 from bracket_matrix.scrapers import PARSERS
-from bracket_matrix.scrapers.common import fetch_html, fetch_html_playwright
+from bracket_matrix.scrapers.common import fetch_html, fetch_html_playwright, normalize_ws, to_soup
 from bracket_matrix.scrapers.espn import is_probably_blocked
 from bracket_matrix.types import SourceMeta, SourceProjectionRow
 
@@ -79,6 +79,24 @@ def _parse_raw_row(row: dict[str, str]) -> SourceProjectionRow:
     )
 
 
+def _extract_manual_article_url_from_html(html: str) -> str:
+    soup = to_soup(html)
+
+    for selector, attribute in [
+        ("meta[property='og:url']", "content"),
+        ("meta[name='og:url']", "content"),
+        ("link[rel='canonical']", "href"),
+    ]:
+        node = soup.select_one(selector)
+        if node is None:
+            continue
+        value = normalize_ws(str(node.attrs.get(attribute, "")))
+        if value:
+            return value
+
+    return ""
+
+
 def run_scrape(
     *,
     paths: PipelinePaths | None = None,
@@ -123,19 +141,7 @@ def run_scrape(
 
                 if manual_html_path.exists():
                     html = manual_html_path.read_text(encoding="utf-8")
-
-                    manual_article_url_path_raw = str(source.get("manual_article_url_path", "") or "").strip()
-                    manual_article_url = str(source.get("manual_article_url", "") or "").strip()
-
-                    if manual_article_url_path_raw:
-                        manual_article_url_path = Path(manual_article_url_path_raw)
-                        if not manual_article_url_path.is_absolute():
-                            manual_article_url_path = active_paths.root_dir / manual_article_url_path
-                        if manual_article_url_path.exists():
-                            manual_article_url = manual_article_url_path.read_text(encoding="utf-8").strip()
-
-                    if manual_article_url:
-                        parse_source_url = manual_article_url
+                    parse_source_url = _extract_manual_article_url_from_html(html) or parse_source_url
 
             if not html:
                 html = fetcher(
