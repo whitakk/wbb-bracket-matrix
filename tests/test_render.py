@@ -1,4 +1,9 @@
-from bracket_matrix.render import split_projected_field
+from bracket_matrix.render import (
+    _abbrev_source_label,
+    _format_source_update_date,
+    _order_source_keys_by_recency,
+    split_projected_field,
+)
 from bracket_matrix.types import MatrixRow
 
 
@@ -51,3 +56,25 @@ def test_split_projected_field_fills_remaining_by_appearances_then_seed():
         "At Large 2",
     ]
     assert [row.team_display for row in others] == ["At Large 3"]
+
+
+def test_abbrev_source_label_prefers_short_initials_when_long():
+    assert _abbrev_source_label("Her Hoop Stats") == "HHS"
+    assert _abbrev_source_label("College Sports Madness") == "CSM"
+    assert _abbrev_source_label("CBS Sports") == "CBS"
+    assert _abbrev_source_label("ESPN") == "ESPN"
+
+
+def test_source_keys_order_by_updated_at_recency():
+    source_keys = ["a", "b", "c"]
+    source_meta_lookup = {
+        "a": {"source_updated_at_iso": "2026-03-05T00:00:00+00:00"},
+        "b": {"source_updated_at_iso": "2026-03-08T00:00:00+00:00"},
+        "c": {"source_updated_at_iso": ""},
+    }
+    assert _order_source_keys_by_recency(source_keys, source_meta_lookup) == ["b", "a", "c"]
+
+
+def test_format_source_update_date_returns_iso_date_only():
+    row = {"source_updated_at_iso": "2026-03-08T23:55:00+00:00", "source_updated_at_raw": "3/8/26, 11:55pm ET"}
+    assert _format_source_update_date(row) == "3/8"

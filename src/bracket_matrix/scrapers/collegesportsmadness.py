@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from datetime import datetime
 
 from bracket_matrix.scrapers.common import (
     extract_seed_team_pairs,
@@ -10,6 +11,26 @@ from bracket_matrix.scrapers.common import (
     to_soup,
 )
 from bracket_matrix.types import ScrapeResult
+
+
+def _find_bracket_breakdown_date_raw(text: str, scraped_at_iso: str) -> str:
+    match = re.search(
+        r"\b(\d{1,2}/\d{1,2})(?:/(\d{2,4}))?\s+bracket\s+breakdown\b",
+        text,
+        flags=re.IGNORECASE,
+    )
+    if not match:
+        return ""
+
+    month_day = match.group(1)
+    year_token = (match.group(2) or "").strip()
+    if year_token:
+        if len(year_token) == 2:
+            year_token = f"20{year_token}"
+        return f"{month_day}/{year_token}"
+
+    fallback_year = datetime.fromisoformat(scraped_at_iso).year if scraped_at_iso else datetime.now().year
+    return f"{month_day}/{fallback_year}"
 
 
 def parse_college_sports_madness(
@@ -22,6 +43,8 @@ def parse_college_sports_madness(
 ) -> ScrapeResult:
     soup = to_soup(html)
     updated_raw = find_updated_date_raw(soup)
+    if not updated_raw:
+        updated_raw = _find_bracket_breakdown_date_raw(soup.get_text(" ", strip=True), scraped_at_iso)
     pairs = extract_seed_team_pairs(soup)
 
     if not pairs:
