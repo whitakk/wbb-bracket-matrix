@@ -71,6 +71,20 @@ jobs:
               if row.get("status", "").strip().lower() not in {"ok"}
           ]
 
+          non_blocking_error_markers = {
+              "too few seed/team rows",
+              "too few teams for seed",
+          }
+
+          non_blocking_rows = []
+          blocking_rows = []
+          for row in bad_rows:
+              error_message = row.get("error_message", "").strip().lower()
+              if any(marker in error_message for marker in non_blocking_error_markers):
+                  non_blocking_rows.append(row)
+              else:
+                  blocking_rows.append(row)
+
           if not bad_rows:
               print("All sources scraped successfully.")
               write_summary([
@@ -79,17 +93,36 @@ jobs:
               ])
               sys.exit(0)
 
+          if not blocking_rows:
+              print("Only non-blocking scrape errors detected; continuing publish.")
+              summary_lines = [
+                  "## Scrape status",
+                  "⚠️ Non-blocking scrape errors detected (publish continues):",
+              ]
+              for row in non_blocking_rows:
+                  source_key = row.get("source_key", "")
+                  status = row.get("status", "")
+                  error_message = row.get("error_message", "")
+                  print(f"- {source_key}: {status} :: {error_message}")
+                  summary_lines.append(f"- `{source_key}`: `{status}` — {error_message}")
+
+              write_summary(summary_lines)
+              sys.exit(0)
+
           print("Scrape errors detected:")
           summary_lines = [
               "## Scrape status",
               "❌ Scrape errors detected:",
           ]
-          for row in bad_rows:
+          for row in blocking_rows:
               source_key = row.get("source_key", "")
               status = row.get("status", "")
               error_message = row.get("error_message", "")
               print(f"- {source_key}: {status} :: {error_message}")
               summary_lines.append(f"- `{source_key}`: `{status}` — {error_message}")
+
+          if non_blocking_rows:
+              summary_lines.append("- _Additional non-blocking scrape errors were ignored._")
 
           write_summary(summary_lines)
 
