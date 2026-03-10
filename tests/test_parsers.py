@@ -2,6 +2,7 @@ from pathlib import Path
 
 from bracket_matrix.scrapers import cbssports
 from bracket_matrix.scrapers.collegesportsmadness import parse_college_sports_madness
+from bracket_matrix.scrapers.common import extract_out_teams, to_soup
 from bracket_matrix.scrapers.espn import parse_espn
 from bracket_matrix.scrapers.herhoopstats import parse_her_hoop_stats
 from bracket_matrix.scrapers import theathletic
@@ -31,6 +32,51 @@ def _balanced_pairs(count_per_seed: int = 4) -> list[tuple[int, str, bool]]:
 
 def _read(name: str) -> str:
     return (FIXTURE_DIR / name).read_text(encoding="utf-8")
+
+
+def test_extract_out_teams_parses_first_and_next_four_out_sections():
+    html = """
+    <html>
+      <body>
+        <h3>First Four Out</h3>
+        <ul>
+          <li>Virginia Tech</li>
+          <li>Princeton</li>
+        </ul>
+        <p>Next Four Out: Arizona, Washington</p>
+      </body>
+    </html>
+    """
+
+    pairs = extract_out_teams(to_soup(html))
+    assert ("FFO", "Virginia Tech", False) in pairs
+    assert ("FFO", "Princeton", False) in pairs
+    assert ("NFO", "Arizona", False) in pairs
+    assert ("NFO", "Washington", False) in pairs
+
+
+def test_extract_out_teams_filters_non_team_noise():
+    html = """
+    <html>
+      <body>
+        <h3>First Four Out</h3>
+        <ul>
+          <li>BYU</li>
+          <li>Top Conferences</li>
+          <li>Richmond vs. George Mason</li>
+          <li>About Us</li>
+        </ul>
+        <h3>Next Four Out</h3>
+        <p>Kansas State, Featured Weekly Ad, Stanford</p>
+      </body>
+    </html>
+    """
+
+    pairs = extract_out_teams(to_soup(html))
+    assert ("FFO", "BYU", False) in pairs
+    assert ("NFO", "Kansas State", False) in pairs
+    assert ("NFO", "Stanford", False) in pairs
+    assert not any(team in {"Top Conferences", "About Us", "Featured Weekly Ad"} for _, team, _ in pairs)
 
 
 def test_parse_her_hoop_stats_fixture():
@@ -118,6 +164,48 @@ def test_parse_espn_blocked_page_returns_no_rows():
         scraped_at_iso="2026-03-06T00:00:00+00:00",
     )
     assert len(result.rows) == 0
+
+
+def test_parse_espn_extracts_first_and_next_four_out_from_bubble_section():
+    html = """
+    <html>
+      <body>
+        <div>
+          First Four Out
+          Teams ranked 69-72 that missed the cut
+          BYU
+          Utah
+          N Dakota St
+          Texas A&M
+          Next Four Out
+          Teams ranked 73-76 that missed the cut
+          Mississippi St
+          Stanford
+          Kansas St
+          Indiana
+          Multi-bid Conferences
+        </div>
+      </body>
+    </html>
+    """
+
+    result = parse_espn(
+        source_key="espn",
+        source_name="ESPN",
+        source_url="https://example.com",
+        html=html,
+        scraped_at_iso="2026-03-06T00:00:00+00:00",
+    )
+
+    parsed = {(row.seed, row.team_raw) for row in result.rows}
+    assert ("FFO", "BYU") in parsed
+    assert ("FFO", "Utah") in parsed
+    assert ("FFO", "N Dakota St") in parsed
+    assert ("FFO", "Texas A&M") in parsed
+    assert ("NFO", "Mississippi St") in parsed
+    assert ("NFO", "Stanford") in parsed
+    assert ("NFO", "Kansas St") in parsed
+    assert ("NFO", "Indiana") in parsed
 
 
 def test_cbssports_finds_bracketology_menu_url():

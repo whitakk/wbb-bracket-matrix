@@ -4,6 +4,7 @@ import re
 from datetime import datetime
 
 from bracket_matrix.scrapers.common import (
+    extract_out_teams,
     extract_seed_team_pairs,
     find_updated_date_raw,
     parse_datetime_iso,
@@ -55,6 +56,8 @@ def parse_college_sports_madness(
             flags=re.IGNORECASE,
         ):
             pairs.append((int(match.group(1)), match.group(2).strip(), False))
+
+    pairs.extend(extract_out_teams(soup))
 
     updated_iso = parse_datetime_iso(updated_raw)
     rows = rows_from_pairs(

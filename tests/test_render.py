@@ -1,11 +1,13 @@
 from bracket_matrix.render import (
     _abbrev_source_label,
     _bracket_share_heat_class,
+    _format_avg_seed,
     _format_bracket_share,
     _format_generated_at_et,
     _format_source_update_date,
     _order_source_keys_by_recency,
     render_index_html,
+    split_other_candidates,
     split_projected_field,
 )
 from bracket_matrix.types import MatrixRow
@@ -29,7 +31,7 @@ def _row_with_sources(
     conference: str,
     appearances: int,
     avg_seed: float,
-    source_seeds: dict[str, int | None],
+    source_seeds: dict[str, int | str | None],
 ) -> MatrixRow:
     return MatrixRow(
         canonical_slug=team.lower().replace(" ", "-"),
@@ -103,6 +105,89 @@ def test_split_projected_field_prefers_recency_before_avg_seed_for_ties():
     assert [row.team_display for row in projected] == ["Recent Inclusion"]
 
 
+def test_split_other_candidates_prioritize_in_then_ffo_then_nfo():
+    rows = [
+        _row_with_sources(
+            "FFO Heavy",
+            "",
+            appearances=1,
+            avg_seed=99.0,
+            source_seeds={"s1": "FFO", "s2": "FFO", "s3": "NFO"},
+        ),
+        _row_with_sources(
+            "NFO Heavy",
+            "",
+            appearances=1,
+            avg_seed=99.0,
+            source_seeds={"s1": "NFO", "s2": "NFO"},
+        ),
+        _row_with_sources(
+            "Seeded Bubble",
+            "",
+            appearances=2,
+            avg_seed=12.0,
+            source_seeds={"s1": 12, "s2": 11, "s3": "NFO"},
+        ),
+    ]
+
+    bubble, auto_bid = split_other_candidates(rows)
+    assert [row.team_display for row in bubble] == ["Seeded Bubble", "FFO Heavy", "NFO Heavy"]
+    assert auto_bid == []
+
+
+def test_split_other_candidates_separates_auto_bid_and_sorts_by_avg_seed():
+    rows = [
+        _row_with_sources(
+            "Fewer Mentions",
+            "",
+            appearances=2,
+            avg_seed=6.0,
+            source_seeds={"s1": 6, "s2": 8},
+        ),
+        _row_with_sources(
+            "Lower Seed",
+            "",
+            appearances=1,
+            avg_seed=5.0,
+            source_seeds={"s2": 5},
+        ),
+        _row_with_sources(
+            "Bubble Team",
+            "",
+            appearances=1,
+            avg_seed=11.0,
+            source_seeds={"s1": "FFO", "s3": "NFO", "s4": 11},
+        ),
+    ]
+
+    bubble, auto_bid = split_other_candidates(rows)
+    assert [row.team_display for row in bubble] == ["Bubble Team"]
+    assert [row.team_display for row in auto_bid] == ["Lower Seed", "Fewer Mentions"]
+
+
+def test_split_projected_field_excludes_ffo_only_rows_from_projected():
+    rows = [
+        _row_with_sources(
+            "FFO Champ",
+            "Summit",
+            appearances=0,
+            avg_seed=99.0,
+            source_seeds={"s1": "FFO", "s2": "FFO"},
+        ),
+        _row_with_sources(
+            "Seeded Team",
+            "ACC",
+            appearances=2,
+            avg_seed=7.0,
+            source_seeds={"s1": 7, "s2": 7},
+        ),
+    ]
+
+    projected, others = split_projected_field(rows, field_size=1)
+    assert [row.team_display for row in projected] == ["Seeded Team"]
+    assert [row.team_display for row in others] == ["FFO Champ"]
+
+
 def test_abbrev_source_label_prefers_short_initials_when_long():
     assert _abbrev_source_label("Her Hoop Stats") == "HHS"
     assert _abbrev_source_label("College Sports Madness") == "CSM"
@@ -143,6 +228,11 @@ def test_bracket_share_heat_class_uses_percentage_buckets():
 
 def test_format_generated_at_et_converts_from_utc_iso():
     assert _format_generated_at_et("2026-01-15T15:30:00+00:00") == "01/15 10:30 ET"
+
+
+def test_format_avg_seed_returns_na_for_sentinel_value():
+    assert _format_avg_seed(99.0) == "na"
+    assert _format_avg_seed(7.25) == "7.2"
 
 
 def test_render_index_html_links_source_headers(tmp_path):

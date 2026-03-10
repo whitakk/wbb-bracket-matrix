@@ -5,6 +5,8 @@ import re
 from datetime import UTC
 from typing import Iterable
 
+from bracket_matrix.types import SeedValue
+
 import requests
 from bs4 import BeautifulSoup
 from dateutil import parser as date_parser
@@ -14,6 +16,11 @@ from bracket_matrix.normalize import is_placeholder_team
 
 DATE_HINT_PATTERN = re.compile(
     r"(?i)(?:updated|last updated|as of|published|date)\s*[:\-]?\s*([A-Za-z]+\s+\d{1,2},\s+\d{4}|\d{1,2}/\d{1,2}/\d{2,4})"
+)
+
+OUT_INVALID_TEAM_PATTERN = re.compile(
+    r"\b(?:vs?\.?|championship|conference|credit|featured|about\s+us|watch\s+for|daily|resume\s+booster|top\s+conferences|start\s+of\s+the|multi-bid|ad|related)\b",
+    flags=re.IGNORECASE,
 )
 SEED_TEAM_INLINE_PATTERN = re.compile(
     r"^(?:#|No\.\s*)?(1[0-6]|[1-9])(?:\s*(?:seed|seeds))?\s*[:\-\).]?\s+([A-Za-z0-9'&().,/\-\s]{2,80})$",
@@ -80,10 +87,154 @@ def parse_seed(seed_token: str) -> int | None:
     return int(match.group(1))
 
 
+def parse_seed_value(seed_token: str) -> SeedValue | None:
+    numeric = parse_seed(seed_token)
+    if numeric is not None:
+        return numeric
+    cleaned = normalize_ws(seed_token).upper()
+    if cleaned in {"FFO", "NFO"}:
+        return cleaned
+    return None
+
+
 def split_team_group(team_text: str) -> list[str]:
     split_chunks = re.split(r"\s*/\s*|\s+vs\.?\s+|,|\s+and\s+", team_text, flags=re.IGNORECASE)
     teams = [normalize_ws(chunk) for chunk in split_chunks if normalize_ws(chunk)]
     return teams if teams else [normalize_ws(team_text)]
+
+
+def _split_out_teams(team_blob: str) -> list[str]:
+    chunks = re.split(r",|;|/|\s+and\s+|\s+&\s+", normalize_ws(team_blob), flags=re.IGNORECASE)
+    teams = []
+    for chunk in chunks:
+        cleaned = normalize_ws(re.sub(r"^[\-•*\d\.)\s]+", "", chunk))
+        if cleaned:
+            teams.append(cleaned)
+    return teams
+
+
+def _looks_like_out_team(team_text: str) -> bool:
+    cleaned = normalize_ws(team_text)
+    if not _looks_like_valid_team(cleaned):
+        return False
+    if len(cleaned.split()) > 4:
+        return False
+    if OUT_INVALID_TEAM_PATTERN.search(cleaned):
+        return False
+    if ":" in cleaned:
+        return False
+    words = [token for token in re.split(r"\s+", cleaned) if token]
+    for word in words:
+        bare = re.sub(r"[^A-Za-z]", "", word)
+        if not bare:
+            continue
+        if len(bare) == 1:
+            continue
+        if bare.isupper():
+            continue
+        if bare[0].isupper() and bare[1:].islower():
+            continue
+        return False
+    return True
+
+
+def _find_out_marker(text: str, *, strict_line_start: bool = False) -> str:
+    lowered = normalize_ws(text).lower()
+    first_pattern = r"^first\s*(?:four|4)\s*out\b" if strict_line_start else r"\bfirst\s*(?:four|4)\s*out\b"
+    next_pattern = r"^next\s*(?:four|4)\s*out\b" if strict_line_start else r"\bnext\s*(?:four|4)\s*out\b"
+    if re.search(first_pattern, lowered):
+        return "FFO"
+    if re.search(next_pattern, lowered):
+        return "NFO"
+    return ""
+
+
+def extract_out_teams(soup: BeautifulSoup) -> list[tuple[str, str, bool]]:
+    clean_soup = BeautifulSoup(str(soup), "lxml")
+    for node in clean_soup.select("script,style,noscript,template"):
+        node.decompose()
+
+    text = clean_soup.get_text("\n", strip=True)
+    lines = [normalize_ws(raw_line) for raw_line in text.splitlines() if normalize_ws(raw_line)]
+
+    stop_pattern = re.compile(
+        r"\b(?:last\s*(?:four|4)\s*in|first\s*(?:four|4)\s*in|region|projected\s+field|other\s+candidates|bubble|seed\s+list)\b",
+        flags=re.IGNORECASE,
+    )
+
+    pairs: list[tuple[str, str, bool]] = []
+
+    def _append_teams(marker: str, team_blob: str) -> None:
+        for team in _split_out_teams(team_blob):
+            if _looks_like_out_team(team):
+                pairs.append((marker, team, False))
+
+    # Prefer structured extraction around marker headings.
+    heading_like_selectors = "h1,h2,h3,h4,h5,h6,strong,b,p"
+    for node in clean_soup.select(heading_like_selectors):
+        marker = _find_out_marker(node.get_text(" ", strip=True))
+        if not marker:
+            continue
+
+        inline = node.get_text(" ", strip=True)
+        inline = re.sub(r"(?i)\b(?:first|next)\s*(?:four|4)\s*out\b", "", inline)
+        inline = normalize_ws(re.sub(r"^[\s:\-–]+", "", inline))
+        if inline:
+            _append_teams(marker, inline)
+
+        sibling_budget = 8
+        for sibling in node.find_next_siblings():
+            if sibling_budget <= 0:
+                break
+            sibling_text = normalize_ws(sibling.get_text(" ", strip=True))
+            if not sibling_text:
+                continue
+            if _find_out_marker(sibling_text):
+                break
+            if stop_pattern.search(sibling_text):
+                break
+
+            items = sibling.select("li")
+            if items:
+                for item in items:
+                    _append_teams(marker, item.get_text(" ", strip=True))
+            else:
+                _append_teams(marker, sibling_text)
+            sibling_budget -= 1
+
+    # Fallback lightweight line scanning for pages without clean heading structure.
+    if not pairs:
+        active_marker = ""
+        remaining_capture_lines = 0
+        for line in lines:
+            if len(line) > 80:
+                continue
+            matched_marker = _find_out_marker(line, strict_line_start=True)
+            if matched_marker:
+                active_marker = matched_marker
+                remaining_capture_lines = 3
+
+                inline = re.sub(r"(?i)\b(?:first|next)\s*(?:four|4)\s*out\b", "", line)
+                inline = normalize_ws(re.sub(r"^[\s:\-–]+", "", inline))
+                if inline:
+                    _append_teams(active_marker, inline)
+                continue
+
+            if not active_marker or remaining_capture_lines <= 0:
+                continue
+            if stop_pattern.search(line):
+                active_marker = ""
+                remaining_capture_lines = 0
+                continue
+            _append_teams(active_marker, line)
+            remaining_capture_lines -= 1
+
+    deduped: dict[tuple[str, str], tuple[str, str, bool]] = {}
+    for marker, team, is_play_in in pairs:
+        key = (marker, team.lower())
+        if key not in deduped:
+            deduped[key] = (marker, team, is_play_in)
+    return list(deduped.values())
 
 
 def _looks_like_valid_team(team_text: str) -> bool:
@@ -205,7 +356,7 @@ def rows_from_pairs(
     source_updated_at_raw: str,
     source_updated_at_iso: str,
     scraped_at_iso: str,
-    pairs: Iterable[tuple[int, str, bool]],
+    pairs: Iterable[tuple[SeedValue, str, bool]],
 ):
     from bracket_matrix.types import SourceProjectionRow
 
@@ -219,7 +370,7 @@ def rows_from_pairs(
                 source_updated_at_raw=source_updated_at_raw,
                 source_updated_at_iso=source_updated_at_iso,
                 team_raw=normalize_ws(team),
-                seed=int(seed),
+                seed=seed,
                 is_play_in=bool(is_play_in),
                 scraped_at_iso=scraped_at_iso,
             )

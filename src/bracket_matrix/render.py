@@ -5,11 +5,21 @@ from html import escape
 from pathlib import Path
 from zoneinfo import ZoneInfo
 
-from bracket_matrix.types import MatrixRow
+from bracket_matrix.types import MatrixRow, SeedValue
 
 
-def _format_seed(seed: int | None) -> str:
-    return "" if seed is None else str(int(seed))
+def _format_seed(seed: SeedValue | None) -> str:
+    if seed is None:
+        return ""
+    if isinstance(seed, int):
+        return str(int(seed))
+    return seed
+
+
+def _format_avg_seed(avg_seed: float) -> str:
+    if avg_seed >= 99:
+        return "na"
+    return f"{avg_seed:.1f}"
 
 
 def _abbrev_source_label(source_name: str, max_len: int = 6) -> str:
@@ -98,9 +108,34 @@ def _format_generated_at_et(generated_at_iso: str) -> str:
 
 def _best_inclusion_recency_rank(row: MatrixRow, ordered_source_keys: list[str]) -> int:
     for recency_rank, source_key in enumerate(ordered_source_keys):
-        if row.source_seeds.get(source_key) is not None:
+        if isinstance(row.source_seeds.get(source_key), int):
             return recency_rank
     return len(ordered_source_keys)
+
+
+def _count_out_mentions(row: MatrixRow, marker: str) -> int:
+    return sum(1 for seed in row.source_seeds.values() if seed == marker)
+
+
+def _has_out_marker(row: MatrixRow) -> bool:
+    return any(seed in {"FFO", "NFO"} for seed in row.source_seeds.values())
+
+
+def split_other_candidates(other_candidates: list[MatrixRow]) -> tuple[list[MatrixRow], list[MatrixRow]]:
+    bubble_candidates = [row for row in other_candidates if _has_out_marker(row)]
+    auto_bid_candidates = [row for row in other_candidates if not _has_out_marker(row)]
+
+    bubble_candidates.sort(
+        key=lambda item: (
+            -item.appearances,
+            -_count_out_mentions(item, "FFO"),
+            -_count_out_mentions(item, "NFO"),
+            item.avg_seed,
+            item.team_display.lower(),
+        )
+    )
+    auto_bid_candidates.sort(key=lambda item: (item.avg_seed, item.team_display.lower()))
+    return bubble_candidates, auto_bid_candidates
 
 
 def split_projected_field(
@@ -109,6 +144,7 @@ def split_projected_field(
     field_size: int = 68,
 ) -> tuple[list[MatrixRow], list[MatrixRow]]:
     ordered_source_keys = source_keys_by_recency or []
+    eligible_rows = [row for row in matrix_rows if row.appearances > 0]
 
     def _inclusion_sort_key(item: MatrixRow) -> tuple[int, int, float, str]:
         return (
@@ -122,7 +158,7 @@ def split_projected_field(
     winner_slugs: set[str] = set()
 
     rows_by_conference: dict[str, list[MatrixRow]] = {}
-    for row in matrix_rows:
+    for row in eligible_rows:
         conference = row.conference.strip()
         if not conference:
             continue
@@ -134,7 +170,7 @@ def split_projected_field(
         conference_winners.append(winner)
         winner_slugs.add(winner.canonical_slug)
 
-    remaining = [row for row in matrix_rows if row.canonical_slug not in winner_slugs]
+    remaining = [row for row in eligible_rows if row.canonical_slug not in winner_slugs]
     remaining.sort(key=_inclusion_sort_key)
 
     projected = conference_winners[:field_size]
@@ -191,6 +227,7 @@ def render_index_html(
         matrix_rows,
         source_keys_by_recency=ordered_source_keys,
     )
+    bubble_candidates, auto_bid_candidates = split_other_candidates(other_candidates)
 
     projected_rows_html = ""
     for idx, row in enumerate(projected_field, start=1):
@@ -204,25 +241,43 @@ def render_index_html(
             f"<td>{idx}</td>"
             f"<td>{escape(row.team_display)}</td>"
             f"<td>{escape(row.conference)}</td>"
-            f"<td>{row.avg_seed:.1f}</td>"
+            f"<td>{_format_avg_seed(row.avg_seed)}</td>"
             f"<td class=\"bracket-share {bracket_share_class}\">{bracket_share}</td>"
             f"{source_cells}"
             "</tr>"
         )
 
-    other_rows_html = ""
-    for idx, row in enumerate(other_candidates, start=1):
+    bubble_rows_html = ""
+    for idx, row in enumerate(bubble_candidates, start=1):
         source_cells = "".join(
             f"<td>{_format_seed(row.source_seeds.get(source_key))}</td>" for source_key in ordered_source_keys
         )
         bracket_share = _format_bracket_share(row.appearances, source_count)
         bracket_share_class = _bracket_share_heat_class(row.appearances, source_count)
-        other_rows_html += (
+        bubble_rows_html += (
             "<tr>"
             f"<td>{idx}</td>"
             f"<td>{escape(row.team_display)}</td>"
             f"<td>{escape(row.conference)}</td>"
-            f"<td>{row.avg_seed:.1f}</td>"
+            f"<td>{_format_avg_seed(row.avg_seed)}</td>"
+            f"<td class=\"bracket-share {bracket_share_class}\">{bracket_share}</td>"
+            f"{source_cells}"
+            "</tr>"
+        )
+
+    auto_bid_rows_html = ""
+    for idx, row in enumerate(auto_bid_candidates, start=1):
+        source_cells = "".join(
+            f"<td>{_format_seed(row.source_seeds.get(source_key))}</td>" for source_key in ordered_source_keys
+        )
+        bracket_share = _format_bracket_share(row.appearances, source_count)
+        bracket_share_class = _bracket_share_heat_class(row.appearances, source_count)
+        auto_bid_rows_html += (
+            "<tr>"
+            f"<td>{idx}</td>"
+            f"<td>{escape(row.team_display)}</td>"
+            f"<td>{escape(row.conference)}</td>"
+            f"<td>{_format_avg_seed(row.avg_seed)}</td>"
             f"<td class=\"bracket-share {bracket_share_class}\">{bracket_share}</td>"
             f"{source_cells}"
             "</tr>"
@@ -337,7 +392,7 @@ def render_index_html(
       </table>
 
       <hr class=\"divider\" />
-      <h2>Other Candidates</h2>
+      <h2>Bubble Candidates</h2>
       <table class=\"matrix\">
         <colgroup>
           <col class=\"rank-col\" />
@@ -358,7 +413,33 @@ def render_index_html(
           </tr>
         </thead>
         <tbody>
-          {other_rows_html}
+          {bubble_rows_html}
+        </tbody>
+      </table>
+
+      <hr class=\"divider\" />
+      <h2>Auto-Bid Candidates</h2>
+      <table class=\"matrix\">
+        <colgroup>
+          <col class=\"rank-col\" />
+          <col class=\"team-col\" />
+          <col class=\"conf-col\" />
+          <col class=\"avg-col\" />
+          <col class=\"app-col\" />
+          {source_colgroup}
+        </colgroup>
+        <thead>
+          <tr>
+            <th>Rank</th>
+            <th>Team</th>
+            <th>Conf</th>
+            <th>Avg Seed</th>
+            <th>% Brackets</th>
+            {table_header}
+          </tr>
+        </thead>
+        <tbody>
+          {auto_bid_rows_html}
         </tbody>
       </table>
     </div>

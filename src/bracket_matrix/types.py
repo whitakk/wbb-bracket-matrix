@@ -1,7 +1,11 @@
 from __future__ import annotations
 
 from dataclasses import asdict, dataclass, field
-from typing import Any
+from typing import Any, Literal
+
+
+OutSeedMarker = Literal["FFO", "NFO"]
+SeedValue = int | OutSeedMarker
 
 
 @dataclass(slots=True)
@@ -12,7 +16,7 @@ class SourceProjectionRow:
     source_updated_at_raw: str
     source_updated_at_iso: str
     team_raw: str
-    seed: int
+    seed: SeedValue
     is_play_in: bool
     scraped_at_iso: str
 
@@ -40,7 +44,7 @@ class MatrixRow:
     appearances: int
     avg_seed: float
     conference: str = ""
-    source_seeds: dict[str, int | None] = field(default_factory=dict)
+    source_seeds: dict[str, SeedValue | None] = field(default_factory=dict)
 
     def to_flat_dict(self, source_keys: list[str]) -> dict[str, Any]:
         row: dict[str, Any] = {
@@ -54,7 +58,12 @@ class MatrixRow:
         }
         for source_key in source_keys:
             seed = self.source_seeds.get(source_key)
-            row[source_key] = "" if seed is None else int(seed)
+            if seed is None:
+                row[source_key] = ""
+            elif isinstance(seed, int):
+                row[source_key] = int(seed)
+            else:
+                row[source_key] = seed
         return row
 
 

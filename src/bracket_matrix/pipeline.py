@@ -20,6 +20,7 @@ from bracket_matrix.render import render_index_html
 from bracket_matrix.scrapers import PARSERS
 from bracket_matrix.scrapers.common import fetch_html, fetch_html_playwright, normalize_ws, to_soup
 from bracket_matrix.scrapers.espn import is_probably_blocked
+from bracket_matrix.scrapers.common import parse_seed_value
 from bracket_matrix.types import SourceMeta, SourceProjectionRow
 
 
@@ -60,12 +61,15 @@ def _latest_paths(paths: PipelinePaths) -> dict[str, Path]:
 
 def _serialize_row(row: SourceProjectionRow) -> dict[str, str | int | bool]:
     payload = row.to_dict()
-    payload["seed"] = int(payload["seed"])
+    payload["seed"] = str(payload["seed"]) if isinstance(payload["seed"], str) else int(payload["seed"])
     payload["is_play_in"] = bool(payload["is_play_in"])
     return payload
 
 
 def _parse_raw_row(row: dict[str, str]) -> SourceProjectionRow:
+    seed_value = parse_seed_value(row["seed"])
+    if seed_value is None:
+        raise ValueError(f"Invalid seed value: {row['seed']}")
     return SourceProjectionRow(
         source_key=row["source_key"],
         source_name=row["source_name"],
@@ -73,7 +77,7 @@ def _parse_raw_row(row: dict[str, str]) -> SourceProjectionRow:
         source_updated_at_raw=row.get("source_updated_at_raw", ""),
         source_updated_at_iso=row.get("source_updated_at_iso", ""),
         team_raw=row["team_raw"],
-        seed=int(row["seed"]),
+        seed=seed_value,
         is_play_in=str(row.get("is_play_in", "")).lower() in {"1", "true", "yes"},
         scraped_at_iso=row.get("scraped_at_iso", ""),
     )
@@ -329,7 +333,7 @@ def run_publish(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
     matrix_rows = []
     for row in matrix_rows_raw:
         source_seeds = {
-            source_key: int(row[source_key]) if row.get(source_key) else None
+            source_key: parse_seed_value(row[source_key]) if row.get(source_key) else None
             for source_key in source_keys
         }
         from bracket_matrix.types import MatrixRow

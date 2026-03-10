@@ -9,7 +9,14 @@ from urllib.parse import urljoin
 
 import requests
 
-from bracket_matrix.scrapers.common import find_updated_date_raw, normalize_ws, parse_datetime_iso, rows_from_pairs, to_soup
+from bracket_matrix.scrapers.common import (
+    extract_out_teams,
+    find_updated_date_raw,
+    normalize_ws,
+    parse_datetime_iso,
+    rows_from_pairs,
+    to_soup,
+)
 from bracket_matrix.types import ScrapeResult
 
 
@@ -503,6 +510,9 @@ def parse_the_ix(
     _validate_bracket_quality(pairs)
 
     article_soup = to_soup(article_html)
+    out_pairs = extract_out_teams(article_soup)
+    pairs.extend(out_pairs)
+
     updated_raw = find_updated_date_raw(article_soup)
     updated_iso = parse_datetime_iso(updated_raw)
 

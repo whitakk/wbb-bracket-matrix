@@ -8,6 +8,7 @@ from urllib.parse import urljoin
 import requests
 
 from bracket_matrix.scrapers.common import (
+    extract_out_teams,
     extract_seed_team_pairs,
     fetch_html_playwright,
     find_updated_date_raw,
@@ -237,6 +238,7 @@ def parse_the_athletic(
         direct_pairs = extract_seed_team_pairs(direct_soup)
     if not direct_pairs:
         direct_pairs = _extract_seed_team_pairs_from_text(direct_soup.get_text("\n", strip=True))
+    direct_pairs.extend(extract_out_teams(direct_soup))
     if direct_pairs:
         direct_updated_raw, direct_updated_iso = _updated_from_article_url(source_url)
         if not direct_updated_iso:
@@ -270,6 +272,7 @@ def parse_the_athletic(
         pairs = extract_seed_team_pairs(soup)
     if not pairs:
         pairs = _extract_seed_team_pairs_from_text(soup.get_text("\n", strip=True))
+    pairs.extend(extract_out_teams(soup))
     if not pairs:
         raise RuntimeError("The Athletic parser returned no seed/team rows")
 
