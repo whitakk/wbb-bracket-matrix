@@ -79,6 +79,22 @@ def test_extract_out_teams_filters_non_team_noise():
     assert not any(team in {"Top Conferences", "About Us", "Featured Weekly Ad"} for _, team, _ in pairs)
 
 
+def test_extract_out_teams_filters_question_prompt_noise():
+    html = """
+    <html>
+      <body>
+        <h3>Next Four Out</h3>
+        <p>Can Virginia, Kansas State, Stanford</p>
+      </body>
+    </html>
+    """
+
+    pairs = extract_out_teams(to_soup(html))
+    assert ("NFO", "Kansas State", False) in pairs
+    assert ("NFO", "Stanford", False) in pairs
+    assert ("NFO", "Can Virginia", False) not in pairs
+
+
 def test_parse_her_hoop_stats_fixture():
     result = parse_her_hoop_stats(
         source_key="her_hoop_stats",

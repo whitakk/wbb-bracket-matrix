@@ -19,7 +19,7 @@ DATE_HINT_PATTERN = re.compile(
 )
 
 OUT_INVALID_TEAM_PATTERN = re.compile(
-    r"\b(?:vs?\.?|championship|conference|credit|featured|about\s+us|watch\s+for|daily|resume\s+booster|top\s+conferences|start\s+of\s+the|multi-bid|ad|related)\b",
+    r"\b(?:vs?\.?|championship|conference|credit|featured|about\s+us|watch\s+for|daily|resume\s+booster|top\s+conferences|start\s+of\s+the|multi-bid|ad|related|can)\b",
     flags=re.IGNORECASE,
 )
 SEED_TEAM_INLINE_PATTERN = re.compile(
