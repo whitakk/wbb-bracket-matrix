@@ -192,46 +192,189 @@ def split_projected_field(
     return projected, other_candidates
 
 
-def render_index_html(
-    *,
+def _autobid_winner_slugs(
     matrix_rows: list[MatrixRow],
-    source_meta_rows: list[dict[str, str]],
-    source_keys: list[str],
-    source_key_to_name: dict[str, str],
-    generated_at_iso: str,
-    output_path: Path,
-) -> None:
-    source_meta_lookup = {row["source_key"]: row for row in source_meta_rows}
-    ordered_source_keys = _order_source_keys_by_recency(source_keys, source_meta_lookup)
+    source_keys_by_recency: list[str] | None = None,
+) -> set[str]:
+    ordered_source_keys = source_keys_by_recency or []
+    eligible_rows = [row for row in matrix_rows if row.appearances > 0]
 
-    source_header_html = ""
-    for source_key in ordered_source_keys:
-        row = source_meta_lookup.get(source_key, {})
-        source_name = escape(row.get("source_name") or source_key_to_name.get(source_key, source_key))
-        source_url = escape(row.get("source_url", ""))
-        updated = escape(_format_source_update_date(row))
-        status = escape(row.get("status", "unknown"))
-        source_header_html += (
-            f"<tr><td><a href=\"{source_url}\" target=\"_blank\" rel=\"noopener noreferrer\">{source_name}</a></td>"
-            f"<td>{updated}</td><td>{status}</td></tr>"
+    def _inclusion_sort_key(item: MatrixRow) -> tuple[int, int, float, str]:
+        return (
+            -item.appearances,
+            _best_inclusion_recency_rank(item, ordered_source_keys),
+            item.avg_seed,
+            item.team_display.lower(),
         )
 
-    source_count = len(ordered_source_keys)
+    rows_by_conference: dict[str, list[MatrixRow]] = {}
+    for row in eligible_rows:
+        conference = row.conference.strip()
+        if not conference:
+            continue
+        rows_by_conference.setdefault(conference, []).append(row)
 
+    winner_slugs: set[str] = set()
+    for conference in sorted(rows_by_conference):
+        candidates = rows_by_conference[conference]
+        winner = min(candidates, key=_inclusion_sort_key)
+        winner_slugs.add(winner.canonical_slug)
+    return winner_slugs
+
+
+def _projected_seed_numbers(projected_field: list[MatrixRow], autobid_slugs: set[str]) -> list[int | str]:
+    if not projected_field:
+        return []
+
+    non_autobid_indices = [
+        idx for idx, row in enumerate(projected_field) if row.canonical_slug not in autobid_slugs
+    ]
+    last_four_non_autobid = non_autobid_indices[-4:]
+    special_pairs: list[tuple[int, int]] = []
+    if len(last_four_non_autobid) == 4:
+        special_pairs = [
+            (last_four_non_autobid[0], last_four_non_autobid[1]),
+            (last_four_non_autobid[2], last_four_non_autobid[3]),
+        ]
+
+    pair_starts = {first: second for first, second in special_pairs}
+    pair_seconds = {second for _, second in special_pairs}
+
+    seeds: list[int] = [1] * len(projected_field)
+    effective_counter = 0
+    index = 0
+    while index < len(projected_field):
+        if index in pair_starts:
+            seed = min(16, (effective_counter // 4) + 1)
+            second = pair_starts[index]
+            seeds[index] = seed
+            seeds[second] = seed
+            effective_counter += 1
+            index += 1
+        elif index in pair_seconds:
+            index += 1
+        else:
+            seed = min(16, (effective_counter // 4) + 1)
+            seeds[index] = seed
+            effective_counter += 1
+            index += 1
+
+    for idx in range(max(0, len(projected_field) - 6), len(projected_field)):
+        seeds[idx] = 16
+
+    ff_indices: set[int] = set(last_four_non_autobid)
+    sixteen_indices = [idx for idx, seed in enumerate(seeds) if seed == 16]
+    ff_indices.update(sixteen_indices[-4:])
+
+    display_seeds: list[int | str] = []
+    for idx, seed in enumerate(seeds):
+        if idx in ff_indices:
+            display_seeds.append(f"{seed}/FF")
+        else:
+            display_seeds.append(seed)
+    return display_seeds
+
+
+def _source_updated_date_iso(row: dict[str, str]) -> str | None:
+    parsed = _parse_source_updated_at_iso(row)
+    if parsed is None:
+        return None
+    return parsed.date().isoformat()
+
+
+def _build_date_filter_options(
+    ordered_source_keys: list[str], source_meta_lookup: dict[str, dict[str, str]]
+) -> list[str]:
+    date_counts: dict[str, int] = {}
+    for source_key in ordered_source_keys:
+        row = source_meta_lookup.get(source_key, {})
+        updated_date = _source_updated_date_iso(row)
+        if not updated_date:
+            continue
+        date_counts[updated_date] = date_counts.get(updated_date, 0) + 1
+
+    options = sorted(date_counts)
+    if len(options) > 1 and date_counts.get(options[-1], 0) == 1:
+        options = options[:-1]
+    return options
+
+
+def _source_keys_since_date(
+    ordered_source_keys: list[str],
+    source_meta_lookup: dict[str, dict[str, str]],
+    threshold_date_iso: str,
+) -> list[str]:
+    included: list[str] = []
+    for source_key in ordered_source_keys:
+        row = source_meta_lookup.get(source_key, {})
+        updated_date = _source_updated_date_iso(row)
+        if not updated_date:
+            continue
+        if updated_date >= threshold_date_iso:
+            included.append(source_key)
+    return included
+
+
+def _format_filter_date_label(date_iso: str) -> str:
+    year, month, day = date_iso.split("-")
+    _ = year
+    return f"{int(month)}/{int(day)}"
+
+
+def _filter_matrix_rows_for_sources(matrix_rows: list[MatrixRow], source_keys: list[str]) -> list[MatrixRow]:
+    filtered_rows: list[MatrixRow] = []
+    for row in matrix_rows:
+        filtered_source_seeds: dict[str, SeedValue | None] = {}
+        included_int_seeds: list[int] = []
+        for source_key in source_keys:
+            seed = row.source_seeds.get(source_key)
+            if seed is None:
+                continue
+            filtered_source_seeds[source_key] = seed
+            if isinstance(seed, int):
+                included_int_seeds.append(seed)
+
+        appearances = len(included_int_seeds)
+        avg_seed = 99.0
+        if included_int_seeds:
+            avg_seed = sum(included_int_seeds) / appearances
+
+        filtered_rows.append(
+            MatrixRow(
+                canonical_slug=row.canonical_slug,
+                team_display=row.team_display,
+                ncaa_id=row.ncaa_id,
+                espn_id=row.espn_id,
+                appearances=appearances,
+                avg_seed=avg_seed,
+                conference=row.conference,
+                source_seeds=filtered_source_seeds,
+            )
+        )
+    return filtered_rows
+
+
+def _render_matrix_sections_html(matrix_rows: list[MatrixRow], ordered_source_keys: list[str]) -> str:
+    source_count = len(ordered_source_keys)
     projected_field, other_candidates = split_projected_field(
         matrix_rows,
         source_keys_by_recency=ordered_source_keys,
     )
+    autobid_slugs = _autobid_winner_slugs(matrix_rows, source_keys_by_recency=ordered_source_keys)
+    projected_seeds = _projected_seed_numbers(projected_field, autobid_slugs)
     bubble_candidates, auto_bid_candidates = split_other_candidates(other_candidates)
 
     projected_rows_html = ""
-    for idx, row in enumerate(projected_field, start=1):
+    for idx, row in enumerate(projected_field):
         bracket_share = _format_bracket_share(row.appearances, source_count)
         bracket_share_class = _bracket_share_heat_class(row.appearances, source_count)
+        team_display = escape(row.team_display)
+        if row.canonical_slug in autobid_slugs:
+            team_display = f"<strong>{team_display}</strong>"
         projected_rows_html += (
             "<tr>"
-            f"<td>{idx}</td>"
-            f"<td>{escape(row.team_display)}</td>"
+            f"<td>{projected_seeds[idx]}</td>"
+            f"<td>{team_display}</td>"
             f"<td>{escape(row.conference)}</td>"
             f"<td>{_format_avg_seed(row.avg_seed)}</td>"
             f"<td class=\"bracket-share {bracket_share_class}\">{bracket_share}</td>"
@@ -270,88 +413,10 @@ def render_index_html(
             "</tr>"
         )
 
-    html = f"""<!doctype html>
-<html lang=\"en\">
-<head>
-  <meta charset=\"utf-8\" />
-  <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />
-  <title>WBB Bracket Matrix</title>
-  <style>
-    :root {{
-      --bg: #f5f7f2;
-      --paper: #ffffff;
-      --ink: #1f2a1d;
-      --muted: #5f6b5d;
-      --line: #ced6c9;
-      --accent: #2f5d3a;
-    }}
-    * {{ box-sizing: border-box; }}
-    body {{ margin: 0; font-family: "Source Sans 3", "Segoe UI", sans-serif; background: radial-gradient(circle at top right, #e9f2e6, var(--bg)); color: var(--ink); }}
-    .wrap {{ max-width: 1200px; margin: 0 auto; padding: 24px 16px 48px; }}
-    h1 {{ margin: 0 0 8px; font-size: 2rem; letter-spacing: 0.02em; }}
-    h2 {{ margin: 18px 0 10px; font-size: 1.2rem; letter-spacing: 0.01em; }}
-    .meta {{ color: var(--muted); margin: 0 0 16px; }}
-    .card {{ background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 12px; overflow-x: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.05); }}
-    table {{ width: 100%; border-collapse: collapse; }}
-    th, td {{ border: 1px solid var(--line); padding: 6px 8px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
-    th {{ background: #eef3ea; font-weight: 700; }}
-    .matrix thead th {{ position: sticky; top: 0; z-index: 2; }}
-    .matrix tbody tr:nth-child(odd) {{ background: #fbfdf9; }}
-    .matrix tbody tr:hover {{ background: #f0f6eb; }}
-    td:nth-child(2), th:nth-child(2) {{ text-align: left; min-width: 200px; }}
-    .matrix td:nth-child(4), .matrix th:nth-child(4), .matrix td:nth-child(5), .matrix th:nth-child(5) {{ font-weight: 700; }}
-    .matrix {{ table-layout: fixed; }}
-    .matrix col.rank-col {{ width: 56px; }}
-    .matrix col.team-col {{ width: 190px; }}
-    .matrix col.conf-col {{ width: 90px; }}
-    .matrix col.avg-col {{ width: 86px; }}
-    .matrix col.app-col {{ width: 96px; }}
-    .sources {{ margin-bottom: 14px; }}
-    .sources td:first-child {{ text-align: left; }}
-    .bracket-share.share-0 {{ background: #f3f6f1; }}
-    .bracket-share.share-1 {{ background: #e6f0df; }}
-    .bracket-share.share-2 {{ background: #d7e9ce; }}
-    .bracket-share.share-3 {{ background: #c4ddb9; }}
-    .bracket-share.share-4 {{ background: #afcf9f; }}
-    .divider {{ border: 0; border-top: 2px solid var(--line); margin: 18px 0 12px; }}
-    a {{ color: var(--accent); text-decoration: none; }}
-    a:hover {{ text-decoration: underline; }}
-    @media (max-width: 900px) {{
-      .wrap {{ padding: 18px 10px 28px; }}
-      h1 {{ font-size: 1.7rem; }}
-      h2 {{ margin: 14px 0 8px; }}
-      .meta {{ margin: 0 0 12px; font-size: 0.92rem; }}
-      .card {{ padding: 8px; border-radius: 10px; }}
-      th, td {{ padding: 5px 6px; font-size: 0.9rem; }}
-      .matrix col.team-col {{ width: 170px; }}
-      .matrix col.conf-col {{ width: 80px; }}
-      .matrix col.avg-col {{ width: 78px; }}
-      .matrix col.app-col {{ width: 88px; }}
-      .matrix th:nth-child(1), .matrix td:nth-child(1) {{
-        position: sticky;
-        left: 0;
-        z-index: 3;
-        background: #eef3ea;
-      }}
-      .matrix th:nth-child(2), .matrix td:nth-child(2) {{
-        position: sticky;
-        left: 56px;
-        z-index: 3;
-        background: #f8fbf6;
-        box-shadow: 3px 0 0 rgba(206, 214, 201, 0.85);
-      }}
-      .matrix td:nth-child(1) {{ background: #f4f8f2; }}
-      .matrix tbody tr:nth-child(odd) td:nth-child(2) {{ background: #f2f7ee; }}
-    }}
-  </style>
-</head>
-<body>
-  <div class=\"wrap\">
-    <h1>WBB Bracket Matrix</h1>
-    <p class=\"meta\">Updated at {escape(_format_generated_at_et(generated_at_iso))}</p>
-
+    return f"""
     <div class=\"card\" style=\"margin-top:14px;\">
       <h2>Projected Field</h2>
+      <p class=\"section-note\">Autobids in bold.</p>
       <table class=\"matrix\">
         <colgroup>
           <col class=\"rank-col\" />
@@ -362,7 +427,7 @@ def render_index_html(
         </colgroup>
         <thead>
           <tr>
-            <th>Rank</th>
+            <th>Seed</th>
             <th>Team</th>
             <th>Conf</th>
             <th>Avg Seed</th>
@@ -426,7 +491,27 @@ def render_index_html(
         </tbody>
       </table>
     </div>
+    """
 
+
+def _render_source_table_html(
+    ordered_source_keys: list[str],
+    source_meta_lookup: dict[str, dict[str, str]],
+    source_key_to_name: dict[str, str],
+) -> str:
+    source_header_html = ""
+    for source_key in ordered_source_keys:
+        row = source_meta_lookup.get(source_key, {})
+        source_name = escape(row.get("source_name") or source_key_to_name.get(source_key, source_key))
+        source_url = escape(row.get("source_url", ""))
+        updated = escape(_format_source_update_date(row))
+        status = escape(row.get("status", "unknown"))
+        source_header_html += (
+            f"<tr><td><a href=\"{source_url}\" target=\"_blank\" rel=\"noopener noreferrer\">{source_name}</a></td>"
+            f"<td>{updated}</td><td>{status}</td></tr>"
+        )
+
+    return f"""
     <div class=\"card\" style=\"margin-top:14px;\">
       <table class=\"sources\">
         <thead>
@@ -437,7 +522,172 @@ def render_index_html(
         </tbody>
       </table>
     </div>
+    """
+
+
+def render_index_html(
+    *,
+    matrix_rows: list[MatrixRow],
+    source_meta_rows: list[dict[str, str]],
+    source_keys: list[str],
+    source_key_to_name: dict[str, str],
+    generated_at_iso: str,
+    output_path: Path,
+) -> None:
+    source_meta_lookup = {row["source_key"]: row for row in source_meta_rows}
+    ordered_source_keys = _order_source_keys_by_recency(source_keys, source_meta_lookup)
+
+    date_filter_options = _build_date_filter_options(ordered_source_keys, source_meta_lookup)
+    if date_filter_options:
+        default_threshold = date_filter_options[0]
+    else:
+        default_threshold = "all"
+
+    views_html = ""
+    if date_filter_options:
+        for threshold in date_filter_options:
+            filtered_source_keys = _source_keys_since_date(
+                ordered_source_keys,
+                source_meta_lookup,
+                threshold,
+            )
+            filtered_matrix_rows = _filter_matrix_rows_for_sources(matrix_rows, filtered_source_keys)
+            matrix_sections_html = _render_matrix_sections_html(filtered_matrix_rows, filtered_source_keys)
+            source_table_html = _render_source_table_html(
+                filtered_source_keys,
+                source_meta_lookup,
+                source_key_to_name,
+            )
+            views_html += (
+                f"<section data-filter-view=\"{escape(threshold)}\""
+                f" style=\"display:{'block' if threshold == default_threshold else 'none'};\">"
+                f"{matrix_sections_html}{source_table_html}</section>"
+            )
+    else:
+        matrix_sections_html = _render_matrix_sections_html(matrix_rows, ordered_source_keys)
+        source_table_html = _render_source_table_html(
+            ordered_source_keys,
+            source_meta_lookup,
+            source_key_to_name,
+        )
+        views_html = f"<section data-filter-view=\"all\">{matrix_sections_html}{source_table_html}</section>"
+
+    filter_controls_html = ""
+    if date_filter_options:
+        option_tags = ""
+        for threshold in date_filter_options:
+            selected_attr = " selected" if threshold == default_threshold else ""
+            option_tags += (
+                f"<option value=\"{escape(threshold)}\"{selected_attr}>"
+                f"{escape(_format_filter_date_label(threshold))}</option>"
+            )
+        filter_controls_html = f"""
+    <div class=\"card controls\" style=\"margin-top:14px;\">
+      <label for=\"source-date-filter\">Show brackets updated since:</label>
+      <select id=\"source-date-filter\">{option_tags}</select>
+    </div>
+        """
+
+    html = f"""<!doctype html>
+<html lang=\"en\">
+<head>
+  <meta charset=\"utf-8\" />
+  <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />
+  <title>WBB Bracket Matrix</title>
+  <style>
+    :root {{
+      --bg: #f5f7f2;
+      --paper: #ffffff;
+      --ink: #1f2a1d;
+      --muted: #5f6b5d;
+      --line: #ced6c9;
+      --accent: #2f5d3a;
+    }}
+    * {{ box-sizing: border-box; }}
+    body {{ margin: 0; font-family: "Source Sans 3", "Segoe UI", sans-serif; background: radial-gradient(circle at top right, #e9f2e6, var(--bg)); color: var(--ink); }}
+    .wrap {{ max-width: 1200px; margin: 0 auto; padding: 24px 16px 48px; }}
+    h1 {{ margin: 0 0 8px; font-size: 2rem; letter-spacing: 0.02em; }}
+    h2 {{ margin: 18px 0 10px; font-size: 1.2rem; letter-spacing: 0.01em; }}
+    .meta {{ color: var(--muted); margin: 0 0 16px; }}
+    .card {{ background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 12px; overflow-x: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.05); }}
+    table {{ width: 100%; border-collapse: collapse; }}
+    th, td {{ border: 1px solid var(--line); padding: 6px 8px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
+    th {{ background: #eef3ea; font-weight: 700; }}
+    .matrix thead th {{ position: sticky; top: 0; z-index: 2; }}
+    .matrix tbody tr:nth-child(odd) {{ background: #fbfdf9; }}
+    .matrix tbody tr:hover {{ background: #f0f6eb; }}
+    td:nth-child(2), th:nth-child(2) {{ text-align: left; min-width: 200px; }}
+    .matrix td:nth-child(4), .matrix th:nth-child(4), .matrix td:nth-child(5), .matrix th:nth-child(5) {{ font-weight: 700; }}
+    .matrix {{ table-layout: fixed; }}
+    .matrix col.rank-col {{ width: 56px; }}
+    .matrix col.team-col {{ width: 190px; }}
+    .matrix col.conf-col {{ width: 90px; }}
+    .matrix col.avg-col {{ width: 86px; }}
+    .matrix col.app-col {{ width: 96px; }}
+    .sources {{ margin-bottom: 14px; }}
+    .sources td:first-child {{ text-align: left; }}
+    .controls {{ display: flex; align-items: center; gap: 10px; }}
+    .controls label {{ font-weight: 600; }}
+    .controls select {{ border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; background: #fff; color: var(--ink); }}
+    .section-note {{ margin: 0 0 10px; color: var(--muted); font-size: 0.95rem; }}
+    .bracket-share.share-0 {{ background: #f3f6f1; }}
+    .bracket-share.share-1 {{ background: #e6f0df; }}
+    .bracket-share.share-2 {{ background: #d7e9ce; }}
+    .bracket-share.share-3 {{ background: #c4ddb9; }}
+    .bracket-share.share-4 {{ background: #afcf9f; }}
+    .divider {{ border: 0; border-top: 2px solid var(--line); margin: 18px 0 12px; }}
+    a {{ color: var(--accent); text-decoration: none; }}
+    a:hover {{ text-decoration: underline; }}
+    @media (max-width: 900px) {{
+      .wrap {{ padding: 18px 10px 28px; }}
+      h1 {{ font-size: 1.7rem; }}
+      h2 {{ margin: 14px 0 8px; }}
+      .meta {{ margin: 0 0 12px; font-size: 0.92rem; }}
+      .card {{ padding: 8px; border-radius: 10px; }}
+      th, td {{ padding: 5px 6px; font-size: 0.9rem; }}
+      .matrix col.team-col {{ width: 170px; }}
+      .matrix col.conf-col {{ width: 80px; }}
+      .matrix col.avg-col {{ width: 78px; }}
+      .matrix col.app-col {{ width: 88px; }}
+      .matrix th:nth-child(1), .matrix td:nth-child(1) {{
+        position: sticky;
+        left: 0;
+        z-index: 3;
+        background: #eef3ea;
+      }}
+      .matrix th:nth-child(2), .matrix td:nth-child(2) {{
+        position: sticky;
+        left: 56px;
+        z-index: 3;
+        background: #f8fbf6;
+        box-shadow: 3px 0 0 rgba(206, 214, 201, 0.85);
+      }}
+      .matrix td:nth-child(1) {{ background: #f4f8f2; }}
+      .matrix tbody tr:nth-child(odd) td:nth-child(2) {{ background: #f2f7ee; }}
+    }}
+  </style>
+</head>
+<body>
+  <div class=\"wrap\">
+    <h1>WBB Bracket Matrix</h1>
+    <p class=\"meta\">Updated at {escape(_format_generated_at_et(generated_at_iso))}</p>
+    {filter_controls_html}
+    {views_html}
   </div>
+  <script>
+    (() => {{
+      const select = document.getElementById("source-date-filter");
+      if (!select) return;
+      const views = document.querySelectorAll("[data-filter-view]");
+      const showView = (value) => {{
+        views.forEach((view) => {{
+          view.style.display = view.getAttribute("data-filter-view") === value ? "block" : "none";
+        }});
+      }};
+      showView(select.value);
+      select.addEventListener("change", () => showView(select.value));
+    }})();
+  </script>
 </body>
 </html>
 """

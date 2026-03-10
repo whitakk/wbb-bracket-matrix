@@ -1,9 +1,12 @@
 from bracket_matrix.render import (
+    _build_date_filter_options,
     _abbrev_source_label,
     _bracket_share_heat_class,
+    _filter_matrix_rows_for_sources,
     _format_avg_seed,
     _format_bracket_share,
     _format_generated_at_et,
+    _projected_seed_numbers,
     _format_source_update_date,
     _order_source_keys_by_recency,
     render_index_html,
@@ -43,6 +46,19 @@ def _row_with_sources(
         conference=conference,
         source_seeds=source_seeds,
     )
+
+
+def _simple_rows(count: int) -> list[MatrixRow]:
+    return [
+        _row_with_sources(
+            f"Team {idx + 1}",
+            "",
+            appearances=1,
+            avg_seed=float(idx + 1),
+            source_seeds={"s": 1},
+        )
+        for idx in range(count)
+    ]
 
 
 def test_split_projected_field_picks_conference_plurality_winner():
@@ -207,6 +223,87 @@ def test_source_keys_order_by_updated_at_recency():
     assert _order_source_keys_by_recency(source_keys, source_meta_lookup) == ["b", "a", "c"]
 
 
+def test_build_date_filter_options_excludes_lone_most_recent_date():
+    source_meta_lookup = {
+        "a": {"source_updated_at_iso": "2026-03-07T09:00:00+00:00"},
+        "b": {"source_updated_at_iso": "2026-03-08T10:00:00+00:00"},
+        "c": {"source_updated_at_iso": "2026-03-08T11:00:00+00:00"},
+        "d": {"source_updated_at_iso": "2026-03-09T12:00:00+00:00"},
+    }
+    ordered_source_keys = ["d", "c", "b", "a"]
+
+    options = _build_date_filter_options(ordered_source_keys, source_meta_lookup)
+    assert options == ["2026-03-07", "2026-03-08"]
+
+
+def test_filter_matrix_rows_for_sources_recomputes_appearances_and_avg_seed():
+    rows = [
+        _row_with_sources(
+            "Team A",
+            "SEC",
+            appearances=4,
+            avg_seed=3.0,
+            source_seeds={"a": 2, "b": "FFO", "c": 6, "d": None},
+        )
+    ]
+
+    filtered = _filter_matrix_rows_for_sources(rows, ["b", "c"])
+
+    assert filtered[0].appearances == 1
+    assert filtered[0].avg_seed == 6.0
+    assert filtered[0].source_seeds == {"b": "FFO", "c": 6}
+
+
+def test_projected_seed_numbers_groups_last_four_non_autobids_into_pairs():
+    projected_field = _simple_rows(68)
+    autobid_slugs = {
+        projected_field[idx].canonical_slug for idx in range(10)
+    }
+
+    seeds = _projected_seed_numbers(projected_field, autobid_slugs)
+
+    non_autobid_indices = [idx for idx in range(68) if projected_field[idx].canonical_slug not in autobid_slugs]
+    pair_one = non_autobid_indices[-4:-2]
+    pair_two = non_autobid_indices[-2:]
+    assert seeds[pair_one[0]] == seeds[pair_one[1]]
+    assert seeds[pair_two[0]] == seeds[pair_two[1]]
+    assert str(seeds[pair_one[0]]).endswith("/FF")
+    assert str(seeds[pair_two[0]]).endswith("/FF")
+
+
+def test_projected_seed_numbers_caps_last_six_at_sixteen():
+    projected_field = _simple_rows(68)
+    seeds = _projected_seed_numbers(projected_field, autobid_slugs=set())
+
+    assert all(str(seed).startswith("16") for seed in seeds[-6:])
+    assert str(seeds[-1]).endswith("/FF")
+    assert str(seeds[-2]).endswith("/FF")
+    assert str(seeds[-3]).endswith("/FF")
+    assert str(seeds[-4]).endswith("/FF")
+    numeric_only = [int(str(seed).split("/")[0]) for seed in seeds]
+    assert max(numeric_only) == 16
+
+
+def test_projected_seed_numbers_handcrafted_ff_assignments():
+    projected_field = _simple_rows(12)
+    autobid_slugs = {projected_field[idx].canonical_slug for idx in [0, 2, 4, 6]}
+
+    seeds = _projected_seed_numbers(projected_field, autobid_slugs)
+
+    assert seeds[0] == 1
+    assert seeds[1] == 1
+    assert seeds[2] == 1
+    assert seeds[3] == 1
+    assert seeds[4] == 2
+    assert seeds[5] == 2
+    assert seeds[6] == 16
+    assert seeds[7] == 16
+    assert seeds[8] == "16/FF"
+    assert seeds[9] == "16/FF"
+    assert seeds[10] == "16/FF"
+    assert seeds[11] == "16/FF"
+
+
 def test_format_source_update_date_returns_iso_date_only():
     row = {"source_updated_at_iso": "2026-03-08T23:55:00+00:00", "source_updated_at_raw": "3/8/26, 11:55pm ET"}
     assert _format_source_update_date(row) == "3/8"
@@ -238,7 +335,13 @@ def test_format_avg_seed_returns_na_for_sentinel_value():
 def test_render_index_html_links_source_headers(tmp_path):
     output_path = tmp_path / "index.html"
     matrix_rows = [
-        _row("Team A", "SEC", appearances=2, avg_seed=1.0),
+        _row_with_sources(
+            "Team A",
+            "SEC",
+            appearances=2,
+            avg_seed=1.0,
+            source_seeds={"espn": 1, "her_hoop_stats": 1},
+        ),
         _row_with_sources(
             "Bubble Team",
             "A10",
@@ -277,6 +380,7 @@ def test_render_index_html_links_source_headers(tmp_path):
 
     html = output_path.read_text(encoding="utf-8")
     assert "Updated at " in html
+    assert "<th>Seed</th>" in html
     assert "<th>% Brackets</th>" in html
     assert "<th>% F4O</th>" in html
     assert "<th>% N4O</th>" in html
@@ -285,3 +389,50 @@ def test_render_index_html_links_source_headers(tmp_path):
     assert "<td><a href=\"https://example.com/espn\" target=\"_blank\" rel=\"noopener noreferrer\">ESPN</a></td>" in html
     assert "<td><a href=\"https://example.com/hhs\" target=\"_blank\" rel=\"noopener noreferrer\">Her Hoop Stats</a></td>" in html
     assert "Bubble Team</td><td>A10</td><td>na</td><td class=\"bracket-share share-0\">0%</td><td>50%</td><td>50%</td>" in html
+    assert "Autobids in bold." in html
+    assert "<td><strong>Team A</strong></td>" in html
+
+
+def test_render_index_html_date_filter_defaults_oldest_and_excludes_lone_latest(tmp_path):
+    output_path = tmp_path / "index.html"
+    matrix_rows = [_row_with_sources("Team A", "SEC", appearances=3, avg_seed=3.0, source_seeds={"s1": 3, "s2": 4, "s3": 2})]
+    source_keys = ["s1", "s2", "s3"]
+    source_key_to_name = {"s1": "Source 1", "s2": "Source 2", "s3": "Source 3"}
+    source_meta_rows = [
+        {
+            "source_key": "s1",
+            "source_name": "Source 1",
+            "source_url": "https://example.com/s1",
+            "source_updated_at_iso": "2026-03-07T10:00:00+00:00",
+            "status": "ok",
+        },
+        {
+            "source_key": "s2",
+            "source_name": "Source 2",
+            "source_url": "https://example.com/s2",
+            "source_updated_at_iso": "2026-03-08T10:00:00+00:00",
+            "status": "ok",
+        },
+        {
+            "source_key": "s3",
+            "source_name": "Source 3",
+            "source_url": "https://example.com/s3",
+            "source_updated_at_iso": "2026-03-09T10:00:00+00:00",
+            "status": "ok",
+        },
+    ]
+
+    render_index_html(
+        matrix_rows=matrix_rows,
+        source_meta_rows=source_meta_rows,
+        source_keys=source_keys,
+        source_key_to_name=source_key_to_name,
+        generated_at_iso="2026-03-09T12:00:00+00:00",
+        output_path=output_path,
+    )
+
+    html = output_path.read_text(encoding="utf-8")
+    assert "source-date-filter" in html
+    assert '<option value="2026-03-07" selected>3/7</option>' in html
+    assert '<option value="2026-03-08">3/8</option>' in html
+    assert 'option value="2026-03-09"' not in html

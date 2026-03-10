@@ -19,6 +19,7 @@
   - `python -m bracket_matrix publish` (render static site)
   - `python -m bracket_matrix run-all --retention-days 365` (full pipeline + cleanup)
 - Run tests: `pytest -q`.
+- After making changes, run `python -m bracket_matrix publish` by default to refresh `site/index.html`.
 
 ## Coding Style & Naming Conventions
 - Use Python 3.11 features and type hints where practical.
