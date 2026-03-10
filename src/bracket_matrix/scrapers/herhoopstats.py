@@ -5,6 +5,7 @@ import re
 from dateutil import parser as date_parser
 
 from bracket_matrix.scrapers.common import (
+    extract_out_teams,
     extract_seed_team_pairs,
     find_updated_date_raw,
     normalize_ws,
@@ -64,6 +65,8 @@ def parse_her_hoop_stats(
 
     if not pairs:
         pairs = extract_seed_team_pairs(soup)
+
+    pairs.extend(extract_out_teams(soup))
 
     if not updated_raw:
         updated_raw = _infer_latest_date_from_text(soup.get_text(" ", strip=True))

@@ -6,6 +6,7 @@ from urllib.parse import urljoin
 import requests
 
 from bracket_matrix.scrapers.common import (
+    extract_out_teams,
     extract_seed_team_pairs,
     find_updated_date_raw,
     normalize_ws,
@@ -226,6 +227,7 @@ def parse_cbssports(
         pairs = extract_seed_team_pairs(soup)
     if not pairs:
         pairs = _extract_seed_team_pairs_from_text(soup.get_text("\n", strip=True))
+    pairs.extend(extract_out_teams(soup))
 
     updated_raw = find_updated_date_raw(soup)
     updated_iso = parse_datetime_iso(updated_raw)
