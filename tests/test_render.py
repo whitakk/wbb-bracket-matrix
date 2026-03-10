@@ -237,7 +237,16 @@ def test_format_avg_seed_returns_na_for_sentinel_value():
 
 def test_render_index_html_links_source_headers(tmp_path):
     output_path = tmp_path / "index.html"
-    matrix_rows = [_row("Team A", "SEC", appearances=2, avg_seed=1.0)]
+    matrix_rows = [
+        _row("Team A", "SEC", appearances=2, avg_seed=1.0),
+        _row_with_sources(
+            "Bubble Team",
+            "A10",
+            appearances=0,
+            avg_seed=99.0,
+            source_seeds={"espn": "FFO", "her_hoop_stats": "NFO"},
+        ),
+    ]
     source_keys = ["espn", "her_hoop_stats"]
     source_key_to_name = {"espn": "ESPN", "her_hoop_stats": "Her Hoop Stats"}
     source_meta_rows = [
@@ -269,6 +278,10 @@ def test_render_index_html_links_source_headers(tmp_path):
     html = output_path.read_text(encoding="utf-8")
     assert "Updated at " in html
     assert "<th>% Brackets</th>" in html
+    assert "<th>% F4O</th>" in html
+    assert "<th>% N4O</th>" in html
     assert "class=\"bracket-share share-4\">100%</td>" in html
-    assert "<th title=\"ESPN\"><a href=\"https://example.com/espn\"" in html
-    assert "<th title=\"Her Hoop Stats\"><a href=\"https://example.com/hhs\"" in html
+    assert "<th title=\"ESPN\"><a href=\"https://example.com/espn\"" not in html
+    assert "<td><a href=\"https://example.com/espn\" target=\"_blank\" rel=\"noopener noreferrer\">ESPN</a></td>" in html
+    assert "<td><a href=\"https://example.com/hhs\" target=\"_blank\" rel=\"noopener noreferrer\">Her Hoop Stats</a></td>" in html
+    assert "Bubble Team</td><td>A10</td><td>na</td><td class=\"bracket-share share-0\">0%</td><td>50%</td><td>50%</td>" in html

@@ -79,6 +79,13 @@ def _format_bracket_share(appearances: int, source_count: int) -> str:
     return f"{(appearances / source_count) * 100:.0f}%"
 
 
+def _format_out_share(row: MatrixRow, marker: str, source_count: int) -> str:
+    if source_count <= 0:
+        return "0%"
+    out_mentions = _count_out_mentions(row, marker)
+    return f"{(out_mentions / source_count) * 100:.0f}%"
+
+
 def _bracket_share_heat_class(appearances: int, source_count: int) -> str:
     if source_count <= 0:
         return "share-0"
@@ -209,18 +216,6 @@ def render_index_html(
             f"<td>{updated}</td><td>{status}</td></tr>"
         )
 
-    table_header = ""
-    for key in ordered_source_keys:
-        source_name = source_key_to_name.get(key, key)
-        source_url = (source_meta_lookup.get(key, {}).get("source_url", "") or "").strip()
-        source_label = escape(_abbrev_source_label(source_name))
-        if source_url:
-            source_label = (
-                f"<a href=\"{escape(source_url)}\" target=\"_blank\" rel=\"noopener noreferrer\">{source_label}</a>"
-            )
-        table_header += f"<th title=\"{escape(source_name)}\">{source_label}</th>"
-
-    source_colgroup = "".join("<col class=\"source-col\" />" for _ in ordered_source_keys)
     source_count = len(ordered_source_keys)
 
     projected_field, other_candidates = split_projected_field(
@@ -231,9 +226,6 @@ def render_index_html(
 
     projected_rows_html = ""
     for idx, row in enumerate(projected_field, start=1):
-        source_cells = "".join(
-            f"<td>{_format_seed(row.source_seeds.get(source_key))}</td>" for source_key in ordered_source_keys
-        )
         bracket_share = _format_bracket_share(row.appearances, source_count)
         bracket_share_class = _bracket_share_heat_class(row.appearances, source_count)
         projected_rows_html += (
@@ -243,17 +235,15 @@ def render_index_html(
             f"<td>{escape(row.conference)}</td>"
             f"<td>{_format_avg_seed(row.avg_seed)}</td>"
             f"<td class=\"bracket-share {bracket_share_class}\">{bracket_share}</td>"
-            f"{source_cells}"
             "</tr>"
         )
 
     bubble_rows_html = ""
     for idx, row in enumerate(bubble_candidates, start=1):
-        source_cells = "".join(
-            f"<td>{_format_seed(row.source_seeds.get(source_key))}</td>" for source_key in ordered_source_keys
-        )
         bracket_share = _format_bracket_share(row.appearances, source_count)
         bracket_share_class = _bracket_share_heat_class(row.appearances, source_count)
+        ffo_share = _format_out_share(row, "FFO", source_count)
+        nfo_share = _format_out_share(row, "NFO", source_count)
         bubble_rows_html += (
             "<tr>"
             f"<td>{idx}</td>"
@@ -261,15 +251,13 @@ def render_index_html(
             f"<td>{escape(row.conference)}</td>"
             f"<td>{_format_avg_seed(row.avg_seed)}</td>"
             f"<td class=\"bracket-share {bracket_share_class}\">{bracket_share}</td>"
-            f"{source_cells}"
+            f"<td>{ffo_share}</td>"
+            f"<td>{nfo_share}</td>"
             "</tr>"
         )
 
     auto_bid_rows_html = ""
     for idx, row in enumerate(auto_bid_candidates, start=1):
-        source_cells = "".join(
-            f"<td>{_format_seed(row.source_seeds.get(source_key))}</td>" for source_key in ordered_source_keys
-        )
         bracket_share = _format_bracket_share(row.appearances, source_count)
         bracket_share_class = _bracket_share_heat_class(row.appearances, source_count)
         auto_bid_rows_html += (
@@ -279,7 +267,6 @@ def render_index_html(
             f"<td>{escape(row.conference)}</td>"
             f"<td>{_format_avg_seed(row.avg_seed)}</td>"
             f"<td class=\"bracket-share {bracket_share_class}\">{bracket_share}</td>"
-            f"{source_cells}"
             "</tr>"
         )
 
@@ -319,7 +306,6 @@ def render_index_html(
     .matrix col.conf-col {{ width: 90px; }}
     .matrix col.avg-col {{ width: 86px; }}
     .matrix col.app-col {{ width: 96px; }}
-    .matrix col.source-col {{ width: 68px; }}
     .sources {{ margin-bottom: 14px; }}
     .sources td:first-child {{ text-align: left; }}
     .bracket-share.share-0 {{ background: #f3f6f1; }}
@@ -341,7 +327,6 @@ def render_index_html(
       .matrix col.conf-col {{ width: 80px; }}
       .matrix col.avg-col {{ width: 78px; }}
       .matrix col.app-col {{ width: 88px; }}
-      .matrix col.source-col {{ width: 62px; }}
       .matrix th:nth-child(1), .matrix td:nth-child(1) {{
         position: sticky;
         left: 0;
@@ -374,7 +359,6 @@ def render_index_html(
           <col class=\"conf-col\" />
           <col class=\"avg-col\" />
           <col class=\"app-col\" />
-          {source_colgroup}
         </colgroup>
         <thead>
           <tr>
@@ -383,7 +367,6 @@ def render_index_html(
             <th>Conf</th>
             <th>Avg Seed</th>
             <th>% Brackets</th>
-            {table_header}
           </tr>
         </thead>
         <tbody>
@@ -400,7 +383,8 @@ def render_index_html(
           <col class=\"conf-col\" />
           <col class=\"avg-col\" />
           <col class=\"app-col\" />
-          {source_colgroup}
+          <col class=\"app-col\" />
+          <col class=\"app-col\" />
         </colgroup>
         <thead>
           <tr>
@@ -409,7 +393,8 @@ def render_index_html(
             <th>Conf</th>
             <th>Avg Seed</th>
             <th>% Brackets</th>
-            {table_header}
+            <th>% F4O</th>
+            <th>% N4O</th>
           </tr>
         </thead>
         <tbody>
@@ -426,7 +411,6 @@ def render_index_html(
           <col class=\"conf-col\" />
           <col class=\"avg-col\" />
           <col class=\"app-col\" />
-          {source_colgroup}
         </colgroup>
         <thead>
           <tr>
@@ -435,7 +419,6 @@ def render_index_html(
             <th>Conf</th>
             <th>Avg Seed</th>
             <th>% Brackets</th>
-            {table_header}
           </tr>
         </thead>
         <tbody>
