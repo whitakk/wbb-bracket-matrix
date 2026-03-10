@@ -602,6 +602,7 @@ def render_index_html(
       --muted: #5f6b5d;
       --line: #ced6c9;
       --accent: #2f5d3a;
+      --sticky-header-top: 0px;
     }}
     * {{ box-sizing: border-box; }}
     body {{ margin: 0; font-family: "Source Sans 3", "Segoe UI", sans-serif; background: radial-gradient(circle at top right, #e9f2e6, var(--bg)); color: var(--ink); }}
@@ -609,11 +610,11 @@ def render_index_html(
     h1 {{ margin: 0 0 8px; font-size: 2rem; letter-spacing: 0.02em; }}
     h2 {{ margin: 18px 0 10px; font-size: 1.2rem; letter-spacing: 0.01em; }}
     .meta {{ color: var(--muted); margin: 0 0 16px; }}
-    .card {{ background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 12px; overflow-x: auto; box-shadow: 0 8px 30px rgba(0,0,0,0.05); }}
+    .card {{ background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.05); }}
     table {{ width: 100%; border-collapse: collapse; }}
     th, td {{ border: 1px solid var(--line); padding: 6px 8px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
     th {{ background: #eef3ea; font-weight: 700; }}
-    .matrix thead th {{ position: sticky; top: 0; z-index: 2; }}
+    thead th {{ position: sticky; top: var(--sticky-header-top); z-index: 2; }}
     .matrix tbody tr:nth-child(odd) {{ background: #fbfdf9; }}
     .matrix tbody tr:hover {{ background: #f0f6eb; }}
     td:nth-child(2), th:nth-child(2) {{ text-align: left; min-width: 200px; }}
