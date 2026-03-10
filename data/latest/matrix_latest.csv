@@ -39,17 +39,16 @@ princeton,Princeton,,,7,9.714,Ivy,9,10,10,10,9,10,10
 clemson,Clemson,,,7,9.857,ACC,10,10,9,9,10,10,11
 colorado,Colorado,,,7,10.286,B12,10,10,11,9,11,11,10
 rhode-island,Rhode Island,,,7,10.286,A10,10,11,10,11,10,11,9
-south-dakota-state,South Dakota St,,,3,10.333,Sum,11,10,,,,10,
+south-dakota-state,South Dakota St,,,5,10.4,Sum,11,10,,11,10,10,
 columbia,Columbia,,,2,10.5,Ivy,,,11,,,NFO,10
 fairfield,Fairfield,,,7,10.714,MAAC,11,11,11,10,11,11,10
 richmond,Richmond,,,5,10.8,A10,11,11,,11,FFO,10,11
 virginia,Virginia,,,7,10.857,ACC,11,12,9,11,11,11,11
-asu,ASU,,,1,11,,,,,11,,,
 byu,BYU,,,1,11,B12,FFO,FFO,,FFO,11,FFO,NFO
 mississippi-state,Mississippi St,,,1,11,SEC,FFO,NFO,,FFO,NFO,FFO,11
 stanford,Stanford,,,1,11,ACC,,NFO,11,NFO,FFO,NFO,
 nebraska,Nebraska,,,5,11.2,B10,11,11,,11,11,12,
-arizona-state,Arizona St,,,5,11.4,B12,11,12,11,,11,12,
+arizona-state,Arizona St,,,6,11.333,B12,11,12,11,11,11,12,
 rice,Rice,,,6,11.5,Amer,,11,11,12,12,11,12
 n-dakota-state,N Dakota St,,,2,11.5,Sum,FFO,FFO,12,FFO,NFO,FFO,11
 james-madison,James Madison,,,4,12,SB,12,12,,12,,12,
@@ -86,7 +85,6 @@ ca-baptist,CA Baptist,,,6,16,WAC,,16,16,16,16,16,16
 samford,Samford,,,5,16,SC,16,16,,16,16,16,
 chattanooga,Chattanooga,,,2,16,SC,,,16,,,,16
 army-west-point,Army West Point,,,1,16,Pat,16,,,,,,
-can-virginia,Can Virginia,,,0,99.0,,,,,,NFO,,
 florida,Florida,,,0,99.0,SEC,,,,,,FFO,
 indiana,Indiana,,,0,99.0,B10,,NFO,,NFO,NFO,,
 kansas,Kansas,,,0,99.0,B12,,,,,NFO,,
