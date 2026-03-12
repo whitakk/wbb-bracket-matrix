@@ -89,6 +89,8 @@ def _format_out_share(row: MatrixRow, marker: str, source_count: int) -> str:
 def _bracket_share_heat_class(appearances: int, source_count: int) -> str:
     if source_count <= 0:
         return "share-0"
+    if appearances == source_count:
+        return "share-5"
     percent = (appearances / source_count) * 100
     if percent >= 85:
         return "share-4"
@@ -111,6 +113,238 @@ def _format_generated_at_et(generated_at_iso: str) -> str:
         generated_at = generated_at.replace(tzinfo=ZoneInfo("UTC"))
     generated_at_et = generated_at.astimezone(ZoneInfo("America/New_York"))
     return f"{generated_at_et:%m/%d %H:%M} ET"
+
+
+def _parse_rank_value(value: str) -> int | None:
+    cleaned = value.strip()
+    if not cleaned.isdigit():
+        return None
+    return int(cleaned)
+
+
+def _format_ebs_score(value: float) -> str:
+    return f"{value:.1f}"
+
+
+def _seed_extremes(row: MatrixRow) -> tuple[str, str]:
+    seeded_entries = [seed for seed in row.source_seeds.values() if isinstance(seed, int)]
+    if not seeded_entries:
+        return "na", "na"
+    return str(min(seeded_entries)), str(max(seeded_entries))
+
+
+def _build_ebs_rankings(
+    analytics_rows: list[dict[str, str]],
+    matrix_rows: list[MatrixRow],
+) -> list[dict[str, str | float | int]]:
+    _ = matrix_rows
+
+    ranking_rows: list[dict[str, str | float | int]] = []
+    for row in analytics_rows:
+        bart_rank = _parse_rank_value(row.get("bart_rank", ""))
+        wab_rank = _parse_rank_value(row.get("wab_rank", ""))
+        if bart_rank is None or wab_rank is None:
+            continue
+
+        canonical_slug = row.get("canonical_slug", "").strip()
+        team_display = row.get("team_display", "").strip()
+        if not canonical_slug or not team_display:
+            continue
+
+        conference = row.get("bart_conference", "").strip() or row.get("conference", "").strip()
+        ebs_score = (bart_rank + wab_rank) / 2
+        ranking_rows.append(
+            {
+                "canonical_slug": canonical_slug,
+                "team_display": team_display,
+                "conference": conference,
+                "bart_rank": bart_rank,
+                "wab_rank": wab_rank,
+                "ebs_score": ebs_score,
+            }
+        )
+
+    ranking_rows.sort(
+        key=lambda item: (
+            float(item["ebs_score"]),
+            int(item["bart_rank"]),
+            int(item["wab_rank"]),
+            str(item["team_display"]).lower(),
+        )
+    )
+    for index, item in enumerate(ranking_rows, start=1):
+        item["ebs_rank"] = index
+    return ranking_rows
+
+
+def _split_ebs_projected_and_bubble(
+    ebs_rankings: list[dict[str, str | float | int]],
+    forced_autobid_slugs: set[str] | None = None,
+    field_size: int = 68,
+    bubble_size: int = 16,
+) -> tuple[list[dict[str, str | float | int]], list[dict[str, str | float | int]], set[str]]:
+    forced_slugs = forced_autobid_slugs or set()
+    by_conference: dict[str, list[dict[str, str | float | int]]] = {}
+    for row in ebs_rankings:
+        conference = str(row.get("conference", "")).strip()
+        if not conference:
+            continue
+        by_conference.setdefault(conference, []).append(row)
+
+    autobids: list[dict[str, str | float | int]] = []
+    autobid_slugs: set[str] = set()
+    for conference in sorted(by_conference):
+        conference_rows = by_conference[conference]
+        forced_candidates = [
+            item for item in conference_rows if str(item.get("canonical_slug", "")) in forced_slugs
+        ]
+        if forced_candidates:
+            winner = min(
+                forced_candidates,
+                key=lambda item: (
+                    float(item["ebs_score"]),
+                    int(item["bart_rank"]),
+                    int(item["wab_rank"]),
+                    str(item["team_display"]).lower(),
+                ),
+            )
+        else:
+            winner = min(
+                conference_rows,
+                key=lambda item: (
+                    float(item["ebs_score"]),
+                    int(item["bart_rank"]),
+                    int(item["wab_rank"]),
+                    str(item["team_display"]).lower(),
+                ),
+            )
+        autobids.append(winner)
+        autobid_slugs.add(str(winner["canonical_slug"]))
+
+    remaining = [row for row in ebs_rankings if str(row["canonical_slug"]) not in autobid_slugs]
+    projected = autobids[:field_size]
+    projected.extend(remaining[: max(0, field_size - len(projected))])
+
+    projected_slugs = {str(row["canonical_slug"]) for row in projected}
+    non_projected = [row for row in ebs_rankings if str(row["canonical_slug"]) not in projected_slugs]
+    bubble = non_projected[:bubble_size]
+
+    projected.sort(
+        key=lambda item: (
+            float(item["ebs_score"]),
+            int(item["bart_rank"]),
+            int(item["wab_rank"]),
+            str(item["team_display"]).lower(),
+        )
+    )
+    return projected, bubble, autobid_slugs
+
+
+def _render_analytics_ebs_html(
+    analytics_rows: list[dict[str, str]],
+    matrix_rows: list[MatrixRow],
+    forced_autobid_slugs: set[str] | None = None,
+) -> str:
+    ebs_rankings = _build_ebs_rankings(analytics_rows, matrix_rows)
+    if not ebs_rankings:
+        return """
+      <div class=\"card\" style=\"margin-top:14px;\">
+        <h2>EBS Projection</h2>
+        <p class=\"section-note\">No analytics data available.</p>
+      </div>
+        """
+
+    projected, bubble, autobid_slugs = _split_ebs_projected_and_bubble(
+        ebs_rankings,
+        forced_autobid_slugs=forced_autobid_slugs,
+    )
+    projected_matrix_rows = [
+        MatrixRow(
+            canonical_slug=str(row["canonical_slug"]),
+            team_display=str(row["team_display"]),
+            ncaa_id="",
+            espn_id="",
+            appearances=0,
+            avg_seed=float(row["ebs_score"]),
+            conference=str(row.get("conference", "")),
+            source_seeds={},
+        )
+        for row in projected
+    ]
+    projected_seeds = _projected_seed_numbers(projected_matrix_rows, autobid_slugs)
+
+    projected_rows_html = ""
+    for index, row in enumerate(projected):
+        team_display = escape(str(row["team_display"]))
+        if str(row["canonical_slug"]) in autobid_slugs:
+            team_display = f"<strong>{team_display}</strong>"
+        projected_rows_html += (
+            "<tr>"
+            f"<td>{projected_seeds[index]}</td>"
+            f"<td>{team_display}</td>"
+            f"<td>{escape(str(row.get('conference', '')))}</td>"
+            f"<td>{_format_ebs_score(float(row['ebs_score']))}</td>"
+            "</tr>"
+        )
+
+    bubble_rows_html = ""
+    for row in bubble:
+        bubble_rows_html += (
+            "<tr>"
+            f"<td>{int(row['ebs_rank'])}</td>"
+            f"<td>{escape(str(row['team_display']))}</td>"
+            f"<td>{escape(str(row.get('conference', '')))}</td>"
+            f"<td>{_format_ebs_score(float(row['ebs_score']))}</td>"
+            "</tr>"
+        )
+
+    return f"""
+      <div class=\"card\" style=\"margin-top:14px;\">
+        <h2>EBS Projection</h2>
+        <p class=\"section-note\">Autobids in bold. EBS = average of <a href=\"https://barttorvik.com/ncaaw/#\" target=\"_blank\" rel=\"noopener noreferrer\">T-rank</a> and NCAA WAB rank.</p>
+        <table class=\"matrix analytics-table\">
+          <colgroup>
+            <col class=\"rank-col\" />
+            <col class=\"team-col\" />
+            <col class=\"conf-col\" />
+            <col class=\"avg-col\" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Seed</th>
+              <th>Team</th>
+              <th>Conf</th>
+              <th>EBS Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {projected_rows_html}
+          </tbody>
+        </table>
+
+        <hr class=\"divider\" />
+        <h2>Bubble Candidates</h2>
+        <table class=\"matrix analytics-table\">
+          <colgroup>
+            <col class=\"rank-col\" />
+            <col class=\"team-col\" />
+            <col class=\"conf-col\" />
+            <col class=\"avg-col\" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>Seed</th>
+              <th>Team</th>
+              <th>Conf</th>
+              <th>EBS Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            {bubble_rows_html}
+          </tbody>
+        </table>
+      </div>
+    """
 
 
 def _best_inclusion_recency_rank(row: MatrixRow, ordered_source_keys: list[str]) -> int:
@@ -148,9 +382,11 @@ def split_other_candidates(other_candidates: list[MatrixRow]) -> tuple[list[Matr
 def split_projected_field(
     matrix_rows: list[MatrixRow],
     source_keys_by_recency: list[str] | None = None,
+    forced_autobid_slugs: set[str] | None = None,
     field_size: int = 68,
 ) -> tuple[list[MatrixRow], list[MatrixRow]]:
     ordered_source_keys = source_keys_by_recency or []
+    forced_slugs = forced_autobid_slugs or set()
     eligible_rows = [row for row in matrix_rows if row.appearances > 0]
 
     def _inclusion_sort_key(item: MatrixRow) -> tuple[int, int, float, str]:
@@ -173,7 +409,11 @@ def split_projected_field(
 
     for conference in sorted(rows_by_conference):
         candidates = rows_by_conference[conference]
-        winner = min(candidates, key=_inclusion_sort_key)
+        forced_candidates = [row for row in candidates if row.canonical_slug in forced_slugs]
+        if forced_candidates:
+            winner = min(forced_candidates, key=_inclusion_sort_key)
+        else:
+            winner = min(candidates, key=_inclusion_sort_key)
         conference_winners.append(winner)
         winner_slugs.add(winner.canonical_slug)
 
@@ -195,8 +435,10 @@ def split_projected_field(
 def _autobid_winner_slugs(
     matrix_rows: list[MatrixRow],
     source_keys_by_recency: list[str] | None = None,
+    forced_autobid_slugs: set[str] | None = None,
 ) -> set[str]:
     ordered_source_keys = source_keys_by_recency or []
+    forced_slugs = forced_autobid_slugs or set()
     eligible_rows = [row for row in matrix_rows if row.appearances > 0]
 
     def _inclusion_sort_key(item: MatrixRow) -> tuple[int, int, float, str]:
@@ -217,7 +459,11 @@ def _autobid_winner_slugs(
     winner_slugs: set[str] = set()
     for conference in sorted(rows_by_conference):
         candidates = rows_by_conference[conference]
-        winner = min(candidates, key=_inclusion_sort_key)
+        forced_candidates = [row for row in candidates if row.canonical_slug in forced_slugs]
+        if forced_candidates:
+            winner = min(forced_candidates, key=_inclusion_sort_key)
+        else:
+            winner = min(candidates, key=_inclusion_sort_key)
         winner_slugs.add(winner.canonical_slug)
     return winner_slugs
 
@@ -354,13 +600,22 @@ def _filter_matrix_rows_for_sources(matrix_rows: list[MatrixRow], source_keys: l
     return filtered_rows
 
 
-def _render_matrix_sections_html(matrix_rows: list[MatrixRow], ordered_source_keys: list[str]) -> str:
+def _render_matrix_sections_html(
+    matrix_rows: list[MatrixRow],
+    ordered_source_keys: list[str],
+    forced_aggregate_autobid_slugs: set[str] | None = None,
+) -> str:
     source_count = len(ordered_source_keys)
     projected_field, other_candidates = split_projected_field(
         matrix_rows,
         source_keys_by_recency=ordered_source_keys,
+        forced_autobid_slugs=forced_aggregate_autobid_slugs,
     )
-    autobid_slugs = _autobid_winner_slugs(matrix_rows, source_keys_by_recency=ordered_source_keys)
+    autobid_slugs = _autobid_winner_slugs(
+        matrix_rows,
+        source_keys_by_recency=ordered_source_keys,
+        forced_autobid_slugs=forced_aggregate_autobid_slugs,
+    )
     projected_seeds = _projected_seed_numbers(projected_field, autobid_slugs)
     bubble_candidates, auto_bid_candidates = split_other_candidates(other_candidates)
 
@@ -368,6 +623,7 @@ def _render_matrix_sections_html(matrix_rows: list[MatrixRow], ordered_source_ke
     for idx, row in enumerate(projected_field):
         bracket_share = _format_bracket_share(row.appearances, source_count)
         bracket_share_class = _bracket_share_heat_class(row.appearances, source_count)
+        highest_seed, lowest_seed = _seed_extremes(row)
         team_display = escape(row.team_display)
         if row.canonical_slug in autobid_slugs:
             team_display = f"<strong>{team_display}</strong>"
@@ -378,6 +634,8 @@ def _render_matrix_sections_html(matrix_rows: list[MatrixRow], ordered_source_ke
             f"<td>{escape(row.conference)}</td>"
             f"<td>{_format_avg_seed(row.avg_seed)}</td>"
             f"<td class=\"bracket-share {bracket_share_class}\">{bracket_share}</td>"
+            f"<td>{highest_seed}</td>"
+            f"<td>{lowest_seed}</td>"
             "</tr>"
         )
 
@@ -403,6 +661,7 @@ def _render_matrix_sections_html(matrix_rows: list[MatrixRow], ordered_source_ke
     for idx, row in enumerate(auto_bid_candidates, start=1):
         bracket_share = _format_bracket_share(row.appearances, source_count)
         bracket_share_class = _bracket_share_heat_class(row.appearances, source_count)
+        highest_seed, lowest_seed = _seed_extremes(row)
         auto_bid_rows_html += (
             "<tr>"
             f"<td>{idx}</td>"
@@ -410,6 +669,8 @@ def _render_matrix_sections_html(matrix_rows: list[MatrixRow], ordered_source_ke
             f"<td>{escape(row.conference)}</td>"
             f"<td>{_format_avg_seed(row.avg_seed)}</td>"
             f"<td class=\"bracket-share {bracket_share_class}\">{bracket_share}</td>"
+            f"<td>{highest_seed}</td>"
+            f"<td>{lowest_seed}</td>"
             "</tr>"
         )
 
@@ -423,6 +684,8 @@ def _render_matrix_sections_html(matrix_rows: list[MatrixRow], ordered_source_ke
           <col class=\"team-col\" />
           <col class=\"conf-col\" />
           <col class=\"avg-col\" />
+          <col class=\"seed-range-col\" />
+          <col class=\"seed-range-col\" />
           <col class=\"app-col\" />
         </colgroup>
         <thead>
@@ -432,6 +695,8 @@ def _render_matrix_sections_html(matrix_rows: list[MatrixRow], ordered_source_ke
             <th>Conf</th>
             <th>Avg Seed</th>
             <th>% Brackets</th>
+            <th>High</th>
+            <th>Low</th>
           </tr>
         </thead>
         <tbody>
@@ -441,6 +706,7 @@ def _render_matrix_sections_html(matrix_rows: list[MatrixRow], ordered_source_ke
 
       <hr class=\"divider\" />
       <h2>Bubble Candidates</h2>
+      <p class=\"section-note\">Note: not all brackets publish first four out / next four out.</p>
       <table class=\"matrix\">
         <colgroup>
           <col class=\"rank-col\" />
@@ -475,6 +741,8 @@ def _render_matrix_sections_html(matrix_rows: list[MatrixRow], ordered_source_ke
           <col class=\"team-col\" />
           <col class=\"conf-col\" />
           <col class=\"avg-col\" />
+          <col class=\"seed-range-col\" />
+          <col class=\"seed-range-col\" />
           <col class=\"app-col\" />
         </colgroup>
         <thead>
@@ -484,6 +752,8 @@ def _render_matrix_sections_html(matrix_rows: list[MatrixRow], ordered_source_ke
             <th>Conf</th>
             <th>Avg Seed</th>
             <th>% Brackets</th>
+            <th>High</th>
+            <th>Low</th>
           </tr>
         </thead>
         <tbody>
@@ -532,6 +802,9 @@ def render_index_html(
     source_keys: list[str],
     source_key_to_name: dict[str, str],
     generated_at_iso: str,
+    analytics_rows: list[dict[str, str]] | None = None,
+    forced_aggregate_autobid_slugs: set[str] | None = None,
+    forced_ebs_autobid_slugs: set[str] | None = None,
     output_path: Path,
 ) -> None:
     source_meta_lookup = {row["source_key"]: row for row in source_meta_rows}
@@ -552,7 +825,11 @@ def render_index_html(
                 threshold,
             )
             filtered_matrix_rows = _filter_matrix_rows_for_sources(matrix_rows, filtered_source_keys)
-            matrix_sections_html = _render_matrix_sections_html(filtered_matrix_rows, filtered_source_keys)
+            matrix_sections_html = _render_matrix_sections_html(
+                filtered_matrix_rows,
+                filtered_source_keys,
+                forced_aggregate_autobid_slugs=forced_aggregate_autobid_slugs,
+            )
             source_table_html = _render_source_table_html(
                 filtered_source_keys,
                 source_meta_lookup,
@@ -564,7 +841,11 @@ def render_index_html(
                 f"{matrix_sections_html}{source_table_html}</section>"
             )
     else:
-        matrix_sections_html = _render_matrix_sections_html(matrix_rows, ordered_source_keys)
+        matrix_sections_html = _render_matrix_sections_html(
+            matrix_rows,
+            ordered_source_keys,
+            forced_aggregate_autobid_slugs=forced_aggregate_autobid_slugs,
+        )
         source_table_html = _render_source_table_html(
             ordered_source_keys,
             source_meta_lookup,
@@ -588,12 +869,18 @@ def render_index_html(
     </div>
         """
 
+    analytics_tab_html = _render_analytics_ebs_html(
+        analytics_rows or [],
+        matrix_rows,
+        forced_autobid_slugs=forced_ebs_autobid_slugs,
+    )
+
     html = f"""<!doctype html>
 <html lang=\"en\">
 <head>
   <meta charset=\"utf-8\" />
   <meta name=\"viewport\" content=\"width=device-width,initial-scale=1\" />
-  <title>WBB Bracket Matrix</title>
+  <title>WBB Aggregate Bracketology</title>
   <style>
     :root {{
       --bg: #f5f7f2;
@@ -619,23 +906,30 @@ def render_index_html(
     .matrix tbody tr:hover {{ background: #f0f6eb; }}
     td:nth-child(2), th:nth-child(2) {{ text-align: left; min-width: 200px; }}
     .matrix td:nth-child(4), .matrix th:nth-child(4), .matrix td:nth-child(5), .matrix th:nth-child(5) {{ font-weight: 700; }}
+    .analytics-table td:nth-child(1), .analytics-table th:nth-child(1) {{ font-weight: 700; }}
+    .analytics-table td:nth-child(4) {{ font-weight: 400; }}
     .matrix {{ table-layout: fixed; }}
     .matrix col.rank-col {{ width: 56px; }}
     .matrix col.team-col {{ width: 190px; }}
     .matrix col.conf-col {{ width: 90px; }}
     .matrix col.avg-col {{ width: 86px; }}
+    .matrix col.seed-range-col {{ width: 102px; }}
     .matrix col.app-col {{ width: 96px; }}
     .sources {{ margin-bottom: 14px; }}
     .sources td:first-child {{ text-align: left; }}
     .controls {{ display: flex; align-items: center; gap: 10px; }}
     .controls label {{ font-weight: 600; }}
     .controls select {{ border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; background: #fff; color: var(--ink); }}
+    .tabs {{ display: flex; gap: 8px; margin: 10px 0 14px; flex-wrap: wrap; }}
+    .tab-btn {{ border: 1px solid var(--line); background: #eef3ea; color: var(--ink); border-radius: 999px; padding: 6px 12px; font-weight: 600; cursor: pointer; }}
+    .tab-btn.is-active {{ background: var(--accent); color: #fff; border-color: var(--accent); }}
     .section-note {{ margin: 0 0 10px; color: var(--muted); font-size: 0.95rem; }}
     .bracket-share.share-0 {{ background: #f3f6f1; }}
     .bracket-share.share-1 {{ background: #e6f0df; }}
     .bracket-share.share-2 {{ background: #d7e9ce; }}
     .bracket-share.share-3 {{ background: #c4ddb9; }}
     .bracket-share.share-4 {{ background: #afcf9f; }}
+    .bracket-share.share-5 {{ background: #7abf7a; }}
     .divider {{ border: 0; border-top: 2px solid var(--line); margin: 18px 0 12px; }}
     a {{ color: var(--accent); text-decoration: none; }}
     a:hover {{ text-decoration: underline; }}
@@ -649,6 +943,7 @@ def render_index_html(
       .matrix col.team-col {{ width: 170px; }}
       .matrix col.conf-col {{ width: 80px; }}
       .matrix col.avg-col {{ width: 78px; }}
+      .matrix col.seed-range-col {{ width: 96px; }}
       .matrix col.app-col {{ width: 88px; }}
       .matrix th:nth-child(1), .matrix td:nth-child(1) {{
         position: sticky;
@@ -670,23 +965,61 @@ def render_index_html(
 </head>
 <body>
   <div class=\"wrap\">
-    <h1>WBB Bracket Matrix</h1>
+    <h1>WBB Aggregate Bracketology</h1>
     <p class=\"meta\">Updated at {escape(_format_generated_at_et(generated_at_iso))}</p>
-    {filter_controls_html}
-    {views_html}
+    <p class=\"meta\">Kevin Whitaker / <a href=\"https://x.com/whitakk\" target=\"_blank\" rel=\"noopener noreferrer\">@whitakk</a></p>
+    <div class=\"tabs\" role=\"tablist\" aria-label=\"Main views\">
+      <button class=\"tab-btn is-active\" type=\"button\" data-tab-target=\"aggregate\" role=\"tab\" aria-selected=\"true\">Aggregate</button>
+      <button class=\"tab-btn\" type=\"button\" data-tab-target=\"matrix\" role=\"tab\" aria-selected=\"false\">Matrix</button>
+      <button class=\"tab-btn\" type=\"button\" data-tab-target=\"analytics\" role=\"tab\" aria-selected=\"false\">Analytics</button>
+    </div>
+    <section data-tab-view=\"aggregate\">
+      {filter_controls_html}
+      {views_html}
+    </section>
+    <section data-tab-view=\"matrix\" style=\"display:none;\">
+      <div class=\"card\" style=\"margin-top:14px;\">
+        <h2>Matrix</h2>
+        <p class=\"section-note\">Coming soon.</p>
+      </div>
+    </section>
+    <section data-tab-view=\"analytics\" style=\"display:none;\">
+      {analytics_tab_html}
+    </section>
   </div>
   <script>
     (() => {{
       const select = document.getElementById("source-date-filter");
-      if (!select) return;
-      const views = document.querySelectorAll("[data-filter-view]");
-      const showView = (value) => {{
-        views.forEach((view) => {{
-          view.style.display = view.getAttribute("data-filter-view") === value ? "block" : "none";
+      if (select) {{
+        const views = document.querySelectorAll("[data-filter-view]");
+        const showView = (value) => {{
+          views.forEach((view) => {{
+            view.style.display = view.getAttribute("data-filter-view") === value ? "block" : "none";
+          }});
+        }};
+        showView(select.value);
+        select.addEventListener("change", () => showView(select.value));
+      }}
+
+      const tabButtons = document.querySelectorAll("[data-tab-target]");
+      const tabViews = document.querySelectorAll("[data-tab-view]");
+      if (!tabButtons.length || !tabViews.length) return;
+
+      const showTab = (target) => {{
+        tabViews.forEach((view) => {{
+          view.style.display = view.getAttribute("data-tab-view") === target ? "block" : "none";
+        }});
+        tabButtons.forEach((button) => {{
+          const active = button.getAttribute("data-tab-target") === target;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-selected", active ? "true" : "false");
         }});
       }};
-      showView(select.value);
-      select.addEventListener("change", () => showView(select.value));
+
+      tabButtons.forEach((button) => {{
+        button.addEventListener("click", () => showTab(button.getAttribute("data-tab-target") || "aggregate"));
+      }});
+      showTab("aggregate");
     }})();
   </script>
 </body>

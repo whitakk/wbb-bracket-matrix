@@ -5,6 +5,20 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Callable
 
+from bracket_matrix.analytics import (
+    BART_POWER_URL,
+    NCAA_AUTO_BIDS_URL,
+    NCAA_NET_RANKING_URL,
+    NCAA_WAB_RANKING_URL,
+    assign_greedy_cross_source_matches,
+    combine_ncaa_wab_and_net_rows,
+    merge_analytics_rows,
+    parse_ncaa_auto_bids_table,
+    parse_bart_power_table,
+    parse_ncaa_net_table,
+    parse_ncaa_wab_table,
+    suggest_cross_source_matches,
+)
 from bracket_matrix.conferences import (
     DEFAULT_BART_SEASON,
     TEAM_CONFERENCE_FIELDNAMES,
@@ -56,7 +70,105 @@ def _latest_paths(paths: PipelinePaths) -> dict[str, Path]:
         "resolved": paths.latest_dir / "resolved_rows_latest.csv",
         "matrix": paths.latest_dir / "matrix_latest.csv",
         "unresolved": paths.latest_dir / "unresolved_matches_latest.csv",
+        "analytics_ncaa": paths.latest_dir / "analytics_ncaa_metrics_latest.csv",
+        "analytics_bart": paths.latest_dir / "analytics_bart_power_latest.csv",
+        "analytics_merged": paths.latest_dir / "analytics_merged_latest.csv",
+        "analytics_mapping_issues": paths.latest_dir / "analytics_mapping_issues_latest.csv",
+        "analytics_match_suggestions": paths.latest_dir / "analytics_match_suggestions_latest.csv",
+        "analytics_match_assignments": paths.latest_dir / "analytics_match_assignments_latest.csv",
+        "analytics_auto_bids": paths.latest_dir / "analytics_auto_bids_latest.csv",
     }
+
+
+ANALYTICS_NCAA_FIELDS = [
+    "team",
+    "conference",
+    "net_rank",
+    "wab_rank",
+    "wab",
+    "q1_w",
+    "q1_l",
+    "q2_w",
+    "q2_l",
+    "q3_w",
+    "q3_l",
+    "q4_w",
+    "q4_l",
+]
+
+ANALYTICS_BART_FIELDS = ["team", "conference", "bart_rank", "barthag"]
+
+ANALYTICS_MERGED_FIELDS = [
+    "canonical_slug",
+    "team_display",
+    "conference",
+    "ncaa_team",
+    "ncaa_conference",
+    "net_rank",
+    "wab_rank",
+    "wab",
+    "q1_w",
+    "q1_l",
+    "q2_w",
+    "q2_l",
+    "q3_w",
+    "q3_l",
+    "q4_w",
+    "q4_l",
+    "bart_team",
+    "bart_conference",
+    "bart_rank",
+    "barthag",
+    "present_in_ncaa",
+    "present_in_bart",
+]
+
+ANALYTICS_MAPPING_ISSUE_FIELDS = [
+    "issue_type",
+    "source",
+    "team_raw",
+    "canonical_slug",
+    "detail",
+]
+
+ANALYTICS_MATCH_SUGGESTION_FIELDS = [
+    "ncaa_team",
+    "ncaa_conference",
+    "ncaa_canonical_slug",
+    "bart_team_candidate",
+    "bart_conference",
+    "bart_canonical_slug",
+    "candidate_rank",
+    "name_score",
+    "conference_match",
+    "combined_score",
+    "confidence",
+    "suggested_alias",
+]
+
+ANALYTICS_MATCH_ASSIGNMENT_FIELDS = [
+    "assignment_rank",
+    "ncaa_team",
+    "ncaa_conference",
+    "ncaa_canonical_slug",
+    "bart_team_candidate",
+    "bart_conference",
+    "bart_canonical_slug",
+    "name_score",
+    "conference_match",
+    "combined_score",
+    "confidence",
+    "suggested_alias",
+]
+
+ANALYTICS_AUTO_BIDS_FIELDS = [
+    "conference",
+    "team_raw",
+    "canonical_slug",
+    "team_display",
+    "resolution_method",
+    "resolution_confidence",
+]
 
 
 def _serialize_row(row: SourceProjectionRow) -> dict[str, str | int | bool]:
@@ -373,9 +485,171 @@ def run_build(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
     write_dict_csv(latest["matrix"], matrix_flat, fieldnames=matrix_fields)
     write_dict_csv(latest["unresolved"], unresolved_rows, fieldnames=unresolved_fields)
 
+    analytics_ncaa_rows: list[dict[str, str]] = []
+    analytics_bart_rows: list[dict[str, str]] = []
+
+    ncaa_wab_url = str(settings.get("analytics_ncaa_wab_url", NCAA_WAB_RANKING_URL))
+    ncaa_net_url = str(settings.get("analytics_ncaa_net_url", NCAA_NET_RANKING_URL))
+    ncaa_auto_bids_url = str(settings.get("analytics_ncaa_auto_bids_url", NCAA_AUTO_BIDS_URL))
+    bart_url = str(settings.get("analytics_bart_power_url", BART_POWER_URL))
+
+    try:
+        ncaa_wab_html = fetch_html(
+            ncaa_wab_url,
+            timeout_seconds=int(settings["request_timeout_seconds"]),
+            user_agent=str(settings["user_agent"]),
+        )
+        ncaa_net_html = fetch_html(
+            ncaa_net_url,
+            timeout_seconds=int(settings["request_timeout_seconds"]),
+            user_agent=str(settings["user_agent"]),
+        )
+        wab_rows = parse_ncaa_wab_table(ncaa_wab_html)
+        net_rows = parse_ncaa_net_table(ncaa_net_html)
+        analytics_ncaa_rows, ncaa_mapping_issues = combine_ncaa_wab_and_net_rows(
+            wab_rows=wab_rows,
+            net_rows=net_rows,
+            aliases_path=active_paths.data_dir / "aliases.csv",
+            fuzzy_threshold=float(settings["fuzzy_threshold"]),
+            fuzzy_review_threshold=float(settings["fuzzy_review_threshold"]),
+            fuzzy_ambiguous_margin=float(settings["fuzzy_ambiguous_margin"]),
+        )
+    except Exception as exc:  # noqa: BLE001
+        print(f"[build] analytics ncaa fetch/parse failed: {exc}")
+        ncaa_mapping_issues = []
+        if latest["analytics_ncaa"].exists():
+            analytics_ncaa_rows = read_dict_csv(latest["analytics_ncaa"])
+
+    try:
+        bart_html = fetch_html_playwright(
+            bart_url,
+            timeout_seconds=max(40, int(settings["request_timeout_seconds"])),
+        )
+        try:
+            analytics_bart_rows = parse_bart_power_table(bart_html)
+        except Exception:  # noqa: BLE001
+            bart_html = fetch_html(
+                bart_url,
+                timeout_seconds=int(settings["request_timeout_seconds"]),
+                user_agent=str(settings["user_agent"]),
+            )
+            analytics_bart_rows = parse_bart_power_table(bart_html)
+    except Exception as exc:  # noqa: BLE001
+        print(f"[build] analytics bart fetch/parse failed: {exc}")
+        if latest["analytics_bart"].exists():
+            analytics_bart_rows = read_dict_csv(latest["analytics_bart"])
+
+    analytics_merged_rows, analytics_mapping_issues = merge_analytics_rows(
+        ncaa_rows=analytics_ncaa_rows,
+        bart_rows=analytics_bart_rows,
+        aliases_path=active_paths.data_dir / "aliases.csv",
+        fuzzy_threshold=float(settings["fuzzy_threshold"]),
+        fuzzy_review_threshold=float(settings["fuzzy_review_threshold"]),
+        fuzzy_ambiguous_margin=float(settings["fuzzy_ambiguous_margin"]),
+    )
+    analytics_mapping_issues = ncaa_mapping_issues + analytics_mapping_issues
+    analytics_match_suggestions = suggest_cross_source_matches(analytics_merged_rows)
+    analytics_match_assignments = assign_greedy_cross_source_matches(analytics_merged_rows)
+
+    analytics_auto_bids_rows: list[dict[str, str | float]] = []
+    try:
+        auto_bids_html = fetch_html(
+            ncaa_auto_bids_url,
+            timeout_seconds=int(settings["request_timeout_seconds"]),
+            user_agent=str(settings["user_agent"]),
+        )
+        auto_bids_rows = parse_ncaa_auto_bids_table(auto_bids_html)
+        auto_bid_team_names = [row["team"] for row in auto_bids_rows]
+        aliases = load_aliases(active_paths.data_dir / "aliases.csv")
+        resolved_auto_bids, _ = resolve_team_names(
+            team_names=auto_bid_team_names,
+            aliases=aliases,
+            fuzzy_threshold=float(settings["fuzzy_threshold"]),
+            fuzzy_review_threshold=float(settings["fuzzy_review_threshold"]),
+            fuzzy_ambiguous_margin=float(settings["fuzzy_ambiguous_margin"]),
+        )
+        for row in auto_bids_rows:
+            team_raw = row["team"]
+            resolution = resolved_auto_bids.get(team_raw)
+            if resolution is None:
+                continue
+            analytics_auto_bids_rows.append(
+                {
+                    "conference": row["conference"],
+                    "team_raw": team_raw,
+                    "canonical_slug": resolution.identity.canonical_slug,
+                    "team_display": resolution.identity.team_display,
+                    "resolution_method": resolution.method,
+                    "resolution_confidence": resolution.confidence,
+                }
+            )
+    except Exception as exc:  # noqa: BLE001
+        print(f"[build] analytics auto-bids fetch/parse failed: {exc}")
+        if latest["analytics_auto_bids"].exists():
+            analytics_auto_bids_rows = read_dict_csv(latest["analytics_auto_bids"])
+
+    write_dict_csv(latest["analytics_ncaa"], analytics_ncaa_rows, fieldnames=ANALYTICS_NCAA_FIELDS)
+    write_dict_csv(latest["analytics_bart"], analytics_bart_rows, fieldnames=ANALYTICS_BART_FIELDS)
+    write_dict_csv(latest["analytics_merged"], analytics_merged_rows, fieldnames=ANALYTICS_MERGED_FIELDS)
+    write_dict_csv(
+        latest["analytics_mapping_issues"],
+        analytics_mapping_issues,
+        fieldnames=ANALYTICS_MAPPING_ISSUE_FIELDS,
+    )
+    write_dict_csv(
+        latest["analytics_match_suggestions"],
+        analytics_match_suggestions,
+        fieldnames=ANALYTICS_MATCH_SUGGESTION_FIELDS,
+    )
+    write_dict_csv(
+        latest["analytics_match_assignments"],
+        analytics_match_assignments,
+        fieldnames=ANALYTICS_MATCH_ASSIGNMENT_FIELDS,
+    )
+    write_dict_csv(
+        latest["analytics_auto_bids"],
+        analytics_auto_bids_rows,
+        fieldnames=ANALYTICS_AUTO_BIDS_FIELDS,
+    )
+
     write_dict_csv(active_paths.snapshot_dir / f"resolved_rows_{timestamp}.csv", resolved_rows, fieldnames=resolved_fields)
     write_dict_csv(active_paths.snapshot_dir / f"matrix_{timestamp}.csv", matrix_flat, fieldnames=matrix_fields)
     write_dict_csv(active_paths.snapshot_dir / f"unresolved_matches_{timestamp}.csv", unresolved_rows, fieldnames=unresolved_fields)
+    write_dict_csv(
+        active_paths.snapshot_dir / f"analytics_ncaa_metrics_{timestamp}.csv",
+        analytics_ncaa_rows,
+        fieldnames=ANALYTICS_NCAA_FIELDS,
+    )
+    write_dict_csv(
+        active_paths.snapshot_dir / f"analytics_bart_power_{timestamp}.csv",
+        analytics_bart_rows,
+        fieldnames=ANALYTICS_BART_FIELDS,
+    )
+    write_dict_csv(
+        active_paths.snapshot_dir / f"analytics_merged_{timestamp}.csv",
+        analytics_merged_rows,
+        fieldnames=ANALYTICS_MERGED_FIELDS,
+    )
+    write_dict_csv(
+        active_paths.snapshot_dir / f"analytics_mapping_issues_{timestamp}.csv",
+        analytics_mapping_issues,
+        fieldnames=ANALYTICS_MAPPING_ISSUE_FIELDS,
+    )
+    write_dict_csv(
+        active_paths.snapshot_dir / f"analytics_match_suggestions_{timestamp}.csv",
+        analytics_match_suggestions,
+        fieldnames=ANALYTICS_MATCH_SUGGESTION_FIELDS,
+    )
+    write_dict_csv(
+        active_paths.snapshot_dir / f"analytics_match_assignments_{timestamp}.csv",
+        analytics_match_assignments,
+        fieldnames=ANALYTICS_MATCH_ASSIGNMENT_FIELDS,
+    )
+    write_dict_csv(
+        active_paths.snapshot_dir / f"analytics_auto_bids_{timestamp}.csv",
+        analytics_auto_bids_rows,
+        fieldnames=ANALYTICS_AUTO_BIDS_FIELDS,
+    )
 
     return latest
 
@@ -386,6 +660,13 @@ def run_publish(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
 
     matrix_rows_raw = read_dict_csv(latest["matrix"])
     source_meta_rows = read_dict_csv(latest["meta"])
+    analytics_rows = read_dict_csv(latest["analytics_merged"]) if latest["analytics_merged"].exists() else []
+    analytics_auto_bids_rows = read_dict_csv(latest["analytics_auto_bids"]) if latest["analytics_auto_bids"].exists() else []
+    forced_ebs_autobid_slugs = {
+        (row.get("canonical_slug") or "").strip()
+        for row in analytics_auto_bids_rows
+        if (row.get("canonical_slug") or "").strip()
+    }
 
     source_keys = [row["source_key"] for row in source_meta_rows]
     source_key_to_name = {row["source_key"]: row["source_name"] for row in source_meta_rows}
@@ -417,11 +698,24 @@ def run_publish(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
         source_keys=source_keys,
         source_key_to_name=source_key_to_name,
         generated_at_iso=utc_now_iso(),
+        analytics_rows=analytics_rows,
+        forced_aggregate_autobid_slugs=forced_ebs_autobid_slugs,
+        forced_ebs_autobid_slugs=forced_ebs_autobid_slugs,
         output_path=active_paths.site_dir / "index.html",
     )
 
     # Copy latest CSV artifacts into site output for download.
-    for key in ["matrix", "resolved", "unresolved", "meta"]:
+    for key in [
+        "matrix",
+        "resolved",
+        "unresolved",
+        "meta",
+        "analytics_merged",
+        "analytics_mapping_issues",
+        "analytics_match_suggestions",
+        "analytics_match_assignments",
+        "analytics_auto_bids",
+    ]:
         src = latest[key]
         dst = active_paths.site_dir / src.name
         if src.exists():
@@ -505,6 +799,13 @@ def run_all(
         "resolved_rows",
         "matrix",
         "unresolved_matches",
+        "analytics_ncaa_metrics",
+        "analytics_bart_power",
+        "analytics_merged",
+        "analytics_mapping_issues",
+        "analytics_match_suggestions",
+        "analytics_match_assignments",
+        "analytics_auto_bids",
     ]:
         cleanup_old_csv(active_paths.snapshot_dir, prefix=prefix, retention_days=days)
 

@@ -95,7 +95,7 @@ def test_run_all_writes_expected_outputs_with_espn_fallback(tmp_path, monkeypatc
     assert (latest_dir / "unresolved_matches_latest.csv").exists()
     assert (site_dir / "index.html").exists()
     index_html = (site_dir / "index.html").read_text(encoding="utf-8")
-    assert "WBB Bracket Matrix" in index_html
+    assert "WBB Aggregate Bracketology" in index_html
     assert "ESPN" in index_html
     assert "Conf" in index_html
 

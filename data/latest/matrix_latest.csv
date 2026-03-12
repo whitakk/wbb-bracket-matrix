@@ -20,7 +20,7 @@ kentucky,Kentucky,,,8,5,SEC,5,5,5,6,5,5,5,4
 michigan-state,Michigan St,,,8,5,B10,5,5,5,5,5,5,5,5
 ole-miss,Ole Miss,,,8,5.25,SEC,5,5,5,4,6,6,5,6
 notre-dame,Notre Dame,,,8,5.75,ACC,6,6,6,5,5,5,6,7
-alabama,ALabama,,,8,6.125,SEC,6,6,6,7,6,6,6,6
+alabama,Alabama,,,8,6.125,SEC,6,6,6,7,6,6,6,6
 baylor,Baylor,,,8,6.125,B12,6,6,6,6,6,6,7,6
 north-carolina-state,NC State,,,8,6.5,ACC,6,8,6,6,7,7,7,5
 washington,Washington,,,8,6.625,B10,7,7,7,7,6,6,6,7
@@ -89,5 +89,5 @@ e-kentucky,Eastern Kentucky,,,1,16,ASun,,,,,,,,16
 florida,Florida,,,0,99.0,SEC,,,,,,,FFO,
 indiana,Indiana,,,0,99.0,B10,,NFO,,,NFO,NFO,,
 kansas,Kansas,,,0,99.0,B12,,,,,,NFO,,
-kansas-state,Kansas St,,,0,99.0,B12,,NFO,,,NFO,,NFO,
+kansas-state,Kansas State,,,0,99.0,B12,,NFO,,,NFO,,NFO,
 texas-a-and-m,Texas A&M,,,0,99.0,SEC,,FFO,,,NFO,FFO,NFO,
