@@ -1,4 +1,5 @@
 from bracket_matrix.render import (
+    _build_ebs_rankings,
     _build_date_filter_options,
     _abbrev_source_label,
     _bracket_share_heat_class,
@@ -7,6 +8,7 @@ from bracket_matrix.render import (
     _format_bracket_share,
     _format_generated_at_et,
     _projected_seed_numbers,
+    _split_ebs_projected_and_bubble,
     _format_source_update_date,
     _order_source_keys_by_recency,
     render_index_html,
@@ -119,6 +121,32 @@ def test_split_projected_field_prefers_recency_before_avg_seed_for_ties():
 
     projected, _ = split_projected_field(rows, source_keys_by_recency=["new", "old"], field_size=1)
     assert [row.team_display for row in projected] == ["Recent Inclusion"]
+
+
+def test_split_projected_field_uses_forced_autobid_when_present():
+    rows = [
+        _row_with_sources(
+            "ACC Favorite",
+            "ACC",
+            appearances=6,
+            avg_seed=2.0,
+            source_seeds={"s": 2},
+        ),
+        _row_with_sources(
+            "ACC Autobid",
+            "ACC",
+            appearances=2,
+            avg_seed=9.0,
+            source_seeds={"s": 9},
+        ),
+    ]
+
+    projected, _ = split_projected_field(
+        rows,
+        forced_autobid_slugs={"acc-autobid"},
+        field_size=1,
+    )
+    assert [row.team_display for row in projected] == ["ACC Autobid"]
 
 
 def test_split_other_candidates_prioritize_in_then_ffo_then_nfo():
@@ -320,7 +348,7 @@ def test_bracket_share_heat_class_uses_percentage_buckets():
     assert _bracket_share_heat_class(2, 5) == "share-1"
     assert _bracket_share_heat_class(3, 5) == "share-2"
     assert _bracket_share_heat_class(4, 5) == "share-3"
-    assert _bracket_share_heat_class(5, 5) == "share-4"
+    assert _bracket_share_heat_class(5, 5) == "share-5"
 
 
 def test_format_generated_at_et_converts_from_utc_iso():
@@ -329,6 +357,7 @@ def test_format_generated_at_et_converts_from_utc_iso():
 
 def test_format_avg_seed_returns_na_for_sentinel_value():
     assert _format_avg_seed(99.0) == "na"
+    assert _format_avg_seed(32.0) == "32"
     assert _format_avg_seed(7.25) == "7.2"
 
 
@@ -384,12 +413,16 @@ def test_render_index_html_links_source_headers(tmp_path):
     assert "<th>% Brackets</th>" in html
     assert "<th>% F4O</th>" in html
     assert "<th>% N4O</th>" in html
-    assert "class=\"bracket-share share-4\">100%</td>" in html
+    assert html.count("<th>High</th>") == 2
+    assert html.count("<th>Low</th>") == 2
+    assert "class=\"bracket-share share-5\">100%</td>" in html
     assert "<th title=\"ESPN\"><a href=\"https://example.com/espn\"" not in html
     assert "<td><a href=\"https://example.com/espn\" target=\"_blank\" rel=\"noopener noreferrer\">ESPN</a></td>" in html
     assert "<td><a href=\"https://example.com/hhs\" target=\"_blank\" rel=\"noopener noreferrer\">Her Hoop Stats</a></td>" in html
     assert "Bubble Team</td><td>A10</td><td>na</td><td class=\"bracket-share share-0\">0%</td><td>50%</td><td>50%</td>" in html
     assert "Autobids in bold." in html
+    assert "Note: not all brackets publish first four out / next four out." in html
+    assert "Feedback: <a href=\"https://x.com/whitakk\"" in html
     assert "<td><strong>Team A</strong></td>" in html
 
 
@@ -436,3 +469,143 @@ def test_render_index_html_date_filter_defaults_oldest_and_excludes_lone_latest(
     assert '<option value="2026-03-07" selected>3/7</option>' in html
     assert '<option value="2026-03-08">3/8</option>' in html
     assert 'option value="2026-03-09"' not in html
+
+
+def test_render_index_html_analytics_tab_shows_ebs_projection(tmp_path):
+    output_path = tmp_path / "index.html"
+    matrix_rows = [
+        _row_with_sources(
+            "Team A",
+            "SEC",
+            appearances=1,
+            avg_seed=1.0,
+            source_seeds={"espn": 1},
+        ),
+        _row_with_sources(
+            "Team B",
+            "ACC",
+            appearances=1,
+            avg_seed=2.0,
+            source_seeds={"espn": 2},
+        ),
+    ]
+    analytics_rows = [
+        {
+            "canonical_slug": "team-a",
+            "team_display": "Team A",
+            "conference": "SEC",
+            "bart_rank": "10",
+            "wab_rank": "14",
+            "net_rank": "9",
+        },
+        {
+            "canonical_slug": "team-b",
+            "team_display": "Team B",
+            "conference": "ACC",
+            "bart_rank": "12",
+            "wab_rank": "18",
+            "net_rank": "12",
+        },
+        {
+            "canonical_slug": "team-c",
+            "team_display": "Team C",
+            "conference": "B12",
+            "bart_rank": "16",
+            "wab_rank": "24",
+            "net_rank": "21",
+        },
+    ]
+
+    render_index_html(
+        matrix_rows=matrix_rows,
+        source_meta_rows=[
+            {
+                "source_key": "espn",
+                "source_name": "ESPN",
+                "source_url": "https://example.com/espn",
+                "source_updated_at_iso": "2026-03-08T10:00:00+00:00",
+                "status": "ok",
+            }
+        ],
+        source_keys=["espn"],
+        source_key_to_name={"espn": "ESPN"},
+        generated_at_iso="2026-03-08T12:00:00+00:00",
+        analytics_rows=analytics_rows,
+        output_path=output_path,
+    )
+
+    html = output_path.read_text(encoding="utf-8")
+    assert "Projected Field" in html
+    assert "EBS Score" in html
+    assert "Bubble Candidates" in html
+    assert "Next Out" in html
+    assert "Ranking Formula:" in html
+    assert "analytics-preset" in html
+    assert "analytics-custom-controls" in html
+    assert "analytics-data" in html
+
+
+def test_build_ebs_rankings_breaks_ties_with_wab_before_bart():
+    rankings = _build_ebs_rankings(
+        [
+            {
+                "canonical_slug": "team-a",
+                "team_display": "Team A",
+                "conference": "ACC",
+                "bart_rank": "1",
+                "wab_rank": "9",
+                "net_rank": "5",
+            },
+            {
+                "canonical_slug": "team-b",
+                "team_display": "Team B",
+                "conference": "ACC",
+                "bart_rank": "9",
+                "wab_rank": "1",
+                "net_rank": "5",
+            },
+        ],
+        [],
+    )
+    assert [row["canonical_slug"] for row in rankings] == ["team-b", "team-a"]
+
+
+def test_split_ebs_projected_and_bubble_prefers_forced_autobid():
+    rankings = [
+        {
+            "canonical_slug": "team-a",
+            "team_display": "Team A",
+            "conference": "ACC",
+            "bart_rank": 2,
+            "wab_rank": 2,
+            "ebs_score": 2.0,
+            "ebs_rank": 1,
+        },
+        {
+            "canonical_slug": "team-b",
+            "team_display": "Team B",
+            "conference": "ACC",
+            "bart_rank": 10,
+            "wab_rank": 10,
+            "ebs_score": 10.0,
+            "ebs_rank": 2,
+        },
+        {
+            "canonical_slug": "team-c",
+            "team_display": "Team C",
+            "conference": "SEC",
+            "bart_rank": 5,
+            "wab_rank": 5,
+            "ebs_score": 5.0,
+            "ebs_rank": 3,
+        },
+    ]
+
+    projected, _, autobid_slugs = _split_ebs_projected_and_bubble(
+        rankings,
+        forced_autobid_slugs={"team-b"},
+        field_size=2,
+        bubble_size=1,
+    )
+    assert any(row["canonical_slug"] == "team-b" for row in projected)
+    assert "team-b" in autobid_slugs

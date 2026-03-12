@@ -208,3 +208,5 @@ __marimo__/
 
 # Local Playwright browser binaries
 data/playwright-browsers/
+
+plans/*

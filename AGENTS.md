@@ -39,6 +39,7 @@
 - Never push directly to `main`; always create/use a feature branch and open a PR.
 - PRs should include: purpose, key changes, test results (`pytest -q`), and any data/schema impact.
 - Include screenshots or rendered output notes when changing `publish`/HTML behavior.
+- When creating/editing PR descriptions via `gh`, avoid literal `\n` escapes in `--body`; use `--body-file` (preferred) or a heredoc/ANSI-C quoted string so markdown line breaks render correctly.
 
 ## Configuration & Data Notes
 - Do not hardcode source URLs; update `config/sources.json`.
