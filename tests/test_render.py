@@ -1,4 +1,5 @@
 from bracket_matrix.render import (
+    _build_ebs_rankings,
     _build_date_filter_options,
     _abbrev_source_label,
     _bracket_share_heat_class,
@@ -356,6 +357,7 @@ def test_format_generated_at_et_converts_from_utc_iso():
 
 def test_format_avg_seed_returns_na_for_sentinel_value():
     assert _format_avg_seed(99.0) == "na"
+    assert _format_avg_seed(32.0) == "32"
     assert _format_avg_seed(7.25) == "7.2"
 
 
@@ -494,6 +496,7 @@ def test_render_index_html_analytics_tab_shows_ebs_projection(tmp_path):
             "conference": "SEC",
             "bart_rank": "10",
             "wab_rank": "14",
+            "net_rank": "9",
         },
         {
             "canonical_slug": "team-b",
@@ -501,6 +504,7 @@ def test_render_index_html_analytics_tab_shows_ebs_projection(tmp_path):
             "conference": "ACC",
             "bart_rank": "12",
             "wab_rank": "18",
+            "net_rank": "12",
         },
         {
             "canonical_slug": "team-c",
@@ -508,6 +512,7 @@ def test_render_index_html_analytics_tab_shows_ebs_projection(tmp_path):
             "conference": "B12",
             "bart_rank": "16",
             "wab_rank": "24",
+            "net_rank": "21",
         },
     ]
 
@@ -530,9 +535,39 @@ def test_render_index_html_analytics_tab_shows_ebs_projection(tmp_path):
     )
 
     html = output_path.read_text(encoding="utf-8")
-    assert "EBS Projection" in html
+    assert "Projected Field" in html
     assert "EBS Score" in html
     assert "Bubble Candidates" in html
+    assert "Next Out" in html
+    assert "Ranking Formula:" in html
+    assert "analytics-preset" in html
+    assert "analytics-custom-controls" in html
+    assert "analytics-data" in html
+
+
+def test_build_ebs_rankings_breaks_ties_with_wab_before_bart():
+    rankings = _build_ebs_rankings(
+        [
+            {
+                "canonical_slug": "team-a",
+                "team_display": "Team A",
+                "conference": "ACC",
+                "bart_rank": "1",
+                "wab_rank": "9",
+                "net_rank": "5",
+            },
+            {
+                "canonical_slug": "team-b",
+                "team_display": "Team B",
+                "conference": "ACC",
+                "bart_rank": "9",
+                "wab_rank": "1",
+                "net_rank": "5",
+            },
+        ],
+        [],
+    )
+    assert [row["canonical_slug"] for row in rankings] == ["team-b", "team-a"]
 
 
 def test_split_ebs_projected_and_bubble_prefers_forced_autobid():
