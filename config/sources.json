@@ -15,6 +15,14 @@
       "use_playwright_fallback": true
     },
     {
+      "source_key": "ncaa",
+      "source_name": "NCAA",
+      "source_url": "https://www.ncaa.com/news/basketball-women/article/2026-03-10/2026-march-madness-womens-basketball-bracket-predictions-days-selection-sunday",
+      "parser": "ncaa",
+      "use_playwright_fallback": false,
+      "require_newer_than_previous": true
+    },
+    {
       "source_key": "college_sports_madness",
       "source_name": "College Sports Madness",
       "source_url": "https://www.collegesportsmadness.com/womens-basketball/bracketology",

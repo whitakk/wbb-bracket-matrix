@@ -1,0 +1,9 @@
+source_key,source_name,source_url,source_updated_at_raw,source_updated_at_iso,scraped_at_iso,status,error_message,row_count
+her_hoop_stats,Her Hoop Stats,https://herhoopstats.com/bracketology/,"March 11, 2026",2026-03-11T00:00:00+00:00,2026-03-12T14:30:33+00:00,ok,,76
+espn,ESPN,https://www.espn.com/espn/feature/story/_/id/30423107/ncaa-women-bracketology-2026-women-college-basketball-projections,"3/10/26, 11:45pm ET",2026-03-10T23:45:00+00:00,2026-03-12T14:30:33+00:00,ok,,76
+ncaa,NCAA,https://www.ncaa.com/news/basketball-women/article/2026-03-10/2026-march-madness-womens-basketball-bracket-predictions-days-selection-sunday,,,2026-03-12T14:30:33+00:00,ok,,60
+college_sports_madness,College Sports Madness,https://www.collegesportsmadness.com/womens-basketball/bracketology,3/11/2026,2026-03-11T00:00:00+00:00,2026-03-12T14:30:33+00:00,ok,,68
+the_ix,The IX,https://www.theixsports.com/category/the-ix-basketball-newsroom/ncaa-basketball/bracketology/,"March 11, 2026",2026-03-11T00:00:00+00:00,2026-03-12T14:30:33+00:00,ok,,79
+cbssports,CBS Sports,https://www.cbssports.com/womens-college-basketball/,"Mar 9, 2026 at 2:07 pm ET",2026-03-09T14:07:00+00:00,2026-03-12T14:30:33+00:00,ok,,76
+usatoday,USA Today,https://www.usatoday.com/sports/ncaaw/ncaa-womens-basketball-tournament/,"March 8, 2026",2026-03-08T00:00:00+00:00,2026-03-12T14:30:33+00:00,ok,,76
+the_athletic,The Athletic,https://www.nytimes.com/athletic/tag/bracketcentral/,3/6/2026,2026-03-06T00:00:00+00:00,2026-03-12T14:30:33+00:00,ok,,71

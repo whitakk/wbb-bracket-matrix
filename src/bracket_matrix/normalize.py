@@ -32,6 +32,8 @@ PLACEHOLDER_PATTERNS = [
         r"at-?large",
         r"^\d[\d,\s]+$",
         r"\b(?:am|pm)\s*et\b",
+        r"order\s+[^A-Za-z0-9]*rare\s+gems",
+        r"\bthe[\s\-_]*ix[\s\-_]*sports\b",
         r"^(atlantic 10|big east|ivy league|maac|summit league|sun belt|wcc|big sky|mac|mountain west|cusa|american|big west|mvc|ovc|southland|america east|caa|wac|horizon|asun|patriot|meac|swac|nec|big south|socon|acc|sec|big ten|big 12|pac-12|pac 12)$",
     ]
 ]
