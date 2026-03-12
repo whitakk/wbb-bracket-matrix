@@ -101,6 +101,34 @@ def _extract_manual_article_url_from_html(html: str) -> str:
     return ""
 
 
+def _load_previous_latest_rows_by_source(paths: PipelinePaths) -> dict[str, list[SourceProjectionRow]]:
+    latest_raw_path = _latest_paths(paths)["raw"]
+    if not latest_raw_path.exists():
+        return {}
+
+    rows_by_source: dict[str, list[SourceProjectionRow]] = {}
+    for raw_row in read_dict_csv(latest_raw_path):
+        try:
+            row = _parse_raw_row(raw_row)
+        except Exception:  # noqa: BLE001
+            continue
+        rows_by_source.setdefault(row.source_key, []).append(row)
+    return rows_by_source
+
+
+def _load_previous_latest_meta_by_source(paths: PipelinePaths) -> dict[str, dict[str, str]]:
+    latest_meta_path = _latest_paths(paths)["meta"]
+    if not latest_meta_path.exists():
+        return {}
+
+    meta_by_source: dict[str, dict[str, str]] = {}
+    for meta_row in read_dict_csv(latest_meta_path):
+        source_key = meta_row.get("source_key", "")
+        if source_key:
+            meta_by_source[source_key] = meta_row
+    return meta_by_source
+
+
 def run_scrape(
     *,
     paths: PipelinePaths | None = None,
@@ -116,6 +144,9 @@ def run_scrape(
 
     timestamp = utc_compact_timestamp()
     scraped_at_iso = utc_now_iso()
+
+    previous_rows_by_source = _load_previous_latest_rows_by_source(active_paths)
+    previous_meta_by_source = _load_previous_latest_meta_by_source(active_paths)
 
     all_rows: list[dict[str, str | int | bool]] = []
     all_meta: list[dict[str, str | int]] = []
@@ -189,6 +220,22 @@ def run_scrape(
                     source_rows = result_pw.rows
                     updated_at_raw = result_pw.updated_at_raw
                     updated_at_iso = result_pw.updated_at_iso
+
+            requires_newer_version = bool(source.get("require_newer_than_previous", False))
+            previous_meta = previous_meta_by_source.get(source_key, {})
+            previous_updated_iso = normalize_ws(str(previous_meta.get("source_updated_at_iso", "")))
+            current_updated_iso = normalize_ws(updated_at_iso)
+
+            if requires_newer_version and previous_updated_iso:
+                is_newer = bool(current_updated_iso) and current_updated_iso > previous_updated_iso
+                if not is_newer:
+                    print(
+                        f"[scrape] {source_key} unchanged; keeping previous rows "
+                        f"({previous_updated_iso} >= {current_updated_iso or 'missing'})"
+                    )
+                    source_rows = previous_rows_by_source.get(source_key, [])
+                    updated_at_raw = str(previous_meta.get("source_updated_at_raw", ""))
+                    updated_at_iso = previous_updated_iso
         except Exception as exc:  # noqa: BLE001
             status = "error"
             error_message = str(exc)
@@ -232,6 +279,19 @@ def run_build(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
     source_keys = [row["source_key"] for row in source_meta_rows]
 
     filtered_rows = [row for row in raw_rows if not is_placeholder_team(row.team_raw)]
+    filtered_placeholder_names = sorted(
+        {
+            normalize_ws(row.team_raw)
+            for row in raw_rows
+            if is_placeholder_team(row.team_raw)
+        }
+    )
+    if filtered_placeholder_names:
+        preview_count = 12
+        preview = ", ".join(filtered_placeholder_names[:preview_count])
+        remainder = len(filtered_placeholder_names) - preview_count
+        suffix = f" (+{remainder} more)" if remainder > 0 else ""
+        print(f"[build] filtered placeholder teams: {preview}{suffix}")
 
     aliases = load_aliases(active_paths.data_dir / "aliases.csv")
     team_names = [row.team_raw for row in filtered_rows]

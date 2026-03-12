@@ -5,6 +5,7 @@ from bracket_matrix.scrapers.collegesportsmadness import parse_college_sports_ma
 from bracket_matrix.scrapers.common import extract_out_teams, to_soup
 from bracket_matrix.scrapers.espn import parse_espn
 from bracket_matrix.scrapers.herhoopstats import parse_her_hoop_stats
+from bracket_matrix.scrapers import ncaa
 from bracket_matrix.scrapers import theathletic
 from bracket_matrix.scrapers import theix
 from bracket_matrix.scrapers import usatoday
@@ -354,6 +355,105 @@ def test_parse_usatoday_skips_when_no_bracketology_link_found():
     assert result.rows == []
     assert result.updated_at_raw == ""
     assert result.updated_at_iso == ""
+
+
+def test_ncaa_finds_first_article_url_from_google_results():
+    url = ncaa._find_first_ncaa_article_url(
+        _read("ncaa_google_results.html"),
+        "https://www.google.com/search?q=allintitle%3A+women%27s+%22bracket+predictions%22+site%3Ancaa.com&as_qdr=all",
+    )
+
+    assert (
+        url
+        == "https://www.ncaa.com/news/basketball-women/article/2026-03-10/"
+        "2026-march-madness-womens-basketball-bracket-predictions-days-selection-sunday"
+    )
+
+
+def test_parse_ncaa_uses_google_first_result_and_parses_rows(monkeypatch):
+    search_html = _read("ncaa_google_results.html")
+    article_html = _read("ncaa_article.html")
+    resolved_url = (
+        "https://www.ncaa.com/news/basketball-women/article/2026-03-10/"
+        "2026-march-madness-womens-basketball-bracket-predictions-days-selection-sunday"
+    )
+
+    def fake_fetch_html_response(url: str) -> tuple[str, str]:
+        assert url == resolved_url
+        return resolved_url, article_html
+
+    monkeypatch.setattr(ncaa, "_fetch_html_response", fake_fetch_html_response)
+
+    result = ncaa.parse_ncaa(
+        source_key="ncaa",
+        source_name="NCAA",
+        source_url="https://www.google.com/search?q=allintitle%3A+women%27s+%22bracket+predictions%22+site%3Ancaa.com&as_qdr=all",
+        html=search_html,
+        scraped_at_iso="2026-03-10T20:00:00+00:00",
+    )
+
+    parsed = {(row.seed, row.team_raw, row.is_play_in) for row in result.rows}
+    assert (1, "UCLA", False) in parsed
+    assert (1, "South Carolina", False) in parsed
+    assert (2, "Texas", False) in parsed
+    assert (11, "Princeton", True) in parsed
+    assert (11, "Villanova", True) in parsed
+    assert all(row.source_url == resolved_url for row in result.rows)
+    assert result.updated_at_iso.startswith("2026-03-10T14:15:00")
+
+
+def test_ncaa_extracts_projection_table_and_ignores_other_tables(monkeypatch):
+    search_html = _read("ncaa_google_results.html")
+    resolved_url = (
+        "https://www.ncaa.com/news/basketball-women/article/2026-03-10/"
+        "2026-march-madness-womens-basketball-bracket-predictions-days-selection-sunday"
+    )
+    article_html = """
+    <html>
+      <body>
+        <table>
+          <tr>
+            <th>Seed</th><th>Regional 1 - Fort worth</th><th>Region 4 - sacramento</th>
+            <th>Region 2 - Sacramento</th><th>Region 3 - fort worth</th>
+          </tr>
+          <tr><td>1</td><td>UConn</td><td>South Carolina</td><td>UCLA</td><td>Texas</td></tr>
+          <tr><td>11</td><td>Princeton/Villanova</td><td>Arizona State</td><td>UNLV</td><td>Nebraska</td></tr>
+          <tr><td>16</td><td>Cal Baptist/Navy</td><td>Howard/FDU</td><td>Alabama A&amp;M</td><td>Samford</td></tr>
+        </table>
+        <table>
+          <tr><th>Conference</th><th>Total teams</th><th>Teams</th></tr>
+          <tr><td>Big Ten</td><td>12</td><td>Illinois, Iowa, Maryland</td></tr>
+        </table>
+      </body>
+    </html>
+    """
+
+    def fake_fetch_html_response(url: str) -> tuple[str, str]:
+        assert url == resolved_url
+        return resolved_url, article_html
+
+    monkeypatch.setattr(ncaa, "_fetch_html_response", fake_fetch_html_response)
+
+    result = ncaa.parse_ncaa(
+        source_key="ncaa",
+        source_name="NCAA",
+        source_url="https://www.google.com/search?q=allintitle%3A+women%27s+%22bracket+predictions%22+site%3Ancaa.com&as_qdr=all",
+        html=search_html,
+        scraped_at_iso="2026-03-10T20:00:00+00:00",
+    )
+
+    parsed = {(row.seed, row.team_raw, row.is_play_in) for row in result.rows}
+    assert len(parsed) == len(result.rows)
+    assert (1, "UConn", False) in parsed
+    assert (1, "South Carolina", False) in parsed
+    assert (1, "UCLA", False) in parsed
+    assert (1, "Texas", False) in parsed
+    assert (11, "Princeton", True) in parsed
+    assert (11, "Villanova", True) in parsed
+    assert (16, "Cal Baptist", True) in parsed
+    assert (16, "Navy", True) in parsed
+    assert (12, "Illinois", False) not in parsed
+    assert result.updated_at_iso.startswith("2026-03-10T")
 
 
 def test_theathletic_finds_latest_womens_bracket_watch_article_url():

@@ -103,6 +103,37 @@ The update checker compares the latest tag-page URL against your manual HTML URL
 `run-all` now also performs this Athletic update check automatically when `the_athletic`
 is present in `config/sources.json`.
 
+## Manual source update steps
+
+### The Athletic (`the_athletic`)
+1. Open the latest women’s bracket article on The Athletic.
+2. Save full page HTML to `data/manual/the_athletic_latest.html`.
+3. Run:
+
+```bash
+python -m bracket_matrix scrape
+python -m bracket_matrix build
+python -m bracket_matrix publish
+```
+
+### NCAA (`ncaa`)
+`ncaa` currently uses a direct article URL in `config/sources.json` (`source_key: ncaa`) because
+Google result pages are bot-protected and can be unreliable in automation.
+
+When NCAA posts a new bracket predictions article:
+1. Update the `ncaa` `source_url` in `config/sources.json` to the new NCAA article URL.
+2. Run:
+
+```bash
+python -m bracket_matrix scrape
+python -m bracket_matrix build
+python -m bracket_matrix publish
+```
+
+Quick validation after scrape:
+- `ncaa` should usually produce `68` rows in `data/latest/source_rows_latest.csv`.
+- If a new URL is not newer than the previously captured NCAA update time, prior NCAA rows are kept.
+
 Optional env vars for `run-all` Athletic update notifications:
 - `BRACKET_MATRIX_CHECK_ATHLETIC_USE_PLAYWRIGHT` (`true`/`false` for tag page fetch mode)
 
