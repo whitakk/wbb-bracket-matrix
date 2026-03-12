@@ -422,7 +422,7 @@ def test_render_index_html_links_source_headers(tmp_path):
     assert "Bubble Team</td><td>A10</td><td>na</td><td class=\"bracket-share share-0\">0%</td><td>50%</td><td>50%</td>" in html
     assert "Autobids in bold." in html
     assert "Note: not all brackets publish first four out / next four out." in html
-    assert "Kevin Whitaker / <a href=\"https://x.com/whitakk\"" in html
+    assert "Feedback: <a href=\"https://x.com/whitakk\"" in html
     assert "<td><strong>Team A</strong></td>" in html
 
 
