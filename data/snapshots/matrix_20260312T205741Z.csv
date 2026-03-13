@@ -64,25 +64,21 @@ miami-oh,Miami (OH),,,6,12.167,MAC,,13,14,13,8,13,12,
 la-tech,La. Tech,,,8,12.5,CUSA,13,14,15,13,6,13,13,13
 san-diego-state,San Diego State,,,1,13,MWC,,,,,,,,13
 south-fla,South Fla.,,,1,13,Amer,13,,,,,,,
-mcneese-state,McNeese St,,,6,13.167,Slnd,14,,13,,14,12,13,13
-murray-state,Murray St,,,8,13.25,MVC,14,12,15,13,14,12,12,14
-uc-irvine,UC Irvine,,,7,13.286,BW,13,13,13,14,13,14,13,
-la-tech,La. Tech,,,8,13.375,CUSA,13,14,15,13,13,13,13,13
+idaho,Idaho,,,7,13.143,BSky,,14,14,15,7,14,14,14
+uc-irvine,UC Irvine,,,7,13.143,BW,13,13,13,14,12,14,13,
+mcneese-state,McNeese St,,,8,13.25,Slnd,14,14,13,14,13,12,13,13
 loyola-marymount,Loyola Marymount,,,4,13.5,WCC,,,12,,,15,15,12
-green-bay,Green Bay,,,8,13.75,Horz,15,13,13,13,15,14,14,13
-western-illinois,Western Illinois,,,8,13.875,OVC,14,15,13,15,14,13,13,14
-stephen-f-austin,Stephen F. Austin,,,1,14,Slnd,,,,14,,,,
-charleston,Charleston,,,8,14.125,CAA,15,14,14,14,15,13,14,14
-idaho,Idaho,,,7,14.143,BSky,,14,14,15,14,14,14,14
-vermont,Vermont,,,8,14.25,AE,14,14,15,14,13,15,14,15
+green-bay,Green Bay,,,7,13.571,Horz,15,13,13,13,,14,14,13
+western-illinois,Western Illinois,,,7,13.857,OVC,14,15,13,15,,13,13,14
+charleston,Charleston,,,8,13.875,CAA,15,15,14,14,12,13,14,14
+vermont,Vermont,,,8,13.875,AE,14,14,15,14,10,15,14,15
+navy,Navy,,,7,14.286,Pat,,15,16,16,8,15,15,15
 unlv,UNLV,,,2,14.5,MWC,,,,,,14,15,
 abilene-christian,Abilene Christian,,,1,15,WAC,15,,,,,,,
 uc-san-diego,UC San Diego,,,1,15,BW,,,,,,,,15
-navy,Navy,,,6,15.167,Pat,,15,16,,15,15,15,15
+fdu,FDU,,,8,15.375,NEC,16,16,16,15,14,15,15,16
+high-point,High Point,,,8,15.375,BSth,16,16,14,16,14,16,16,15
 jacksonville,Jacksonville,,,7,15.429,ASun,15,15,15,15,16,16,16,
-fdu,FDU,,,8,15.5,NEC,16,16,16,15,15,15,15,16
-high-point,High Point,,,8,15.625,BSth,16,16,14,16,16,16,16,15
-ca-baptist,CA Baptist,,,7,15.857,WAC,,15,16,16,16,16,16,16
 alabama-a-and-m,Alabama A&M,,,8,16,SWAC,16,16,16,16,16,16,16,16
 howard,Howard,,,8,16,MEAC,16,16,16,16,16,16,16,16
 samford,Samford,,,7,16,SC,16,16,16,16,16,16,16,
@@ -90,8 +86,6 @@ ca-baptist,CA Baptist,,,6,16,WAC,,16,16,16,,16,16,16
 army-west-point,Army West Point,,,1,16,Pat,16,,,,,,,
 chattanooga,Chattanooga,,,1,16,SC,,,,,,,,16
 e-kentucky,Eastern Kentucky,,,1,16,ASun,,,,,,,,16
-holy-cross,Holy Cross,,,1,16,Pat,,,,16,,,,
-sf-austin,SF Austin,,,1,16,,,16,,,,,,
 florida,Florida,,,0,99.0,SEC,,,,,,,FFO,
 indiana,Indiana,,,0,99.0,B10,,NFO,,,NFO,NFO,,
 kansas,Kansas,,,0,99.0,B12,,,,,,NFO,,
