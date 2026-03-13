@@ -333,26 +333,28 @@ def _render_analytics_ebs_html(
 
     return f"""
       <div class=\"card\" style=\"margin-top:14px;\">
-        <div class=\"controls analytics-controls\">
-          <label for=\"analytics-preset\">Ranking Formula:</label>
-          <select id=\"analytics-preset\">
-            <option value=\"ebs\" selected>EBS</option>
-            <option value=\"wab\">WAB</option>
-            <option value=\"bart\">T-Rank</option>
-            <option value=\"net\">NET</option>
-            <option value=\"custom\">Custom</option>
-          </select>
-          <div id=\"analytics-custom-controls\" style=\"display:none;\">
-            <label for=\"analytics-weight-wab\">WAB %</label>
-            <input id=\"analytics-weight-wab\" type=\"number\" min=\"0\" max=\"100\" step=\"1\" value=\"50\" />
-            <label for=\"analytics-weight-bart\">T-Rank %</label>
-            <input id=\"analytics-weight-bart\" type=\"number\" min=\"0\" max=\"100\" step=\"1\" value=\"50\" />
-            <label for=\"analytics-weight-net\">NET %</label>
-            <input id=\"analytics-weight-net\" type=\"number\" min=\"0\" max=\"100\" step=\"1\" value=\"0\" />
+        <div class=\"analytics-formula-sticky\">
+          <div class=\"controls analytics-controls\">
+            <label for=\"analytics-preset\">Ranking Formula:</label>
+            <select id=\"analytics-preset\">
+              <option value=\"ebs\" selected>EBS</option>
+              <option value=\"wab\">WAB</option>
+              <option value=\"bart\">T-Rank</option>
+              <option value=\"net\">NET</option>
+              <option value=\"custom\">Custom</option>
+            </select>
+            <div id=\"analytics-custom-controls\" style=\"display:none;\">
+              <label for=\"analytics-weight-wab\">WAB %</label>
+              <input id=\"analytics-weight-wab\" type=\"number\" min=\"0\" max=\"100\" step=\"1\" value=\"50\" />
+              <label for=\"analytics-weight-bart\">T-Rank %</label>
+              <input id=\"analytics-weight-bart\" type=\"number\" min=\"0\" max=\"100\" step=\"1\" value=\"50\" />
+              <label for=\"analytics-weight-net\">NET %</label>
+              <input id=\"analytics-weight-net\" type=\"number\" min=\"0\" max=\"100\" step=\"1\" value=\"0\" />
+            </div>
+            <span id=\"analytics-weight-status\" class=\"section-note\" style=\"margin:0;\"></span>
           </div>
-          <span id=\"analytics-weight-status\" class=\"section-note\" style=\"margin:0;\"></span>
+          <p class=\"section-note\" id=\"analytics-formula-note\"><a href=\"https://www.ncaa.com/rankings/basketball-women/d1/wab-ranking\" target=\"_blank\" rel=\"noopener noreferrer\">WAB</a> = Wins Above Bubble. <a href=\"https://barttorvik.com/ncaaw/#\" target=\"_blank\" rel=\"noopener noreferrer\">T-Rank</a> = Bart Torvik's predictive rating. <a href=\"https://kaleidoscopemind.substack.com/i/142652355/one-metric-to-rule-them-all\" target=\"_blank\" rel=\"noopener noreferrer\">EBS (Easy Bubble Solver)</a> = 50% WAB + 50% T-Rank.</p>
         </div>
-        <p class=\"section-note\" id=\"analytics-formula-note\"><a href=\"https://www.ncaa.com/rankings/basketball-women/d1/wab-ranking\" target=\"_blank\" rel=\"noopener noreferrer\">WAB</a> = Wins Above Bubble. <a href=\"https://barttorvik.com/ncaaw/#\" target=\"_blank\" rel=\"noopener noreferrer\">T-Rank</a> = Bart Torvik's predictive rating. <a href=\"https://kaleidoscopemind.substack.com/i/142652355/one-metric-to-rule-them-all\" target=\"_blank\" rel=\"noopener noreferrer\">EBS (Easy Bubble Solver)</a> = 50% WAB + 50% T-Rank.</p>
         <h2>Projected Field</h2>
         <table class=\"matrix analytics-table\">
           <colgroup>
@@ -956,6 +958,7 @@ def render_index_html(
       --line: #ced6c9;
       --accent: #2f5d3a;
       --sticky-header-top: 0px;
+      --analytics-sticky-height: 0px;
     }}
     * {{ box-sizing: border-box; }}
     body {{ margin: 0; font-family: "Source Sans 3", "Segoe UI", sans-serif; background: radial-gradient(circle at top right, #e9f2e6, var(--bg)); color: var(--ink); }}
@@ -968,6 +971,7 @@ def render_index_html(
     th, td {{ border: 1px solid var(--line); padding: 6px 8px; text-align: center; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }}
     th {{ background: #eef3ea; font-weight: 700; }}
     thead th {{ position: sticky; top: var(--sticky-header-top); z-index: 2; }}
+    .analytics-table thead th {{ top: calc(var(--sticky-header-top) + var(--analytics-sticky-height)); }}
     .matrix tbody tr:nth-child(odd) {{ background: #fbfdf9; }}
     .matrix tbody tr:hover {{ background: #f0f6eb; }}
     td:nth-child(2), th:nth-child(2) {{ text-align: left; min-width: 200px; }}
@@ -989,6 +993,16 @@ def render_index_html(
     .controls label {{ font-weight: 600; }}
     .controls select {{ border: 1px solid var(--line); border-radius: 6px; padding: 5px 8px; background: #fff; color: var(--ink); }}
     .analytics-controls {{ flex-wrap: wrap; row-gap: 8px; column-gap: 12px; margin-bottom: 6px; }}
+    .analytics-formula-sticky {{
+      position: sticky;
+      top: var(--sticky-header-top);
+      z-index: 5;
+      background: var(--paper);
+      margin: -2px -2px 8px;
+      padding: 2px 2px 6px;
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 2px 0 rgba(206, 214, 201, 0.5);
+    }}
     .analytics-controls > label {{ margin-right: 2px; }}
     #analytics-preset {{ min-width: 118px; }}
     #analytics-custom-controls {{ display: inline-flex; align-items: center; gap: 8px; }}
@@ -1000,7 +1014,19 @@ def render_index_html(
     #analytics-formula-note {{ margin-top: 2px; }}
     #analytics-autobids-note {{ margin: 8px 0 2px; }}
     #analytics-preset:focus, #analytics-custom-controls input:focus {{ outline: 2px solid rgba(43, 116, 66, 0.35); outline-offset: 1px; }}
-    .tabs {{ display: flex; gap: 8px; margin: 10px 0 14px; flex-wrap: wrap; }}
+    .tabs {{
+      display: flex;
+      gap: 8px;
+      margin: 10px 0 14px;
+      flex-wrap: wrap;
+      position: sticky;
+      top: 0;
+      z-index: 8;
+      background: color-mix(in srgb, var(--bg) 92%, #ffffff 8%);
+      padding: 8px 0;
+      border-bottom: 1px solid var(--line);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    }}
     .tab-btn {{ border: 1px solid var(--line); background: #eef3ea; color: var(--ink); border-radius: 999px; padding: 6px 12px; font-weight: 600; cursor: pointer; }}
     .tab-btn.is-active {{ background: var(--accent); color: #fff; border-color: var(--accent); }}
     .section-note {{ margin: 0 0 10px; color: var(--muted); font-size: 0.95rem; }}
@@ -1025,23 +1051,24 @@ def render_index_html(
       .matrix col.avg-col {{ width: 78px; }}
       .matrix col.seed-range-col {{ width: 96px; }}
       .matrix col.app-col {{ width: 88px; }}
-      .matrix th:nth-child(1), .matrix td:nth-child(1) {{
-        position: sticky;
-        left: 0;
-        z-index: 3;
-        background: #eef3ea;
+      .card {{ overflow-x: auto; -webkit-overflow-scrolling: touch; }}
+      .matrix {{ min-width: 740px; }}
+      .matrix th, .matrix td {{ overflow: visible; }}
+      .matrix th:nth-child(1), .matrix td:nth-child(1), .matrix th:nth-child(2), .matrix td:nth-child(2) {{
+        position: static;
+        left: auto;
+        z-index: auto;
+        box-shadow: none;
       }}
-      .matrix th:nth-child(2), .matrix td:nth-child(2) {{
-        position: sticky;
-        left: 56px;
-        z-index: 3;
-        background: #f8fbf6;
-        box-shadow: 3px 0 0 rgba(206, 214, 201, 0.85);
-      }}
-      .matrix td:nth-child(1) {{ background: #f4f8f2; }}
-      .matrix tbody tr:nth-child(odd) td:nth-child(2) {{ background: #f2f7ee; }}
       .analytics-controls {{ align-items: flex-start; }}
       #analytics-custom-controls {{ flex-wrap: wrap; }}
+      .analytics-formula-sticky {{
+        position: static;
+        margin: 0;
+        padding: 0;
+        border-bottom: 0;
+        box-shadow: none;
+      }}
     }}
   </style>
 </head>
@@ -1094,6 +1121,25 @@ def render_index_html(
       const tabViews = document.querySelectorAll("[data-tab-view]");
       if (!tabButtons.length || !tabViews.length) return;
 
+      const rootStyle = document.documentElement.style;
+      const tabs = document.querySelector(".tabs");
+      const analyticsView = document.querySelector('[data-tab-view="analytics"]');
+      const analyticsFormulaSticky = document.querySelector(".analytics-formula-sticky");
+      const updateStickyOffsets = () => {{
+        const tabsHeight = tabs ? Math.ceil(tabs.getBoundingClientRect().height) : 0;
+        rootStyle.setProperty("--sticky-header-top", `${{tabsHeight}}px`);
+
+        const formulaIsSticky = analyticsFormulaSticky
+          ? window.getComputedStyle(analyticsFormulaSticky).position === "sticky"
+          : false;
+        if (!analyticsView || !analyticsFormulaSticky || analyticsView.style.display === "none" || !formulaIsSticky) {{
+          rootStyle.setProperty("--analytics-sticky-height", "0px");
+          return;
+        }}
+        const stickyHeight = Math.ceil(analyticsFormulaSticky.getBoundingClientRect().height);
+        rootStyle.setProperty("--analytics-sticky-height", `${{stickyHeight}}px`);
+      }};
+
       const showTab = (target) => {{
         tabViews.forEach((view) => {{
           view.style.display = view.getAttribute("data-tab-view") === target ? "block" : "none";
@@ -1103,12 +1149,14 @@ def render_index_html(
           button.classList.toggle("is-active", active);
           button.setAttribute("aria-selected", active ? "true" : "false");
         }});
+        requestAnimationFrame(updateStickyOffsets);
       }};
 
       tabButtons.forEach((button) => {{
         button.addEventListener("click", () => showTab(button.getAttribute("data-tab-target") || "aggregate"));
       }});
       showTab("aggregate");
+      window.addEventListener("resize", updateStickyOffsets);
 
       const analyticsDataElement = document.getElementById("analytics-data");
       if (!analyticsDataElement) return;
