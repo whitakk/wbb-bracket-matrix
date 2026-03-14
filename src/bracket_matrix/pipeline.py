@@ -420,8 +420,13 @@ def run_build(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
     matrix_rows = build_matrix_rows(matrix_input_rows, resolved, source_keys)
     team_conferences = load_team_conferences(active_paths.data_dir / "team_conferences.csv")
 
+    missing_conference_slugs: set[str] = set()
     for matrix_row in matrix_rows:
         matrix_row.conference = team_conferences.get(matrix_row.canonical_slug, "")
+        if not matrix_row.conference:
+            missing_conference_slugs.add(matrix_row.canonical_slug)
+    for slug in sorted(missing_conference_slugs):
+        print(f"[build] WARNING: no conference found for team slug '{slug}'")
 
     resolved_rows: list[dict[str, str | int | float]] = []
     for row in matrix_input_rows:
