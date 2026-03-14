@@ -43,11 +43,11 @@ south-dakota-state,South Dakota St,,,8,10.75,Sum,11,10,12,12,11,10,10,10
 richmond,Richmond,,,6,10.833,A10,11,11,11,,11,FFO,10,11
 virginia,Virginia,,,8,10.875,ACC,11,12,11,9,11,11,11,11
 fairfield,Fairfield,,,8,11,MAAC,11,11,11,11,10,11,11,12
-byu,BYU,,,1,11,B12,FFO,FFO,,,FFO,11,FFO,NFO
+byu,BYU,,,1,11,B12,FFO,FFO,,,FFO,11,FFO,
 stanford,Stanford,,,1,11,ACC,,NFO,,11,NFO,FFO,NFO,
 texas-a-and-m,Texas A&M,,,1,11,SEC,,FFO,,,NFO,FFO,NFO,11
-utah,Utah,,,1,11,B12,FFO,FFO,,11,FFO,FFO,,NFO
-nebraska,Nebraska,,,7,11.143,B10,11,11,11,11,11,11,12,FFO
+utah,Utah,,,1,11,B12,FFO,FFO,,11,FFO,FFO,,
+nebraska,Nebraska,,,7,11.143,B10,11,11,11,11,11,11,12,
 arizona-state,Arizona St,,,8,11.25,B12,11,12,11,11,11,11,12,11
 rice,Rice,,,8,11.375,Amer,12,11,10,11,12,12,11,12
 james-madison,James Madison,,,6,11.833,SB,12,12,,12,12,,12,11
@@ -66,8 +66,8 @@ loyola-marymount,Loyola Marymount,,,3,14,WCC,,,12,,,15,15,
 uc-san-diego,UC San Diego,,,2,14,BW,,14,,14,,,,
 idaho,Idaho,,,8,14.125,BSky,14,13,14,15,14,14,14,15
 vermont,Vermont,,,8,14.25,AE,13,14,15,14,13,15,14,16
+stephen-f-austin,Stephen F. Austin,,,3,14.333,Slnd,16,,,14,,,,13
 unlv,UNLV,,,2,14.5,MWC,,,,,,14,15,
-stephen-f-austin,Stephen F. Austin,,,5,15,Slnd,16,16,,14,16,,,13
 abilene-christian,Abilene Christian,,,1,15,WAC,15,,,,,,,
 hawaii,Hawaii,,,1,15,BW,15,,,,,,,
 jacksonville,Jacksonville,,,8,15.25,ASun,15,15,15,15,15,16,16,15
@@ -79,11 +79,13 @@ high-point,High Point,,,8,15.75,BSth,16,16,14,16,16,16,16,16
 howard,Howard,,,8,16,MEAC,16,16,16,16,16,16,16,16
 samford,Samford,,,8,16,SC,16,16,16,16,16,16,16,16
 alabama-a-and-m,Alabama A&M,,,5,16,SWAC,,,16,,16,16,16,16
-southern,Southern,,,3,16,SWAC,16,16,,16,,,,
-columbia,Columbia,,,0,99.0,Ivy,,,,,,,NFO,NFO
-florida,Florida,,,0,99.0,SEC,,,,,,,FFO,NFO
+southern-u,Southern U.,,,3,16,,16,16,,16,,,,
+sf-austin,SF Austin,,,1,16,,,16,,,,,,
+stephen-f,Stephen F.,,,1,16,,,,,,16,,,
+columbia,Columbia,,,0,99.0,Ivy,,,,,,,NFO,
+florida,Florida,,,0,99.0,SEC,,,,,,,FFO,
 indiana,Indiana,,,0,99.0,B10,,NFO,,,NFO,NFO,,
-kansas,Kansas,,,0,99.0,B12,,,,,,NFO,,FFO
-kansas-state,Kansas State,,,0,99.0,B12,,NFO,,,NFO,,NFO,FFO
-mississippi-state,Mississippi St,,,0,99.0,SEC,FFO,NFO,,,FFO,NFO,FFO,FFO
+kansas,Kansas,,,0,99.0,B12,,,,,,NFO,,
+kansas-state,Kansas State,,,0,99.0,B12,,NFO,,,NFO,,NFO,
+mississippi-state,Mississippi St,,,0,99.0,SEC,FFO,NFO,,,FFO,NFO,FFO,NFO
 n-dakota-state,N Dakota St,,,0,99.0,Sum,FFO,FFO,,,FFO,NFO,FFO,

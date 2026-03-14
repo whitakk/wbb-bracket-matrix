@@ -149,6 +149,33 @@ def _find_out_marker(text: str, *, strict_line_start: bool = False) -> str:
     return ""
 
 
+def _extract_out_teams_from_table(soup: BeautifulSoup) -> list[tuple[str, str, bool]]:
+    pairs: list[tuple[str, str, bool]] = []
+    for table in soup.find_all("table"):
+        header_cells = table.select("thead th")
+        if not header_cells:
+            first_row = table.select_one("tr")
+            header_cells = first_row.find_all("th") if first_row else []
+        if not header_cells:
+            continue
+        col_markers: dict[int, str] = {}
+        for idx, th in enumerate(header_cells):
+            marker = _find_out_marker(normalize_ws(th.get_text(" ", strip=True)))
+            if marker:
+                col_markers[idx] = marker
+        if not col_markers:
+            continue
+        for row in table.select("tbody tr"):
+            cells = row.find_all("td")
+            for idx, marker in col_markers.items():
+                if idx >= len(cells):
+                    continue
+                team = normalize_ws(cells[idx].get_text(" ", strip=True))
+                if _looks_like_out_team(team):
+                    pairs.append((marker, team, False))
+    return pairs
+
+
 def extract_out_teams(soup: BeautifulSoup) -> list[tuple[str, str, bool]]:
     clean_soup = BeautifulSoup(str(soup), "lxml")
     for node in clean_soup.select("script,style,noscript,template"):
@@ -168,6 +195,11 @@ def extract_out_teams(soup: BeautifulSoup) -> list[tuple[str, str, bool]]:
         for team in _split_out_teams(team_blob):
             if _looks_like_out_team(team):
                 pairs.append((marker, team, False))
+
+    # Prefer table-based extraction when F4O/N4O are column headers.
+    table_pairs = _extract_out_teams_from_table(clean_soup)
+    if table_pairs:
+        return table_pairs
 
     # Prefer structured extraction around marker headings.
     heading_like_selectors = "h1,h2,h3,h4,h5,h6,strong,b,p"
