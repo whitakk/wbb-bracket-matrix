@@ -1,0 +1,88 @@
+canonical_slug,team_display,ncaa_id,espn_id,appearances,avg_seed,conference,her_hoop_stats,espn,ncaa,college_sports_madness,the_ix,cbssports,usatoday,the_athletic
+texas,Texas,,,6,1,SEC,1,1,1,1,1,,,1
+ucla,UCLA,,,6,1,B10,1,1,1,1,1,,,1
+uconn,UConn,,,6,1,BE,1,1,1,1,1,,,1
+south-carolina,South Carolina,,,6,1.167,SEC,1,1,1,1,2,,,1
+lsu,LSU,,,6,2,SEC,2,2,2,2,2,,,2
+vanderbilt,Vanderbilt,,,6,2,SEC,2,2,2,2,2,,,2
+duke,Duke,,,5,2,ACC,2,2,2,2,,,,2
+louisville,Louisville,,,6,3,ACC,3,3,3,3,3,,,3
+ohio-state,Ohio St.,,,6,3,B10,3,3,3,3,3,,,3
+michigan,Michigan,,,5,3,B10,3,3,3,3,,,,3
+tcu,TCU,,,6,3.167,B12,3,3,3,3,4,,,3
+iowa,Iowa,,,6,3.333,B10,2,2,2,2,10,,,2
+oklahoma,Oklahoma,,,6,4,SEC,4,4,4,4,4,,,4
+maryland,Maryland,,,6,4.333,B10,4,4,4,5,5,,,4
+north-carolina,North Carolina,,,6,4.667,ACC,5,5,5,4,4,,,5
+ole-miss,Ole Miss,,,5,4.8,SEC,5,5,5,4,,,,5
+michigan-state,Michigan St,,,6,5,B10,5,5,5,5,5,,,5
+minnesota,Minnesota,,,6,5,B10,4,4,4,5,9,,,4
+kentucky,Kentucky,,,6,5.167,SEC,5,5,5,6,5,,,5
+west-virginia,West Virginia,,,6,5.333,B12,4,4,4,4,12,,,4
+notre-dame,Notre Dame,,,5,5.8,ACC,6,6,6,5,,,,6
+alabama,Alabama,,,6,6.167,SEC,6,6,6,7,6,,,6
+baylor,Baylor,,,6,6.167,B12,6,6,6,6,6,,,7
+north-carolina-state,NC State,,,6,6.667,ACC,6,8,6,6,7,,,7
+georgia,Georgia,,,5,6.8,SEC,7,7,7,7,,,,6
+washington,Washington,,,5,6.8,B10,7,7,7,7,,,,6
+iowa-state,Iowa St.,,,5,7.6,B12,8,9,9,,2,,,10
+illinois,Illinois,,,6,7.833,B10,7,7,7,10,8,,,8
+oregon,Oregon,,,6,7.833,B10,8,7,8,10,7,,,7
+texas-tech,Texas Tech,,,6,8,B12,7,6,7,6,15,,,7
+tennessee,Tennessee,,,6,8.167,SEC,8,8,8,8,8,,,9
+usc,USC,,,5,8.2,B10,9,9,8,7,,,,8
+virginia-tech,Virginia Tech,,,6,8.5,ACC,8,9,9,8,6,,,11
+villanova,Villanova,,,6,8.667,BE,9,8,9,8,10,,,8
+syracuse,Syracuse,,,6,9.167,ACC,10,9,9,9,9,,,9
+colorado,Colorado,,,6,9.333,B12,10,10,10,9,8,,,9
+oklahoma-state,Oklahoma St,,,6,9.333,B12,9,8,8,8,15,,,8
+clemson,Clemson,,,6,9.667,ACC,10,10,10,9,9,,,10
+princeton,Princeton,,,6,9.833,Ivy,9,10,11,10,10,,,9
+rice,Rice,,,6,10.167,Amer,12,11,10,11,5,,,12
+south-dakota-state,South Dakota St,,,6,10.167,Sum,11,10,12,12,6,,,10
+rhode-island,Rhode Island,,,5,10.2,A10,10,11,10,10,,,,10
+fairfield,Fairfield,,,6,10.5,MAAC,11,11,11,11,7,,,12
+gonzaga,Gonzaga,,,6,10.667,WCC,12,12,12,12,4,,,12
+virginia,Virginia,,,6,10.833,ACC,11,12,11,9,11,,,11
+nebraska,Nebraska,,,5,11,B10,11,11,11,11,11,,,FFO
+richmond,Richmond,,,5,11,A10,11,11,11,,11,,,11
+stanford,Stanford,,,1,11,ACC,,NFO,,11,NFO,,,
+texas-a-and-m,Texas A&M,,,1,11,SEC,,FFO,,,NFO,,,11
+utah,Utah,,,1,11,B12,FFO,FFO,,11,FFO,,,NFO
+arizona-state,Arizona St,,,5,11.2,B12,11,12,11,11,,,,11
+green-bay,Green Bay,,,6,11.5,Horz,14,13,13,13,3,,,13
+murray-state,Murray St,,,6,11.833,MVC,14,12,15,13,3,,,14
+loyola-marymount,Loyola Marymount,,,1,12,WCC,,,12,,,,,
+colorado-state,Colorado St,,,5,12.2,MWC,12,13,12,12,,,,12
+la-tech,La. Tech,,,6,12.333,CUSA,13,13,15,13,7,,,13
+james-madison,James Madison,,,5,12.4,SB,12,12,,12,15,,,11
+mcneese-state,McNeese St,,,1,13,Slnd,,,13,,,,,
+miami-oh,Miami (OH),,,5,13.2,MAC,13,13,14,13,,,,13
+stephen-f-austin,Stephen F. Austin,,,5,13.4,Slnd,16,16,,14,8,,,13
+howard,Howard,,,6,13.5,MEAC,16,16,16,16,1,,,16
+idaho,Idaho,,,6,13.5,BSky,14,14,14,15,9,,,15
+uc-irvine,UC Irvine,,,2,13.5,BW,,,13,,,,,14
+western-illinois,Western Illinois,,,6,13.833,OVC,13,15,13,15,13,,,14
+charleston,Charleston,,,6,14,CAA,14,14,14,14,14,,,14
+uc-san-diego,UC San Diego,,,2,14,BW,,14,,14,,,,
+jacksonville,Jacksonville,,,6,14.167,ASun,15,15,15,15,10,,,15
+vermont,Vermont,,,6,14.167,AE,13,14,15,14,13,,,16
+abilene-christian,Abilene Christian,,,1,15,WAC,15,,,,,,,
+hawaii,Hawaii,,,1,15,BW,15,,,,,,,
+samford,Samford,,,6,15.167,SC,16,16,16,16,11,,,16
+ca-baptist,CA Baptist,,,5,15.4,WAC,,15,16,16,15,,,15
+fdu,FDU,,,5,15.6,NEC,15,16,16,15,,,,16
+high-point,High Point,,,5,15.6,BSth,16,16,14,16,,,,16
+holy-cross,Holy Cross,,,5,15.6,Pat,16,15,,16,16,,,15
+alabama-a-and-m,Alabama A&M,,,2,16,SWAC,,,16,,,,,16
+alabama-state,Alabama St,,,2,16,SWAC,,16,,,16,,,
+southern,Southern,,,2,16,SWAC,16,,,16,,,,
+navy,Navy,,,1,16,Pat,,,16,,,,,
+byu,BYU,,,0,99.0,B12,FFO,FFO,,,FFO,,,NFO
+columbia,Columbia,,,0,99.0,Ivy,,,,,,,,NFO
+florida,Florida,,,0,99.0,SEC,,,,,,,,NFO
+indiana,Indiana,,,0,99.0,B10,,NFO,,,NFO,,,
+kansas,Kansas,,,0,99.0,B12,,NFO,,,,,,FFO
+kansas-state,Kansas State,,,0,99.0,B12,,,,,NFO,,,FFO
+mississippi-state,Mississippi St,,,0,99.0,SEC,FFO,FFO,,,FFO,,,FFO
+n-dakota-state,N Dakota St,,,0,99.0,Sum,FFO,NFO,,,FFO,,,

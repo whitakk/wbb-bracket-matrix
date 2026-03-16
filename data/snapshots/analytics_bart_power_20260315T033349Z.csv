@@ -1,0 +1,364 @@
+team,conference,bart_rank,barthag
+Connecticut,BE,1,.9996
+UCLA,B10,2,.9992
+Texas,SEC,3,.9988
+South Carolina,SEC,4,.9987
+LSU,SEC,5,.9978
+Michigan,B10,6,.9953
+Duke,ACC,7,.9938
+Minnesota,B10,8,.9917
+Iowa,B10,9,.9910
+Vanderbilt,SEC,10,.9909
+Louisville,ACC,11,.9907
+Maryland,B10,12,.9897
+Ohio St.,B10,13,.9895
+Oklahoma,SEC,14,.9890
+TCU,B12,15,.9887
+West Virginia,B12,16,.9884
+Kentucky,SEC,17,.9883
+North Carolina,ACC,18,.9867
+Washington,B10,19,.9839
+USC,B10,20,.9831
+Mississippi,SEC,21,.9826
+Michigan St.,B10,22,.9823
+Notre Dame,ACC,23,.9806
+Tennessee,SEC,24,.9806
+N.C. State,ACC,25,.9771
+Nebraska,B10,26,.9757
+Oregon,B10,27,.9749
+Villanova,BE,28,.9748
+Alabama,SEC,29,.9727
+Texas Tech,B12,30,.9722
+Illinois,B10,31,.9719
+Georgia,SEC,32,.9718
+Oklahoma St.,B12,33,.9681
+Iowa St.,B12,34,.9672
+Baylor,B12,35,.9647
+Colorado,B12,36,.9623
+Virginia Tech,ACC,37,.9597
+Florida,SEC,38,.9529
+Syracuse,ACC,39,.9512
+Virginia,ACC,40,.9446
+Mississippi St.,SEC,41,.9421
+Stanford,ACC,42,.9420
+James Madison,SB,43,.9375
+Arizona St.,B12,44,.9343
+Richmond,A10,45,.9341
+Indiana,B10,46,.9325
+California,ACC,47,.9285
+Kansas,B12,48,.9275
+Clemson,ACC,49,.9236
+Texas A&M,SEC,50,.9216
+Princeton,Ivy,51,.9204
+South Dakota St.,Sum,52,.9194
+Kansas St.,B12,53,.9138
+Utah,B12,54,.9099
+BYU,B12,55,.9013
+Seton Hall,BE,56,.8999
+Marquette,BE,57,.8944
+Rhode Island,A10,58,.8911
+Georgia Tech,ACC,59,.8902
+Columbia,Ivy,60,.8881
+Fairfield,MAAC,61,.8880
+Gonzaga,WCC,62,.8862
+George Mason,A10,63,.8838
+North Dakota St.,Sum,64,.8810
+Miami FL,ACC,65,.8794
+Montana St.,BSky,66,.8662
+Creighton,BE,67,.8616
+Wisconsin,B10,68,.8614
+Harvard,Ivy,69,.8606
+Colorado St.,MWC,70,.8570
+Penn St.,B10,71,.8502
+Miami OH,MAC,72,.8427
+Purdue,B10,73,.8390
+San Diego St.,MWC,74,.8379
+Missouri,SEC,75,.8357
+Georgetown,BE,76,.8350
+Rice,Amer,77,.8341
+South Florida,Amer,78,.8338
+Georgia Southern,SB,79,.8282
+Oregon St.,WCC,80,.8225
+UNLV,MWC,81,.8138
+St. John's,BE,82,.8119
+Davidson,A10,83,.8097
+Ball St.,MAC,84,.8071
+Auburn,SEC,85,.8006
+Louisiana Tech,CUSA,86,.7984
+Troy,SB,87,.7932
+Green Bay,Horz,88,.7881
+Idaho,BSky,89,.7870
+Santa Clara,WCC,90,.7844
+UC Irvine,BW,91,.7792
+McNeese St.,Slnd,92,.7713
+Cincinnati,B12,93,.7711
+Vermont,AE,94,.7630
+Loyola Marymount,WCC,95,.7625
+Saint Joseph's,A10,96,.7625
+Quinnipiac,MAAC,97,.7607
+Florida St.,ACC,98,.7528
+North Texas,Amer,99,.7526
+Massachusetts,MAC,100,.7472
+Arkansas St.,SB,101,.7426
+Arkansas,SEC,102,.7384
+Murray St.,MVC,103,.7345
+Lindenwood,OVC,104,.7312
+Butler,BE,105,.7285
+Western Illinois,OVC,106,.7234
+Arizona,B12,107,.7058
+Northwestern,B10,108,.7040
+Abilene Christian,WAC,109,.7031
+New Mexico,MWC,110,.7011
+Hawaii,BW,111,.7004
+UC San Diego,BW,112,.6861
+Cal Baptist,WAC,113,.6842
+Boise St.,MWC,114,.6840
+Central Arkansas,ASun,115,.6751
+Providence,BE,116,.6745
+Portland,WCC,117,.6716
+Southern Indiana,OVC,118,.6699
+Belmont,MVC,119,.6697
+Pepperdine,WCC,120,.6658
+Wake Forest,ACC,121,.6602
+Eastern Kentucky,ASun,122,.6589
+Charleston,CAA,123,.6470
+Marshall,SB,124,.6438
+Navy,Pat,125,.6315
+Missouri St.,CUSA,126,.6202
+South Dakota,Sum,127,.6170
+Penn,Ivy,128,.6148
+East Carolina,Amer,129,.6143
+Northern Colorado,BSky,130,.6131
+Grand Canyon,MWC,131,.6129
+Purdue Fort Wayne,Horz,132,.6124
+UTSA,Amer,133,.6084
+Rutgers,B10,134,.6081
+Fairleigh Dickinson,NEC,135,.6065
+Liberty,CUSA,136,.5946
+Northern Iowa,MVC,137,.5927
+Temple,Amer,138,.5898
+Xavier,BE,139,.5880
+UC Santa Barbara,BW,140,.5872
+Ohio,MAC,141,.5864
+Brown,Ivy,142,.5856
+Idaho St.,BSky,143,.5814
+Central Michigan,MAC,144,.5812
+UCF,B12,145,.5757
+Jacksonville,ASun,146,.5698
+Cleveland St.,Horz,147,.5692
+Army,Pat,148,.5674
+Old Dominion,SB,149,.5664
+Youngstown St.,Horz,150,.5639
+San Francisco,WCC,151,.5638
+La Salle,A10,152,.5628
+Toledo,MAC,153,.5599
+Fresno St.,MWC,154,.5489
+Coastal Carolina,SB,155,.5468
+Florida Gulf Coast,ASun,156,.5287
+Bradley,MVC,157,.5256
+Charlotte,Amer,158,.5229
+DePaul,BE,159,.5212
+Louisiana Monroe,SB,160,.5168
+Illinois St.,MVC,161,.5148
+Middle Tennessee,CUSA,162,.5138
+Austin Peay,ASun,163,.5130
+Houston,B12,164,.5079
+High Point,BSth,165,.5056
+Holy Cross,Pat,166,.5039
+Tulsa,Amer,167,.4951
+Drexel,CAA,168,.4896
+UC Davis,BW,169,.4865
+FIU,CUSA,170,.4852
+Southern Utah,WAC,171,.4849
+Dayton,A10,172,.4781
+Saint Mary's,WCC,173,.4692
+Utah Valley,WAC,174,.4686
+George Washington,A10,175,.4631
+Stetson,ASun,176,.4615
+Howard,MEAC,177,.4568
+Kent St.,MAC,178,.4560
+Bryant,AE,179,.4545
+Maine,AE,180,.4523
+Bowling Green,MAC,181,.4488
+Tulane,Amer,182,.4429
+Stephen F. Austin,Slnd,183,.4399
+Northern Kentucky,Horz,184,.4365
+South Alabama,SB,185,.4348
+Sam Houston St.,CUSA,186,.4290
+Pacific,WCC,187,.4209
+Morehead St.,OVC,188,.4117
+Illinois Chicago,MVC,189,.4059
+Cal St. Fullerton,BW,190,.3919
+Lehigh,Pat,191,.3892
+Washington St.,WCC,192,.3859
+UAB,Amer,193,.3849
+St. Thomas,Sum,194,.3848
+Air Force,MWC,195,.3838
+NJIT,AE,196,.3802
+SMU,ACC,197,.3782
+Appalachian St.,SB,198,.3764
+Eastern Washington,BSky,199,.3754
+Tarleton St.,WAC,200,.3738
+Sacramento St.,BSky,201,.3737
+Robert Morris,Horz,202,.3722
+Albany,AE,203,.3705
+UMBC,AE,204,.3694
+Southern Miss,SB,205,.3691
+Lamar,Slnd,206,.3641
+Boston College,ACC,207,.3634
+Drake,MVC,208,.3599
+Oral Roberts,Sum,209,.3588
+SIU Edwardsville,OVC,210,.3489
+Norfolk St.,MEAC,211,.3444
+Radford,BSth,212,.3428
+Loyola Chicago,A10,213,.3395
+St. Bonaventure,A10,214,.3363
+UT Rio Grande Valley,Slnd,215,.3348
+Binghamton,AE,216,.3306
+Eastern Michigan,MAC,217,.3305
+Memphis,Amer,218,.3279
+Chattanooga,SC,219,.3271
+Jacksonville St.,CUSA,220,.3271
+Southeast Missouri St.,OVC,221,.3244
+Nevada,MWC,222,.3169
+Monmouth,CAA,223,.3136
+Wyoming,MWC,224,.3129
+William & Mary,CAA,225,.3127
+Saint Louis,A10,226,.3084
+UT Arlington,WAC,227,.3052
+Elon,CAA,228,.3027
+Northwestern St.,Slnd,229,.3012
+UC Riverside,BW,230,.2999
+Utah Tech,WAC,231,.2976
+Campbell,CAA,232,.2974
+Southern,SWAC,233,.2969
+Alabama A&M,SWAC,234,.2891
+Tennessee Tech,OVC,235,.2867
+Duquesne,A10,236,.2836
+North Alabama,ASun,237,.2811
+Wofford,SC,238,.2808
+Merrimack,MAAC,239,.2700
+West Georgia,ASun,240,.2693
+Florida Atlantic,Amer,241,.2683
+Little Rock,OVC,242,.2629
+Weber St.,BSky,243,.2594
+Towson,CAA,244,.2505
+VCU,A10,245,.2499
+Nicholls St.,Slnd,246,.2463
+Pittsburgh,ACC,247,.2441
+East Tennessee St.,SC,248,.2409
+IU Indy,Horz,249,.2378
+Georgia St.,SB,250,.2367
+Oakland,Horz,251,.2349
+San Diego,WCC,252,.2348
+Delaware,CUSA,253,.2321
+Evansville,MVC,254,.2295
+Northern Arizona,BSky,255,.2289
+Fordham,A10,256,.2273
+Longwood,BSth,257,.2235
+Maryland Eastern Shore,MEAC,258,.2225
+Tennessee Martin,OVC,259,.2209
+Kennesaw St.,CUSA,260,.2175
+Southern Illinois,MVC,261,.2155
+UMKC,Sum,262,.2059
+Montana,BSky,263,.2042
+Texas St.,SB,264,.2032
+Stony Brook,CAA,265,.2029
+Western Michigan,MAC,266,.2023
+Lipscomb,ASun,267,.2019
+Wichita St.,Amer,268,.2012
+Furman,SC,269,.2010
+Yale,Ivy,270,.1929
+Samford,SC,271,.1911
+UTEP,CUSA,272,.1809
+Cal St. Northridge,BW,273,.1807
+LIU,NEC,274,.1743
+Denver,Sum,275,.1738
+Mercer,SC,276,.1706
+North Florida,ASun,277,.1679
+Incarnate Word,Slnd,278,.1636
+Cornell,Ivy,279,.1627
+Hofstra,CAA,280,.1619
+Wright St.,Horz,281,.1597
+Indiana St.,MVC,282,.1577
+Iona,MAAC,283,.1545
+North Carolina A&T,CAA,284,.1538
+Utah St.,MWC,285,.1527
+UNC Greensboro,SC,286,.1458
+Western Kentucky,CUSA,287,.1446
+Akron,MAC,288,.1337
+Loyola MD,Pat,289,.1285
+Manhattan,MAAC,290,.1266
+Lafayette,Pat,291,.1263
+Northern Illinois,MAC,292,.1246
+East Texas A&M,Slnd,293,.1240
+Siena,MAAC,294,.1218
+Cal St. Bakersfield,BW,295,.1174
+Coppin St.,MEAC,296,.1159
+Boston University,Pat,297,.1149
+Sacred Heart,MAAC,298,.1082
+Mount St. Mary's,MAAC,299,.1072
+New Mexico St.,CUSA,300,.1065
+New Hampshire,AE,301,.1064
+Northeastern,CAA,302,.1000
+Portland St.,BSky,303,.0976
+Milwaukee,Horz,304,.0970
+Detroit Mercy,Horz,305,.0928
+Winthrop,BSth,306,.0921
+Bucknell,Pat,307,.0903
+Marist,MAAC,308,.0863
+Eastern Illinois,OVC,309,.0860
+Grambling St.,SWAC,310,.0859
+San Jose St.,MWC,311,.0858
+Tennessee St.,OVC,312,.0832
+Louisiana,SB,313,.0757
+Houston Christian,Slnd,314,.0754
+Buffalo,MAC,315,.0752
+North Dakota,Sum,316,.0747
+Long Beach St.,BW,317,.0735
+Dartmouth,Ivy,318,.0723
+Cal Poly,BW,319,.0697
+Seattle,WCC,320,.0697
+Queens,ASun,321,.0695
+Alabama St.,SWAC,322,.0674
+Alcorn St.,SWAC,323,.0657
+Mercyhurst,NEC,324,.0641
+American,Pat,325,.0583
+UNC Asheville,BSth,326,.0572
+Colgate,Pat,327,.0571
+Hampton,CAA,328,.0550
+UNC Wilmington,CAA,329,.0538
+North Carolina Central,MEAC,330,.0533
+Southeastern Louisiana,Slnd,331,.0509
+Gardner Webb,BSth,332,.0481
+Wagner,NEC,333,.0471
+Nebraska Omaha,Sum,334,.0466
+Stonehill,NEC,335,.0454
+Rider,MAAC,336,.0450
+Jackson St.,SWAC,337,.0431
+Texas A&M Corpus Chris,Slnd,338,.0426
+Arkansas Pine Bluff,SWAC,339,.0393
+Florida A&M,SWAC,340,.0359
+Delaware St.,MEAC,341,.0359
+USC Upstate,BSth,342,.0350
+Chicago St.,NEC,343,.0343
+Canisius,MAAC,344,.0342
+Charleston Southern,BSth,345,.0337
+Saint Peter's,MAAC,346,.0329
+Morgan St.,MEAC,347,.0316
+UMass Lowell,AE,348,.0306
+New Haven,NEC,349,.0286
+New Orleans,Slnd,350,.0249
+Le Moyne,NEC,351,.0248
+Texas Southern,SWAC,352,.0238
+Bethune Cookman,SWAC,353,.0236
+Western Carolina,SC,354,.0226
+Valparaiso,MVC,355,.0204
+Mississippi Valley St.,SWAC,356,.0151
+Saint Francis,NEC,357,.0124
+Central Connecticut,NEC,358,.0092
+Niagara,MAAC,359,.0084
+South Carolina St.,MEAC,360,.0060
+Presbyterian,BSth,361,.0049
+Prairie View A&M,SWAC,362,.0041
+Bellarmine,ASun,363,.0038

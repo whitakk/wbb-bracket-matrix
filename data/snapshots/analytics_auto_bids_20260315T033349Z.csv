@@ -1,0 +1,27 @@
+conference,team_raw,canonical_slug,team_display,resolution_method,resolution_confidence
+America East,Vermont,vermont,Vermont,new,100.0
+Atlantic 10,Rhode Island,rhode-island,Rhode Island,new,100.0
+ACC,Duke,duke,Duke,new,100.0
+ASUN,Jacksonville,jacksonville,Jacksonville,new,100.0
+Big 12,West Virginia,west-virginia,West Virginia,exact,100.0
+Big East,UConn,uconn,UConn,exact,100.0
+Big Sky,Idaho,idaho,Idaho,new,100.0
+Big South,High Point,high-point,High Point,new,100.0
+Big Ten,UCLA,ucla,UCLA,new,100.0
+Big West,UC San Diego,uc-san-diego,UC San Diego,new,100.0
+Conference USA,Missouri State,missouri-state,Missouri State,new,100.0
+Horizon League,Green Bay,green-bay,Green Bay,new,100.0
+Ivy League,Princeton,princeton,Princeton,new,100.0
+MAAC,Fairfield,fairfield,Fairfield,new,100.0
+MAC,Miami (OH),miami-oh,Miami (OH),exact,100.0
+MEAC,Howard,howard,Howard,new,100.0
+Mountain West,Colorado State,colorado-state,Colorado State,new,100.0
+Ohio Valley,Western Illinois,western-illinois,Western Illinois,exact,100.0
+SEC,Texas,texas,Texas,new,100.0
+SoCon,Samford,samford,Samford,new,100.0
+Southland,Stephen F. Austin,stephen-f-austin,Stephen F. Austin,exact,100.0
+SWAC,Southern,southern,Southern,alias,100.0
+Summit League,South Dakota State,south-dakota-state,South Dakota St,exact,100.0
+Sun Belt,JMU,jmu,JMU,new,100.0
+West Coast,Gonzaga,gonzaga,Gonzaga,new,100.0
+WAC,California Baptist,ca-baptist,CA Baptist,alias,100.0
