@@ -1,8 +1,9 @@
 name: publish-bracket-matrix
 
 on:
-  schedule:
-    - cron: "17 */4 * * *"
+  # Re-enable next season:
+  # schedule:
+  #   - cron: "17 */4 * * *"
   workflow_dispatch:
 
 permissions:
