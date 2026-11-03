@@ -25,7 +25,7 @@ DEFAULT_USER_AGENT = "Mozilla/5.0 (compatible; WBBBracketMatrix/0.1; +https://gi
 DEFAULT_OPENAI_MODEL = "gpt-4.1"
 OPENAI_FALLBACK_MODELS = ["gpt-4.1", "gpt-4o", "gpt-4o-mini"]
 MIN_ROWS_REQUIRED = 64
-MAX_ROWS_ALLOWED = 68
+MAX_ROWS_ALLOWED = 76
 TEAM_NAME_PATTERN = re.compile(r"^[A-Za-z][A-Za-z&'().\-\s]{1,45}$")
 
 
@@ -322,7 +322,7 @@ def _extract_pairs_with_openai(image_url: str, api_key: str, model: str) -> list
         "Do not include regions, locations, or commentary in team names."
     )
     strict_prompt = (
-        "Return between 64 and 68 total entries. Include seeds 1 through 16 with at least four entries per seed. "
+        "Return every team shown, including both teams in each opening-round matchup (up to 76 entries). Include seeds 1 through 16 with at least four entries per seed. "
         "If unsure, still provide your best team guess for each visible seed line."
     )
 
@@ -426,34 +426,6 @@ def _validate_bracket_quality(pairs: list[tuple[int, str, bool]]) -> None:
             raise RuntimeError(f"The IX parser returned too few teams for seed {seed}")
 
 
-def _apply_the_ix_known_corrections(pairs: list[tuple[int, str, bool]]) -> list[tuple[int, str, bool]]:
-    """Apply temporary source-specific fixes for known model misreads.
-
-    TODO: Replace these hardcoded corrections with a more robust image extraction
-    strategy (higher-fidelity parsing and/or structured post-processing) so this
-    function can be removed.
-    """
-    has_nc_state = any(team == "NC State" for _, team, _ in pairs)
-
-    corrected: list[tuple[int, str, bool]] = []
-    seen: set[tuple[int, str]] = set()
-
-    for seed, team, is_play_in in pairs:
-        corrected_team = team
-        if team == "Illinois State":
-            corrected_team = "Illinois"
-        if not has_nc_state and team == "North Carolina" and seed == 4:
-            corrected_team = "NC State"
-
-        dedupe_key = (seed, corrected_team.lower())
-        if dedupe_key in seen:
-            continue
-        seen.add(dedupe_key)
-        corrected.append((seed, corrected_team, is_play_in))
-
-    return corrected
-
-
 def parse_the_ix(
     *,
     source_key: str,
@@ -467,6 +439,8 @@ def parse_the_ix(
         raise RuntimeError("Unable to find latest The IX bracketology article URL")
 
     article_html = _fetch_html(latest_article_url)
+    article_soup = to_soup(article_html)
+    expected_rows = MAX_ROWS_ALLOWED if re.search(r"\b76[-\s]team", article_soup.get_text(" ", strip=True), re.IGNORECASE) else MIN_ROWS_REQUIRED
     image_urls = _find_primary_image_urls(article_html, latest_article_url)
     if not image_urls:
         raise RuntimeError("Unable to find bracket image URL in latest The IX article")
@@ -490,26 +464,26 @@ def parse_the_ix(
                 image_url = candidate_image_url
             try:
                 _validate_bracket_quality(candidate_pairs)
+                if len(candidate_pairs) < expected_rows:
+                    continue
                 pairs = candidate_pairs
                 image_url = candidate_image_url
                 break
             except RuntimeError:
                 continue
 
-    if len(pairs) < MIN_ROWS_REQUIRED:
+    if len(pairs) < expected_rows:
         image_bytes = _fetch_image_bytes(image_url)
         ocr_text = _ocr_image_text(image_bytes)
         ocr_pairs = _extract_pairs_from_ocr_text(ocr_text)
         if len(ocr_pairs) > len(pairs):
             pairs = ocr_pairs
 
-    if len(pairs) < MIN_ROWS_REQUIRED:
+    if len(pairs) < expected_rows:
         raise RuntimeError("The IX parser returned too few seed/team rows")
 
-    pairs = _apply_the_ix_known_corrections(pairs)
     _validate_bracket_quality(pairs)
 
-    article_soup = to_soup(article_html)
     out_pairs = extract_out_teams(article_soup)
     pairs.extend(out_pairs)
 

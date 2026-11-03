@@ -728,28 +728,3 @@ def test_theix_quality_validation_rules():
         assert False, "expected validation error for too many rows"
     except RuntimeError as exc:
         assert "too many rows" in str(exc)
-
-
-def test_theix_applies_known_corrections():
-    pairs = [
-        (8, "Illinois State", False),
-        (8, "Illinois", False),
-        (5, "Notre Dame", False),
-    ]
-
-    corrected = theix._apply_the_ix_known_corrections(pairs)
-
-    assert (8, "Illinois", False) in corrected
-    assert (8, "Illinois State", False) not in corrected
-
-
-def test_theix_corrects_nc_state_misread_when_missing():
-    pairs = [
-        (4, "North Carolina", False),
-        (1, "UConn", False),
-    ]
-
-    corrected = theix._apply_the_ix_known_corrections(pairs)
-
-    assert (4, "NC State", False) in corrected
-    assert (4, "North Carolina", False) not in corrected

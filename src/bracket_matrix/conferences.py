@@ -11,7 +11,7 @@ from bracket_matrix.normalize import load_aliases, normalize_team_name, slugify
 from bracket_matrix.types import TeamIdentity
 
 
-DEFAULT_BART_SEASON = 2026
+DEFAULT_BART_SEASON = 2027
 
 TEAM_CONFERENCE_FIELDNAMES = [
     "canonical_slug",

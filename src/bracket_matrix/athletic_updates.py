@@ -5,7 +5,7 @@ import smtplib
 from email.message import EmailMessage
 from pathlib import Path
 
-from bracket_matrix.config import get_default_paths
+from bracket_matrix.config import get_default_paths, load_settings
 from bracket_matrix.scrapers.common import fetch_html, fetch_html_playwright, normalize_ws, to_soup
 from bracket_matrix.scrapers.theathletic import _find_latest_bracket_watch_article_url
 
@@ -14,11 +14,13 @@ ATHLETIC_TAG_URL = "https://www.nytimes.com/athletic/tag/bracketcentral/"
 
 
 def default_state_file() -> Path:
-    return get_default_paths().data_dir / "manual" / "the_athletic_latest_url.txt"
+    paths = get_default_paths()
+    return paths.data_dir / "manual" / str(load_settings(paths).get("season", "")) / "the_athletic_latest_url.txt"
 
 
 def default_manual_html_file() -> Path:
-    return get_default_paths().data_dir / "manual" / "the_athletic_latest.html"
+    paths = get_default_paths()
+    return paths.data_dir / "manual" / str(load_settings(paths).get("season", "")) / "the_athletic_latest.html"
 
 
 def _read_last_seen_url(state_file: Path) -> str:

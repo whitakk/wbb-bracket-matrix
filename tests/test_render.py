@@ -282,54 +282,16 @@ def test_filter_matrix_rows_for_sources_recomputes_appearances_and_avg_seed():
     assert filtered[0].source_seeds == {"b": "FFO", "c": 6}
 
 
-def test_projected_seed_numbers_groups_last_four_non_autobids_into_pairs():
+def test_projected_seed_numbers_supports_historical_68_team_field():
     projected_field = _simple_rows(68)
-    autobid_slugs = {
-        projected_field[idx].canonical_slug for idx in range(10)
-    }
-
-    seeds = _projected_seed_numbers(projected_field, autobid_slugs)
-
-    non_autobid_indices = [idx for idx in range(68) if projected_field[idx].canonical_slug not in autobid_slugs]
-    pair_one = non_autobid_indices[-4:-2]
-    pair_two = non_autobid_indices[-2:]
-    assert seeds[pair_one[0]] == seeds[pair_one[1]]
-    assert seeds[pair_two[0]] == seeds[pair_two[1]]
-    assert str(seeds[pair_one[0]]).endswith("/FF")
-    assert str(seeds[pair_two[0]]).endswith("/FF")
+    autobids = {row.canonical_slug for row in projected_field[-31:]}
+    seeds = _projected_seed_numbers(projected_field, autobids, opening_round_teams=4)
+    assert sum(str(seed).endswith("/OR") for seed in seeds) == 8
+    assert max(int(str(seed).split("/")[0]) for seed in seeds) == 16
 
 
-def test_projected_seed_numbers_caps_last_six_at_sixteen():
-    projected_field = _simple_rows(68)
-    seeds = _projected_seed_numbers(projected_field, autobid_slugs=set())
-
-    assert all(str(seed).startswith("16") for seed in seeds[-6:])
-    assert str(seeds[-1]).endswith("/FF")
-    assert str(seeds[-2]).endswith("/FF")
-    assert str(seeds[-3]).endswith("/FF")
-    assert str(seeds[-4]).endswith("/FF")
-    numeric_only = [int(str(seed).split("/")[0]) for seed in seeds]
-    assert max(numeric_only) == 16
-
-
-def test_projected_seed_numbers_handcrafted_ff_assignments():
-    projected_field = _simple_rows(12)
-    autobid_slugs = {projected_field[idx].canonical_slug for idx in [0, 2, 4, 6]}
-
-    seeds = _projected_seed_numbers(projected_field, autobid_slugs)
-
-    assert seeds[0] == 1
-    assert seeds[1] == 1
-    assert seeds[2] == 1
-    assert seeds[3] == 1
-    assert seeds[4] == 2
-    assert seeds[5] == 2
-    assert seeds[6] == 16
-    assert seeds[7] == 16
-    assert seeds[8] == "16/FF"
-    assert seeds[9] == "16/FF"
-    assert seeds[10] == "16/FF"
-    assert seeds[11] == "16/FF"
+def test_projected_seed_numbers_empty_field():
+    assert _projected_seed_numbers([], set()) == []
 
 
 def test_format_source_update_date_returns_iso_date_only():

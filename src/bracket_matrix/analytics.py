@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 import re
+import csv
+from io import StringIO
 from difflib import SequenceMatcher
 
 from bracket_matrix.normalize import load_aliases, normalize_team_name, resolve_team_names
@@ -14,8 +16,21 @@ except ImportError:  # pragma: no cover
 
 NCAA_WAB_RANKING_URL = "https://www.ncaa.com/rankings/basketball-women/d1/wab-ranking"
 NCAA_NET_RANKING_URL = "https://www.ncaa.com/rankings/basketball-women/d1/ncaa-womens-basketball-net-rankings"
-NCAA_AUTO_BIDS_URL = "https://www.ncaa.com/news/basketball-women/article/2026-02-17/tracking-all-31-ncaa-womens-basketball-conference-tournaments-auto-bids-march"
+NCAA_AUTO_BIDS_URL = ""  # Set a verified current-season article in settings when published.
 BART_POWER_URL = "https://barttorvik.com/ncaaw/#"
+
+
+def parse_bart_power_csv(csv_text: str) -> list[dict[str, str]]:
+    reader = csv.DictReader(StringIO(csv_text))
+    if not {"rank", "team", "conf", "barthag"}.issubset(reader.fieldnames or []):
+        raise ValueError("Bart CSV missing ranking columns")
+    rows = [
+        {"team": row["team"], "conference": row["conf"], "bart_rank": row["rank"], "barthag": row["barthag"]}
+        for row in reader if row.get("team") and row.get("rank") and row.get("barthag")
+    ]
+    if not rows:
+        raise ValueError("Bart CSV contains no teams")
+    return rows
 
 
 def _parse_record_wins_losses(record: str) -> tuple[str, str]:
