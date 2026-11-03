@@ -31,7 +31,7 @@ Tournament sizing follows the [NCAA's 76-team expansion announcement](https://ww
 - Opening round: 12 lowest-ranked automatic qualifiers and 12 lowest-ranked at-large teams,
   paired within category. Both server-rendered and interactive analytics projections select 76
   teams and reduce to 64 first-round slots. `/OR` identifies opening-round participants.
-- Publishing workflow reads the season-specific status path, refreshes conferences, and has
+- Publishing workflow reads the season-specific status path, uses the committed current-season conference map, and has
   its four-hour schedule restored in the edited workflow. These changes have not been deployed.
 
 ## Validation
