@@ -49,9 +49,7 @@ jobs:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           GMAIL_TO: ${{ secrets.GMAIL_TO }}
-        run: |
-          python -m bracket_matrix refresh-conferences
-          python -m bracket_matrix run-all --retention-days 365
+        run: python -m bracket_matrix run-all --retention-days 365
 
       - name: Report scrape errors
         run: |
