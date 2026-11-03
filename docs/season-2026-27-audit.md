@@ -32,7 +32,7 @@ Tournament sizing follows the [NCAA's 76-team expansion announcement](https://ww
   paired within category. Both server-rendered and interactive analytics projections select 76
   teams and reduce to 64 first-round slots. `/OR` identifies opening-round participants.
 - Publishing workflow reads the season-specific status path, uses the committed current-season conference map, and has
-  its four-hour schedule restored in the edited workflow. These changes have not been deployed.
+  a daily schedule at 12:17 UTC (7:17 a.m. EST / 8:17 a.m. EDT). Publishing is deployed and active.
 
 ## Validation
 
