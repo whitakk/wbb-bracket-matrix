@@ -1,4 +1,10 @@
 {
+  "season": "2026-27",
+  "season_end_year": 2027,
+  "season_start_date": "2026-07-01",
+  "tournament_field_size": 76,
+  "opening_round_teams_per_category": 12,
+  "analytics_ncaa_auto_bids_url": "",
   "retention_days": 365,
   "request_timeout_seconds": 20,
   "fuzzy_threshold": 94,

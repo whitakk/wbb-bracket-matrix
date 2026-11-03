@@ -5,7 +5,6 @@ from pathlib import Path
 
 from bracket_matrix.athletic_updates import check_for_new_athletic_update, default_state_file
 from bracket_matrix.auth import run_auth_login
-from bracket_matrix.conferences import DEFAULT_BART_SEASON
 from bracket_matrix.pipeline import run_all, run_build, run_publish, run_refresh_conferences, run_scrape
 
 
@@ -38,8 +37,8 @@ def build_parser() -> argparse.ArgumentParser:
     refresh_conf_parser.add_argument(
         "--season",
         type=int,
-        default=DEFAULT_BART_SEASON,
-        help="season year for Bart Torvik team results CSV",
+        default=None,
+        help="tournament year for Bart Torvik CSV (defaults to configured season)",
     )
 
     run_all_parser = subparsers.add_parser("run-all", help="run scrape, build, publish, and retention cleanup")

@@ -2,12 +2,27 @@
 
 Women's college basketball "bracket matrix" aggregator. This project scrapes public bracketology pages, normalizes team names, builds a merged seed matrix, renders a static web page, and stores timestamped snapshots.
 
+## 2026–27 season
+The active season, tournament year (`2027`), minimum source update date, field size (`76`),
+and opening-round allocation (`12` automatic qualifiers and `12` at-large teams) are set in
+`config/settings.json`. Latest outputs and manual Athletic captures are scoped to the season;
+historical snapshots and 2025–26 latest files are retained.
+
+Sources with missing/old dates or incomplete fields are marked `unavailable` and excluded.
+Unavailable sources do not reduce bracket inclusion percentages. NCAA NET/WAB pages are
+checked against their “Through Games” dates before being used. Auto-bid winners remain empty
+until a verified 2027 article is set in `analytics_ncaa_auto_bids_url`; last year's winners
+must not be reused. Bart rankings and conference mappings use the explicit 2027 CSV.
+
+See [the provider audit](docs/season-2026-27-audit.md) for live results and remaining dependencies.
+At rollover, update settings, source article URLs/manual capture paths, and refresh conferences.
+
 ## Live Site
 <https://whitakk.github.io/wbb-bracket-matrix/>
 
-## Sources (v1)
+## Sources
 - Her Hoop Stats: <https://herhoopstats.com/bracketology/>
-- ESPN: <https://www.espn.com/espn/feature/story/_/id/30423107/ncaa-women-bracketology-2026-women-college-basketball-projections>
+- ESPN: <https://www.espn.com/espn/feature/story/_/id/30423107/ncaa-women-bracketology-2027-women-college-basketball-projections>
 - College Sports Madness: <https://www.collegesportsmadness.com/womens-basketball/bracketology>
 - The IX: <https://www.theixsports.com/category/the-ix-basketball-newsroom/ncaa-basketball/bracketology/>
 - CBS Sports: <https://www.cbssports.com/womens-college-basketball/>
@@ -31,9 +46,7 @@ python -m playwright install chromium
 
 To enable OpenAI extraction for The IX, copy `.env.example` to `.env` and set `OPENAI_API_KEY`.
 
-Note: The IX currently includes a temporary source-specific correction for one known
-model misread (`Illinois State` -> `Illinois`). We should revisit this with a more
-robust image extraction approach.
+The IX supports the expanded 76-team field. Old image-specific team corrections have been removed.
 
 If Chromium install permissions are restricted, set a local browser path first:
 ```bash
@@ -48,7 +61,7 @@ python -m bracket_matrix scrape
 python -m bracket_matrix build
 python -m bracket_matrix publish
 python -m bracket_matrix run-all
-python -m bracket_matrix refresh-conferences --season 2026
+python -m bracket_matrix refresh-conferences --season 2027
 python -m bracket_matrix auth-login --source the_athletic
 python -m bracket_matrix check-athletic-update --notify-email you@example.com
 ```
@@ -89,13 +102,13 @@ python -m bracket_matrix check-athletic-update --use-playwright
 Manual Athletic HTML fallback for blocked scraping:
 ```bash
 # Save latest article page HTML here:
-data/manual/the_athletic_latest.html
+data/manual/2026-27/the_athletic_latest.html
 ```
 
 The pipeline derives the article URL from saved HTML (via `<meta property="og:url">`
 or canonical link) and uses that for Athletic source attribution.
 
-When `data/manual/the_athletic_latest.html` exists, the `the_athletic` source uses it during
+When `data/manual/2026-27/the_athletic_latest.html` exists, the `the_athletic` source uses it during
 `scrape` / `run-all` instead of fetching the tag page or article URL.
 
 The update checker compares the latest tag-page URL against your manual HTML URL when available.
@@ -107,7 +120,7 @@ is present in `config/sources.json`.
 
 ### The Athletic (`the_athletic`)
 1. Open the latest women’s bracket article on The Athletic.
-2. Save full page HTML to `data/manual/the_athletic_latest.html`.
+2. Save full page HTML to `data/manual/2026-27/the_athletic_latest.html`.
 3. Run:
 
 ```bash
@@ -117,11 +130,12 @@ python -m bracket_matrix publish
 ```
 
 ### NCAA (`ncaa`)
-`ncaa` currently uses a direct article URL in `config/sources.json` (`source_key: ncaa`) because
+`ncaa` is disabled pending a verified 2027 article. It uses a direct article URL in
+`config/sources.json` (`source_key: ncaa`) because
 Google result pages are bot-protected and can be unreliable in automation.
 
 When NCAA posts a new bracket predictions article:
-1. Update the `ncaa` `source_url` in `config/sources.json` to the new NCAA article URL.
+1. Set the `ncaa` `source_url` to the new NCAA article URL and set `enabled` to `true`.
 2. Run:
 
 ```bash
@@ -131,7 +145,7 @@ python -m bracket_matrix publish
 ```
 
 Quick validation after scrape:
-- `ncaa` should usually produce `68` rows in `data/latest/source_rows_latest.csv`.
+- `ncaa` should usually produce `76` seeded rows (plus any bubble teams) in `data/latest/2026-27/source_rows_latest.csv`.
 - If a new URL is not newer than the previously captured NCAA update time, prior NCAA rows are kept.
 
 Optional env vars for `run-all` Athletic update notifications:
@@ -145,17 +159,17 @@ Gmail env vars for email notification (simple mode):
 For GitHub Actions, set `GMAIL_USER`, `GMAIL_APP_PASSWORD`, and `GMAIL_TO` as repository secrets.
 
 ## Data outputs
-- Latest artifacts: `data/latest/`
+- Latest artifacts: `data/latest/2026-27/`
 - Snapshot history: `data/snapshots/`
 - Static site output: `site/index.html`
 
 Key files:
-- `data/latest/source_rows_latest.csv`
-- `data/latest/source_status_latest.csv`
-- `data/latest/resolved_rows_latest.csv`
-- `data/latest/matrix_latest.csv`
-- `data/latest/unresolved_matches_latest.csv`
-- `data/team_conferences.csv`
+- `data/latest/2026-27/source_rows_latest.csv`
+- `data/latest/2026-27/source_status_latest.csv`
+- `data/latest/2026-27/resolved_rows_latest.csv`
+- `data/latest/2026-27/matrix_latest.csv`
+- `data/latest/2026-27/unresolved_matches_latest.csv`
+- `data/team_conferences_2027.csv`
 
 ## Config
 - Sources: `config/sources.json`
@@ -163,12 +177,12 @@ Key files:
 - Alias overrides: `data/aliases.csv`
 
 ## Conference mapping
-- Team conference mapping is read from the static file `data/team_conferences.csv` during `build`.
+- Team conference mapping is read from the static file `data/team_conferences_2027.csv` during `build`.
 - It is not fetched automatically in `run-all` so runs stay deterministic and fast.
 - Refresh it manually at season rollover with:
 
 ```bash
-python -m bracket_matrix refresh-conferences --season 2026
+python -m bracket_matrix refresh-conferences --season 2027
 ```
 
 If a team is missing a conference in `matrix_latest.csv`, it is usually a naming mismatch
@@ -176,13 +190,13 @@ between source team labels and Bart Torvik names. Add/adjust aliases in `data/al
 then rerun:
 
 ```bash
-python -m bracket_matrix refresh-conferences --season 2026
+python -m bracket_matrix refresh-conferences --season 2027
 python -m bracket_matrix build
 python -m bracket_matrix publish
 ```
 
 ## Site presentation rules
-- The main table is split into `Projected Field` (68 teams) and `Other Candidates`.
+- The main table is split into `Projected Field` (76 teams) and `Other Candidates`.
 - `Projected Field` selection first takes one plurality winner per conference (tiebreakers:
   lower avg seed, then alphabetical), then fills remaining spots by appearances, then avg seed.
 - Both sections are displayed sorted by avg seed (ascending).

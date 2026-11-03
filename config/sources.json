@@ -10,14 +10,17 @@
     {
       "source_key": "espn",
       "source_name": "ESPN",
-      "source_url": "https://www.espn.com/espn/feature/story/_/id/30423107/ncaa-women-bracketology-2026-women-college-basketball-projections",
+      "data_url": "https://a.espncdn.com/prod/styles/pagetype/otl/2025/25_vs_bracketology/ncaaw-content.json",
+      "source_url": "https://www.espn.com/espn/feature/story/_/id/30423107/ncaa-women-bracketology-2027-women-college-basketball-projections",
       "parser": "espn",
       "use_playwright_fallback": true
     },
     {
       "source_key": "ncaa",
       "source_name": "NCAA",
-      "source_url": "https://www.ncaa.com/news/basketball-women/article/2026-03-10/2026-march-madness-womens-basketball-bracket-predictions-days-selection-sunday",
+      "source_url": "",
+      "enabled": false,
+      "disabled_reason": "Awaiting a verified 2027 bracket predictions article URL",
       "parser": "ncaa",
       "use_playwright_fallback": false,
       "require_newer_than_previous": true
@@ -58,7 +61,7 @@
       "parser": "theathletic",
       "use_playwright_fallback": true,
       "min_rows_for_playwright_fallback": 60,
-      "manual_html_path": "data/manual/the_athletic_latest.html"
+      "manual_html_path": "data/manual/2026-27/the_athletic_latest.html"
     }
   ]
 }

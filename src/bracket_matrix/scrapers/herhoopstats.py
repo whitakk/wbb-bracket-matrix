@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+from zoneinfo import ZoneInfo
 
 from dateutil import parser as date_parser
 
@@ -49,29 +50,46 @@ def parse_her_hoop_stats(
 ) -> ScrapeResult:
     soup = to_soup(html)
     updated_raw = find_updated_date_raw(soup)
+    update_node = soup.select_one(".update-date")
+    if update_node is not None:
+        updated_raw = normalize_ws(update_node.get_text(" ", strip=True))
 
     pairs: list[tuple[int, str, bool]] = []
     for td in soup.select("td"):
         seed_el = td.select_one("span.seed")
-        team_link = td.select_one("a[href*='/stats/ncaa/team/']")
-        if not seed_el or not team_link:
+        team_links = td.select("a[href*='/stats/ncaa/team/']")
+        if not seed_el or not team_links:
             continue
         seed_value = parse_seed(seed_el.get_text(" ", strip=True))
-        team = normalize_ws(team_link.get_text(" ", strip=True))
-        if seed_value is None or not team:
+        if seed_value is None:
             continue
-        is_play_in = bool(td.find_parent(class_=re.compile(r"first-4", flags=re.IGNORECASE)))
-        pairs.append((seed_value, team, is_play_in))
+        is_play_in = len(team_links) > 1 or bool(td.find_parent(class_=re.compile(r"first-4|opening-round", flags=re.IGNORECASE)))
+        for team_link in team_links:
+            team = normalize_ws(team_link.get_text(" ", strip=True))
+            if team:
+                pairs.append((seed_value, team, is_play_in))
 
     if not pairs:
         pairs = extract_seed_team_pairs(soup)
 
     pairs.extend(extract_out_teams(soup))
+    # Opening-round participants also appear in the main bracket.
+    deduped = {}
+    for seed, team, is_play_in in pairs:
+        key = (seed, team.lower())
+        previous = deduped.get(key)
+        deduped[key] = (seed, team, is_play_in or bool(previous and previous[2]))
+    pairs = list(deduped.values())
 
     if not updated_raw:
         updated_raw = _infer_latest_date_from_text(soup.get_text(" ", strip=True))
 
-    updated_iso = parse_datetime_iso(updated_raw)
+    updated_iso = ""
+    if update_node is not None and updated_raw:
+        parsed = date_parser.parse(re.sub(r"\s*ET$", "", updated_raw), fuzzy=True)
+        updated_iso = parse_datetime_iso(parsed.replace(tzinfo=ZoneInfo("America/New_York")).isoformat())
+    else:
+        updated_iso = parse_datetime_iso(updated_raw)
     rows = rows_from_pairs(
         source_key=source_key,
         source_name=source_name,

@@ -27,7 +27,7 @@ def test_cli_auth_login_custom_args():
 
     assert args.command == "auth-login"
     assert args.source == "the_athletic"
-    assert str(args.output) == "data/custom_athletic_state.json"
+    assert args.output.as_posix() == "data/custom_athletic_state.json"
     assert args.url == "https://www.nytimes.com/athletic/tag/bracketcentral/"
 
 
@@ -37,5 +37,5 @@ def test_cli_check_athletic_update_defaults():
 
     assert args.command == "check-athletic-update"
     assert args.notify_email == ""
-    assert str(args.state_file).endswith("data/manual/the_athletic_latest_url.txt")
+    assert args.state_file.as_posix().endswith("data/manual/2026-27/the_athletic_latest_url.txt")
     assert args.use_playwright is False

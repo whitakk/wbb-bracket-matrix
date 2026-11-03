@@ -15,6 +15,7 @@ from bracket_matrix.analytics import (
     merge_analytics_rows,
     parse_ncaa_auto_bids_table,
     parse_bart_power_table,
+    parse_bart_power_csv,
     parse_ncaa_net_table,
     parse_ncaa_wab_table,
     suggest_cross_source_matches,
@@ -36,6 +37,7 @@ from bracket_matrix.scrapers.common import fetch_html, fetch_html_playwright, no
 from bracket_matrix.scrapers.espn import is_probably_blocked
 from bracket_matrix.scrapers.common import parse_seed_value
 from bracket_matrix.types import SourceMeta, SourceProjectionRow
+from bracket_matrix.season import SourceUnavailable, validate_update_date, validate_ncaa_rankings_date
 
 
 DEFAULT_RAW_FIELDNAMES = [
@@ -277,6 +279,8 @@ def run_scrape(
         error_message = ""
 
         try:
+            if not source.get("enabled", True):
+                raise SourceUnavailable(str(source.get("disabled_reason", "Source disabled")))
             manual_html_path_raw = str(source.get("manual_html_path", "") or "").strip()
             html = ""
             parse_source_url = source_url
@@ -292,7 +296,7 @@ def run_scrape(
 
             if not html:
                 html = fetcher(
-                    source_url,
+                    str(source.get("data_url") or source_url),
                     timeout_seconds=int(settings["request_timeout_seconds"]),
                     user_agent=str(settings["user_agent"]),
                 )
@@ -348,9 +352,22 @@ def run_scrape(
                     source_rows = previous_rows_by_source.get(source_key, [])
                     updated_at_raw = str(previous_meta.get("source_updated_at_raw", ""))
                     updated_at_iso = previous_updated_iso
+            validate_update_date(updated_at_iso, settings)
+            if not source_rows:
+                raise SourceUnavailable("No projection rows found; page may be blocked or not yet updated")
+            expected_count = settings.get("tournament_field_size")
+            field_count = sum(isinstance(row.seed, int) for row in source_rows)
+            if expected_count and field_count != int(expected_count):
+                raise SourceUnavailable(f"Expected {expected_count} field teams, found {field_count}")
+        except SourceUnavailable as exc:
+            status = "unavailable"
+            error_message = str(exc)
+            source_rows = []
+            print(f"[scrape] {source_key} unavailable: {error_message}")
         except Exception as exc:  # noqa: BLE001
             status = "error"
             error_message = str(exc)
+            source_rows = []
             print(f"[scrape] {source_key} error: {error_message}")
 
         all_rows.extend(_serialize_row(row) for row in source_rows)
@@ -390,7 +407,14 @@ def run_build(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
     source_meta_rows = read_dict_csv(latest["meta"])
     source_keys = [row["source_key"] for row in source_meta_rows]
 
-    filtered_rows = [row for row in raw_rows if not is_placeholder_team(row.team_raw)]
+    filtered_rows = []
+    for row in raw_rows:
+        try:
+            validate_update_date(row.source_updated_at_iso, settings)
+        except SourceUnavailable:
+            continue
+        if not is_placeholder_team(row.team_raw):
+            filtered_rows.append(row)
     filtered_placeholder_names = sorted(
         {
             normalize_ws(row.team_raw)
@@ -418,7 +442,8 @@ def run_build(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
 
     matrix_input_rows = [row for row in filtered_rows if row.team_raw in resolved]
     matrix_rows = build_matrix_rows(matrix_input_rows, resolved, source_keys)
-    team_conferences = load_team_conferences(active_paths.data_dir / "team_conferences.csv")
+    conference_file = f"team_conferences_{settings['season_end_year']}.csv" if settings.get("season_end_year") else "team_conferences.csv"
+    team_conferences = load_team_conferences(active_paths.data_dir / conference_file)
 
     missing_conference_slugs: set[str] = set()
     for matrix_row in matrix_rows:
@@ -509,6 +534,8 @@ def run_build(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
             timeout_seconds=int(settings["request_timeout_seconds"]),
             user_agent=str(settings["user_agent"]),
         )
+        validate_ncaa_rankings_date(ncaa_wab_html, settings)
+        validate_ncaa_rankings_date(ncaa_net_html, settings)
         wab_rows = parse_ncaa_wab_table(ncaa_wab_html)
         net_rows = parse_ncaa_net_table(ncaa_net_html)
         analytics_ncaa_rows, ncaa_mapping_issues = combine_ncaa_wab_and_net_rows(
@@ -526,19 +553,27 @@ def run_build(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
             analytics_ncaa_rows = read_dict_csv(latest["analytics_ncaa"])
 
     try:
-        bart_html = fetch_html_playwright(
-            bart_url,
-            timeout_seconds=max(40, int(settings["request_timeout_seconds"])),
-        )
-        try:
-            analytics_bart_rows = parse_bart_power_table(bart_html)
-        except Exception:  # noqa: BLE001
-            bart_html = fetch_html(
-                bart_url,
+        if settings.get("season_end_year"):
+            csv_text = fetch_bart_team_results_csv(
+                season=int(settings["season_end_year"]),
                 timeout_seconds=int(settings["request_timeout_seconds"]),
                 user_agent=str(settings["user_agent"]),
             )
-            analytics_bart_rows = parse_bart_power_table(bart_html)
+            analytics_bart_rows = parse_bart_power_csv(csv_text)
+        else:
+            bart_html = fetch_html_playwright(
+                bart_url,
+                timeout_seconds=max(40, int(settings["request_timeout_seconds"])),
+            )
+            try:
+                analytics_bart_rows = parse_bart_power_table(bart_html)
+            except Exception:  # noqa: BLE001
+                bart_html = fetch_html(
+                    bart_url,
+                    timeout_seconds=int(settings["request_timeout_seconds"]),
+                    user_agent=str(settings["user_agent"]),
+                )
+                analytics_bart_rows = parse_bart_power_table(bart_html)
     except Exception as exc:  # noqa: BLE001
         print(f"[build] analytics bart fetch/parse failed: {exc}")
         if latest["analytics_bart"].exists():
@@ -558,6 +593,10 @@ def run_build(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
 
     analytics_auto_bids_rows: list[dict[str, str | float]] = []
     try:
+        if not ncaa_auto_bids_url:
+            raise SourceUnavailable("No current-season auto-bid article configured")
+        if settings.get("season_end_year") and f"/{settings['season_end_year']}-" not in ncaa_auto_bids_url:
+            raise SourceUnavailable("Auto-bid article URL is not from the tournament year")
         auto_bids_html = fetch_html(
             ncaa_auto_bids_url,
             timeout_seconds=int(settings["request_timeout_seconds"]),
@@ -661,6 +700,7 @@ def run_build(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
 
 def run_publish(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
     active_paths = paths or get_default_paths()
+    settings = load_settings(active_paths)
     latest = _latest_paths(active_paths)
 
     matrix_rows_raw = read_dict_csv(latest["matrix"])
@@ -707,6 +747,9 @@ def run_publish(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
         forced_aggregate_autobid_slugs=forced_ebs_autobid_slugs,
         forced_ebs_autobid_slugs=forced_ebs_autobid_slugs,
         output_path=active_paths.site_dir / "index.html",
+        field_size=int(settings.get("tournament_field_size", 76)),
+        opening_round_teams=int(settings.get("opening_round_teams_per_category", 12)),
+        season_label=str(settings.get("season", "")),
     )
 
     # Copy latest CSV artifacts into site output for download.
@@ -732,10 +775,11 @@ def run_publish(*, paths: PipelinePaths | None = None) -> dict[str, Path]:
 def run_refresh_conferences(
     *,
     paths: PipelinePaths | None = None,
-    season: int = DEFAULT_BART_SEASON,
+    season: int | None = None,
 ) -> Path:
     active_paths = paths or get_default_paths()
     settings = load_settings(active_paths)
+    season = season or int(settings.get("season_end_year", DEFAULT_BART_SEASON))
 
     csv_text = fetch_bart_team_results_csv(
         season=season,
@@ -747,7 +791,8 @@ def run_refresh_conferences(
         aliases_path=active_paths.data_dir / "aliases.csv",
     )
 
-    output_path = active_paths.data_dir / "team_conferences.csv"
+    conference_file = f"team_conferences_{season}.csv" if settings.get("season_end_year") else "team_conferences.csv"
+    output_path = active_paths.data_dir / conference_file
     write_dict_csv(output_path, rows, fieldnames=TEAM_CONFERENCE_FIELDNAMES)
     return output_path
 

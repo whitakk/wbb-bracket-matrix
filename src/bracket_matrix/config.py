@@ -25,11 +25,13 @@ class PipelinePaths:
 
 
 def get_default_paths() -> PipelinePaths:
+    settings = load_json(CONFIG_DIR / "settings.json")
+    season = str(settings.get("season", ""))
     return PipelinePaths(
         root_dir=ROOT_DIR,
         config_dir=CONFIG_DIR,
         data_dir=DATA_DIR,
-        latest_dir=LATEST_DIR,
+        latest_dir=LATEST_DIR / season if season else LATEST_DIR,
         snapshot_dir=SNAPSHOT_DIR,
         site_dir=SITE_DIR,
     )

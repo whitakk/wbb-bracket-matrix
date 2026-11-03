@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import re
+import json
 
 from bracket_matrix.scrapers.common import (
     extract_seed_team_pairs,
@@ -86,6 +87,8 @@ def parse_espn(
     html: str,
     scraped_at_iso: str,
 ) -> ScrapeResult:
+    if html.lstrip().startswith("{"):
+        return _parse_espn_json(source_key, source_name, source_url, html, scraped_at_iso)
     soup = to_soup(html)
     updated_raw = find_updated_date_raw(soup)
     pairs = extract_seed_team_pairs(soup)
@@ -117,3 +120,37 @@ def parse_espn(
         pairs=pairs,
     )
     return ScrapeResult(rows=rows, updated_at_raw=updated_raw, updated_at_iso=updated_iso)
+
+
+def _parse_espn_json(source_key: str, source_name: str, source_url: str, content: str, scraped_at_iso: str) -> ScrapeResult:
+    data = json.loads(content)
+    if data.get("tournamentName") != "NCAAW":
+        raise ValueError("ESPN feed is not a women's bracket")
+    updated_raw = str(data.get("pageContent", {}).get("publishedAt", ""))
+    updated_iso = parse_datetime_iso(updated_raw)
+    pairs = []
+    for region in data.get("bracket", []):
+        for pod in region.get("podCities", []):
+            for matchup in pod.get("matchups", []):
+                for slot_key in ("slotA", "slotB"):
+                    slot = matchup.get(slot_key, {})
+                    seed = slot.get("seedNumber")
+                    if not isinstance(seed, int) or not 1 <= seed <= 16:
+                        continue
+                    for team_key in ("team", "playInTeam"):
+                        team = slot.get(team_key, {})
+                        api_team = team.get("apiData", {})
+                        name = api_team.get("shortDisplayName") or api_team.get("nickname")
+                        if name:
+                            pairs.append((seed, name, bool(slot.get("playInTeam"))))
+    for label, marker in OUT_SECTION_MARKERS.items():
+        for team in data.get("Bubble", {}).get(label.title(), {}).get("teams", []):
+            name = team.get("shortDisplayName") or team.get("nickname")
+            if name:
+                pairs.append((marker, name, False))
+    return ScrapeResult(
+        rows=rows_from_pairs(source_key=source_key, source_name=source_name, source_url=source_url,
+                             source_updated_at_raw=updated_raw, source_updated_at_iso=updated_iso,
+                             scraped_at_iso=scraped_at_iso, pairs=pairs),
+        updated_at_raw=updated_raw, updated_at_iso=updated_iso,
+    )

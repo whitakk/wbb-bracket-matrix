@@ -5,7 +5,7 @@
 - Scrapers are split by source under `src/bracket_matrix/scrapers/` (for example, `espn.py`, `herhoopstats.py`).
 - Tests live in `tests/`, with HTML fixtures in `tests/fixtures/`.
 - Runtime configuration is in `config/` (`sources.json`, `settings.json`).
-- Data artifacts are written to `data/latest/` and timestamped history in `data/snapshots/`.
+- Data artifacts are written to `data/latest/<season>/` and timestamped history in `data/snapshots/`.
 - Generated site output is `site/index.html` via the publish step.
 
 ## Build, Test, and Development Commands
@@ -48,15 +48,15 @@
 
 ## Manual Source Maintenance
 - `the_athletic` may require manual HTML capture when blocked: save latest article HTML to
-  `data/manual/the_athletic_latest.html`, then run `scrape`, `build`, and `publish`.
+  `data/manual/2026-27/the_athletic_latest.html`, then run `scrape`, `build`, and `publish`.
 - `ncaa` currently uses a direct manual article URL in `config/sources.json` (Google discovery is
   not reliable in automation). Update the `ncaa` `source_url` to the newest NCAA article when it
   drops, then run `python -m bracket_matrix scrape`, `python -m bracket_matrix build`, and
   `python -m bracket_matrix publish`.
-- For `ncaa`, expect around `68` rows after `scrape`; if not, inspect source table format drift.
+- For `ncaa`, expect `76` seeded rows (plus any bubble rows) for 2026–27 after `scrape`; if not, inspect source table format drift.
 
 ## Current Pipeline Behavior Notes
-- Conference mapping is static per season in `data/team_conferences.csv` and is loaded during
+- Conference mapping is static per season in `data/team_conferences_<tournament-year>.csv` and is loaded during
   `build`; it is refreshed manually via `python -m bracket_matrix refresh-conferences --season <year>`.
 - When conference data is missing for a team, first fix name mapping in `data/aliases.csv`, then
   refresh conferences and rebuild artifacts.

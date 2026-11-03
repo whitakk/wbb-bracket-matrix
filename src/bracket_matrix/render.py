@@ -193,7 +193,7 @@ def _build_ebs_rankings(
 def _split_ebs_projected_and_bubble(
     ebs_rankings: list[dict[str, str | float | int]],
     forced_autobid_slugs: set[str] | None = None,
-    field_size: int = 68,
+    field_size: int = 76,
     bubble_size: int = 16,
 ) -> tuple[list[dict[str, str | float | int]], list[dict[str, str | float | int]], set[str]]:
     forced_slugs = forced_autobid_slugs or set()
@@ -257,6 +257,8 @@ def _render_analytics_ebs_html(
     analytics_rows: list[dict[str, str]],
     matrix_rows: list[MatrixRow],
     forced_autobid_slugs: set[str] | None = None,
+    field_size: int = 76,
+    opening_round_teams: int = 12,
 ) -> str:
     ebs_rankings = _build_ebs_rankings(analytics_rows, matrix_rows)
     if not ebs_rankings:
@@ -270,6 +272,7 @@ def _render_analytics_ebs_html(
     projected, bubble, autobid_slugs = _split_ebs_projected_and_bubble(
         ebs_rankings,
         forced_autobid_slugs=forced_autobid_slugs,
+        field_size=field_size,
     )
     projected_matrix_rows = [
         MatrixRow(
@@ -284,7 +287,7 @@ def _render_analytics_ebs_html(
         )
         for row in projected
     ]
-    projected_seeds = _projected_seed_numbers(projected_matrix_rows, autobid_slugs)
+    projected_seeds = _projected_seed_numbers(projected_matrix_rows, autobid_slugs, opening_round_teams)
 
     projected_rows_html = ""
     for index, row in enumerate(projected):
@@ -326,7 +329,8 @@ def _render_analytics_ebs_html(
         {
             "rows": client_rows,
             "forced_autobid_slugs": sorted(forced_autobid_slugs or set()),
-            "field_size": 68,
+            "field_size": field_size,
+            "opening_round_teams": opening_round_teams,
             "bubble_size": 16,
         }
     )
@@ -451,7 +455,7 @@ def split_projected_field(
     matrix_rows: list[MatrixRow],
     source_keys_by_recency: list[str] | None = None,
     forced_autobid_slugs: set[str] | None = None,
-    field_size: int = 68,
+    field_size: int = 76,
 ) -> tuple[list[MatrixRow], list[MatrixRow]]:
     ordered_source_keys = source_keys_by_recency or []
     forced_slugs = forced_autobid_slugs or set()
@@ -536,20 +540,20 @@ def _autobid_winner_slugs(
     return winner_slugs
 
 
-def _projected_seed_numbers(projected_field: list[MatrixRow], autobid_slugs: set[str]) -> list[int | str]:
+def _projected_seed_numbers(projected_field: list[MatrixRow], autobid_slugs: set[str], opening_round_teams: int = 12) -> list[int | str]:
     if not projected_field:
         return []
 
-    non_autobid_indices = [
-        idx for idx, row in enumerate(projected_field) if row.canonical_slug not in autobid_slugs
-    ]
-    last_four_non_autobid = non_autobid_indices[-4:]
+    non_autobid_indices = [idx for idx, row in enumerate(projected_field) if row.canonical_slug not in autobid_slugs]
+    autobid_indices = [idx for idx, row in enumerate(projected_field) if row.canonical_slug in autobid_slugs]
+    opening_indices: set[int] = set()
     special_pairs: list[tuple[int, int]] = []
-    if len(last_four_non_autobid) == 4:
-        special_pairs = [
-            (last_four_non_autobid[0], last_four_non_autobid[1]),
-            (last_four_non_autobid[2], last_four_non_autobid[3]),
-        ]
+    for category in (non_autobid_indices, autobid_indices):
+        selected = category[-opening_round_teams:] if opening_round_teams else []
+        # A partial category may have an odd number; only complete matchups pair.
+        selected = selected[len(selected) % 2:]
+        opening_indices.update(selected)
+        special_pairs.extend(zip(selected[::2], selected[1::2]))
 
     pair_starts = {first: second for first, second in special_pairs}
     pair_seconds = {second for _, second in special_pairs}
@@ -573,17 +577,10 @@ def _projected_seed_numbers(projected_field: list[MatrixRow], autobid_slugs: set
             effective_counter += 1
             index += 1
 
-    for idx in range(max(0, len(projected_field) - 6), len(projected_field)):
-        seeds[idx] = 16
-
-    ff_indices: set[int] = set(last_four_non_autobid)
-    sixteen_indices = [idx for idx, seed in enumerate(seeds) if seed == 16]
-    ff_indices.update(sixteen_indices[-4:])
-
     display_seeds: list[int | str] = []
     for idx, seed in enumerate(seeds):
-        if idx in ff_indices:
-            display_seeds.append(f"{seed}/FF")
+        if idx in opening_indices:
+            display_seeds.append(f"{seed}/OR")
         else:
             display_seeds.append(seed)
     return display_seeds
@@ -672,19 +669,22 @@ def _render_matrix_sections_html(
     matrix_rows: list[MatrixRow],
     ordered_source_keys: list[str],
     forced_aggregate_autobid_slugs: set[str] | None = None,
+    field_size: int = 76,
+    opening_round_teams: int = 12,
 ) -> str:
     source_count = len(ordered_source_keys)
     projected_field, other_candidates = split_projected_field(
         matrix_rows,
         source_keys_by_recency=ordered_source_keys,
         forced_autobid_slugs=forced_aggregate_autobid_slugs,
+        field_size=field_size,
     )
     autobid_slugs = _autobid_winner_slugs(
         matrix_rows,
         source_keys_by_recency=ordered_source_keys,
         forced_autobid_slugs=forced_aggregate_autobid_slugs,
     )
-    projected_seeds = _projected_seed_numbers(projected_field, autobid_slugs)
+    projected_seeds = _projected_seed_numbers(projected_field, autobid_slugs, opening_round_teams)
     bubble_candidates, auto_bid_candidates = split_other_candidates(other_candidates)
 
     projected_rows_html = ""
@@ -844,16 +844,18 @@ def _render_source_table_html(
         source_url = escape(row.get("source_url", ""))
         updated = escape(_format_source_update_date(row))
         status = escape(row.get("status", "unknown"))
+        detail = escape(row.get("error_message", ""))
+        source_link = f'<a href="{source_url}" target="_blank" rel="noopener noreferrer">{source_name}</a>' if source_url else source_name
         source_header_html += (
-            f"<tr><td><a href=\"{source_url}\" target=\"_blank\" rel=\"noopener noreferrer\">{source_name}</a></td>"
-            f"<td>{updated}</td><td>{status}</td></tr>"
+            f"<tr><td>{source_link}</td>"
+            f"<td>{updated}</td><td>{status}</td><td>{detail}</td></tr>"
         )
 
     return f"""
     <div class=\"card\" style=\"margin-top:14px;\">
       <table class=\"sources\">
         <thead>
-          <tr><th>Source</th><th>Latest Update</th><th>Status</th></tr>
+          <tr><th>Source</th><th>Latest Update</th><th>Status</th><th>Details</th></tr>
         </thead>
         <tbody>
           {source_header_html}
@@ -874,11 +876,15 @@ def render_index_html(
     forced_aggregate_autobid_slugs: set[str] | None = None,
     forced_ebs_autobid_slugs: set[str] | None = None,
     output_path: Path,
+    field_size: int = 76,
+    opening_round_teams: int = 12,
+    season_label: str = "",
 ) -> None:
     source_meta_lookup = {row["source_key"]: row for row in source_meta_rows}
     ordered_source_keys = _order_source_keys_by_recency(source_keys, source_meta_lookup)
+    active_source_keys = [key for key in ordered_source_keys if source_meta_lookup.get(key, {}).get("status", "ok") == "ok"]
 
-    date_filter_options = _build_date_filter_options(ordered_source_keys, source_meta_lookup)
+    date_filter_options = _build_date_filter_options(active_source_keys, source_meta_lookup)
     if date_filter_options:
         default_threshold = date_filter_options[0]
     else:
@@ -888,7 +894,7 @@ def render_index_html(
     if date_filter_options:
         for threshold in date_filter_options:
             filtered_source_keys = _source_keys_since_date(
-                ordered_source_keys,
+                active_source_keys,
                 source_meta_lookup,
                 threshold,
             )
@@ -897,9 +903,11 @@ def render_index_html(
                 filtered_matrix_rows,
                 filtered_source_keys,
                 forced_aggregate_autobid_slugs=forced_aggregate_autobid_slugs,
+                field_size=field_size,
+                opening_round_teams=opening_round_teams,
             )
             source_table_html = _render_source_table_html(
-                filtered_source_keys,
+                ordered_source_keys,
                 source_meta_lookup,
                 source_key_to_name,
             )
@@ -911,8 +919,10 @@ def render_index_html(
     else:
         matrix_sections_html = _render_matrix_sections_html(
             matrix_rows,
-            ordered_source_keys,
+            active_source_keys,
             forced_aggregate_autobid_slugs=forced_aggregate_autobid_slugs,
+            field_size=field_size,
+            opening_round_teams=opening_round_teams,
         )
         source_table_html = _render_source_table_html(
             ordered_source_keys,
@@ -941,6 +951,8 @@ def render_index_html(
         analytics_rows or [],
         matrix_rows,
         forced_autobid_slugs=forced_ebs_autobid_slugs,
+        field_size=field_size,
+        opening_round_teams=opening_round_teams,
     )
 
     html = f"""<!doctype html>
@@ -987,7 +999,10 @@ def render_index_html(
     .matrix col.avg-col {{ width: 86px; }}
     .matrix col.seed-range-col {{ width: 102px; }}
     .matrix col.app-col {{ width: 96px; }}
-    .sources {{ margin-bottom: 14px; }}
+    .sources {{ margin-bottom: 14px; table-layout: fixed; }}
+    .sources th, .sources td {{ white-space: normal; overflow-wrap: anywhere; }}
+    .sources th:last-child {{ width: 50%; }}
+    .sources td:last-child {{ text-align: left; }}
     .sources td:first-child {{ text-align: left; }}
     .controls {{ display: flex; align-items: center; gap: 10px; }}
     .controls label {{ font-weight: 600; }}
@@ -1075,6 +1090,7 @@ def render_index_html(
 <body>
   <div class=\"wrap\">
     <h1>WBB Aggregate Bracketology</h1>
+    <p class=\"meta\">{escape(season_label)} · {field_size}-team field · OR = Opening Round</p>
     <p class=\"meta\">Updated at {escape(_format_generated_at_et(generated_at_iso))}</p>
     <p class=\"meta\">Feedback: <a href=\"https://x.com/whitakk\" target=\"_blank\" rel=\"noopener noreferrer\">@whitakk</a></p>
     <div class=\"tabs\" role=\"tablist\" aria-label=\"Main views\">
@@ -1183,7 +1199,8 @@ def render_index_html(
 
       const analyticsRows = Array.isArray(analyticsPayload.rows) ? analyticsPayload.rows : [];
       const forcedAutobidSlugs = new Set(Array.isArray(analyticsPayload.forced_autobid_slugs) ? analyticsPayload.forced_autobid_slugs : []);
-      const fieldSize = Number(analyticsPayload.field_size) || 68;
+      const fieldSize = Number(analyticsPayload.field_size) || {field_size};
+      const openingRoundTeams = Number(analyticsPayload.opening_round_teams) || {opening_round_teams};
       const bubbleSize = Number(analyticsPayload.bubble_size) || 16;
       const presetWeights = {{
         ebs: {{ wab: 50, bart: 50, net: 0 }},
@@ -1319,15 +1336,19 @@ def render_index_html(
         const nonAutobidIndices = projectedRows
           .map((row, index) => (autobidSlugs.has(row.canonical_slug) ? -1 : index))
           .filter((index) => index >= 0);
-        const lastFourNonAutobid = nonAutobidIndices.slice(-4);
-
-        let specialPairs = [];
-        if (lastFourNonAutobid.length === 4) {{
-          specialPairs = [
-            [lastFourNonAutobid[0], lastFourNonAutobid[1]],
-            [lastFourNonAutobid[2], lastFourNonAutobid[3]],
-          ];
-        }}
+        const autobidIndices = projectedRows
+          .map((row, index) => (autobidSlugs.has(row.canonical_slug) ? index : -1))
+          .filter((index) => index >= 0);
+        const openingIndices = new Set();
+        const specialPairs = [];
+        [nonAutobidIndices, autobidIndices].forEach((category) => {{
+          let selected = openingRoundTeams ? category.slice(-openingRoundTeams) : [];
+          selected = selected.slice(selected.length % 2);
+          selected.forEach((index) => openingIndices.add(index));
+          for (let index = 0; index < selected.length; index += 2) {{
+            specialPairs.push([selected[index], selected[index + 1]]);
+          }}
+        }});
 
         const pairStarts = new Map(specialPairs.map(([first, second]) => [first, second]));
         const pairSeconds = new Set(specialPairs.map(([, second]) => second));
@@ -1352,17 +1373,7 @@ def render_index_html(
           }}
         }}
 
-        for (let idx = Math.max(0, projectedRows.length - 6); idx < projectedRows.length; idx += 1) {{
-          seeds[idx] = 16;
-        }}
-
-        const ffIndices = new Set(lastFourNonAutobid);
-        const sixteenIndices = seeds
-          .map((seed, idx) => (seed === 16 ? idx : -1))
-          .filter((idx) => idx >= 0);
-        sixteenIndices.slice(-4).forEach((idx) => ffIndices.add(idx));
-
-        return seeds.map((seed, idx) => (ffIndices.has(idx) ? `${{seed}}/FF` : seed));
+        return seeds.map((seed, idx) => (openingIndices.has(idx) ? `${{seed}}/OR` : seed));
       }};
 
       const renderRankings = (weights, preset) => {{

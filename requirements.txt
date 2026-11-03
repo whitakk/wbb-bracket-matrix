@@ -7,3 +7,4 @@ python-dotenv==1.0.1
 python-dateutil==2.9.0.post0
 rapidfuzz==3.12.2
 requests==2.32.4
+tzdata>=2026.1; sys_platform == "win32"
