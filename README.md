@@ -206,6 +206,6 @@ python -m bracket_matrix publish
 
 ## GitHub Actions
 - CI tests: `.github/workflows/ci.yml`
-- Scheduled publish every 4 hours (UTC): `.github/workflows/publish.yml`
+- Scheduled publish once daily at 12:17 UTC (7:17 a.m. EST / 8:17 a.m. EDT): `.github/workflows/publish.yml`
 
 The publish workflow runs the full pipeline, commits updated snapshots/latest data, and deploys `site/` to GitHub Pages.
