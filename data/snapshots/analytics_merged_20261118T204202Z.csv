@@ -1,0 +1,364 @@
+canonical_slug,team_display,conference,ncaa_team,ncaa_conference,net_rank,wab_rank,wab,q1_w,q1_l,q2_w,q2_l,q3_w,q3_l,q4_w,q4_l,bart_team,bart_conference,bart_rank,barthag,present_in_ncaa,present_in_bart
+abilene-christian,Abilene Christian,UAC,,,,,,,,,,,,,,Abilene Christian,UAC,92,0.7329431722538524,0,1
+air-force,Air Force,MWC,,,,,,,,,,,,,,Air Force,MWC,198,0.383337379476615,0,1
+akron,Akron,MAC,,,,,,,,,,,,,,Akron,MAC,148,0.5105129820846063,0,1
+alabama,Alabama,SEC,,,,,,,,,,,,,,Alabama,SEC,34,0.9269794847083938,0,1
+alabama-a-and-m,Alabama A&M,SWAC,,,,,,,,,,,,,,Alabama A&M,SWAC,260,0.23835492322159207,0,1
+alabama-state,Alabama St.,SWAC,,,,,,,,,,,,,,Alabama St.,SWAC,301,0.18055643088013326,0,1
+albany,Albany,AE,,,,,,,,,,,,,,Albany,AE,281,0.211410657246333,0,1
+alcorn-state,Alcorn St.,SWAC,,,,,,,,,,,,,,Alcorn St.,SWAC,350,0.08372695009009522,0,1
+american,American,Pat,,,,,,,,,,,,,,American,Pat,339,0.11883300617675399,0,1
+appalachian-state,Appalachian St.,SB,,,,,,,,,,,,,,Appalachian St.,SB,139,0.5443128796169611,0,1
+arizona,Arizona,B12,,,,,,,,,,,,,,Arizona,B12,69,0.8017595519065205,0,1
+arizona-state,Arizona St,B12,,,,,,,,,,,,,,Arizona St.,B12,37,0.9163911975828114,0,1
+arkansas,Arkansas,SEC,,,,,,,,,,,,,,Arkansas,SEC,67,0.8060976312009281,0,1
+arkansas-pine-bluff,Arkansas Pine Bluff,SWAC,,,,,,,,,,,,,,Arkansas Pine Bluff,SWAC,307,0.1719567027648259,0,1
+arkansas-state,Arkansas St.,SB,,,,,,,,,,,,,,Arkansas St.,SB,165,0.4643790256421143,0,1
+army-west-point,Army West Point,Pat,,,,,,,,,,,,,,Army,Pat,121,0.5961704348726277,0,1
+auburn,Auburn,SEC,,,,,,,,,,,,,,Auburn,SEC,50,0.8754853181703026,0,1
+austin-peay,Austin Peay,UAC,,,,,,,,,,,,,,Austin Peay,UAC,153,0.5069481887600072,0,1
+ball-state,Ball St.,MAC,,,,,,,,,,,,,,Ball St.,MAC,108,0.6490572308435504,0,1
+baylor,Baylor,B12,,,,,,,,,,,,,,Baylor,B12,14,0.9729391637743394,0,1
+bellarmine,Bellarmine,ASun,,,,,,,,,,,,,,Bellarmine,ASun,351,0.0833096135215439,0,1
+belmont,Belmont,MVC,,,,,,,,,,,,,,Belmont,MVC,126,0.5821173095456629,0,1
+bethune-cookman,Bethune Cookman,SWAC,,,,,,,,,,,,,,Bethune Cookman,SWAC,319,0.1505978633618258,0,1
+binghamton,Binghamton,AE,,,,,,,,,,,,,,Binghamton,AE,216,0.33678822315970286,0,1
+boise-state,Boise St.,P12,,,,,,,,,,,,,,Boise St.,P12,149,0.5092547517105427,0,1
+boston-college,Boston College,ACC,,,,,,,,,,,,,,Boston College,ACC,190,0.4044485790636044,0,1
+boston-university,Boston University,Pat,,,,,,,,,,,,,,Boston University,Pat,294,0.1893159872364448,0,1
+bowling-green,Bowling Green,MAC,,,,,,,,,,,,,,Bowling Green,MAC,211,0.35698931985577587,0,1
+bradley,Bradley,MVC,,,,,,,,,,,,,,Bradley,MVC,183,0.41441055793173226,0,1
+brown,Brown,Ivy,,,,,,,,,,,,,,Brown,Ivy,270,0.22266860876863934,0,1
+bryant,Bryant,AE,,,,,,,,,,,,,,Bryant,AE,178,0.43451992969319975,0,1
+bucknell,Bucknell,Pat,,,,,,,,,,,,,,Bucknell,Pat,272,0.2214354105098693,0,1
+buffalo,Buffalo,MAC,,,,,,,,,,,,,,Buffalo,MAC,251,0.2520616702200596,0,1
+butler,Butler,BE,,,,,,,,,,,,,,Butler,BE,64,0.8140963973340924,0,1
+byu,BYU,B12,,,,,,,,,,,,,,BYU,B12,46,0.8879739002969373,0,1
+ca-baptist,CA Baptist,BW,,,,,,,,,,,,,,Cal Baptist,BW,135,0.5595519671372464,0,1
+cal-poly,Cal Poly,BW,,,,,,,,,,,,,,Cal Poly,BW,273,0.2210166431021921,0,1
+cal-state-bakersfield,Cal St. Bakersfield,BW,,,,,,,,,,,,,,Cal St. Bakersfield,BW,320,0.14654514775418312,0,1
+cal-state-fullerton,Cal St. Fullerton,BW,,,,,,,,,,,,,,Cal St. Fullerton,BW,284,0.2046172752362599,0,1
+cal-state-northridge,Cal St. Northridge,BW,,,,,,,,,,,,,,Cal St. Northridge,BW,259,0.24317204013758392,0,1
+california,California,ACC,,,,,,,,,,,,,,California,ACC,31,0.9299280484297131,0,1
+campbell,Campbell,CAA,,,,,,,,,,,,,,Campbell,CAA,296,0.18643245753293886,0,1
+canisius,Canisius,Metro,,,,,,,,,,,,,,Canisius,Metro,295,0.18904529869026054,0,1
+central-arkansas,Central Arkansas,UAC,,,,,,,,,,,,,,Central Arkansas,UAC,155,0.49943910547557796,0,1
+central-connecticut,Central Connecticut,NEC,,,,,,,,,,,,,,Central Connecticut,NEC,362,0.036726863972921235,0,1
+central-michigan,Central Michigan,MAC,,,,,,,,,,,,,,Central Michigan,MAC,282,0.21135090792641556,0,1
+charleston,Charleston,CAA,,,,,,,,,,,,,,Charleston,CAA,258,0.2431724916099665,0,1
+charleston-southern,Charleston Southern,BSth,,,,,,,,,,,,,,Charleston Southern,BSth,344,0.10428927050694706,0,1
+charlotte,Charlotte,Amer,,,,,,,,,,,,,,Charlotte,Amer,209,0.3642030657753702,0,1
+chattanooga,Chattanooga,SC,,,,,,,,,,,,,,Chattanooga,SC,237,0.2739123435368619,0,1
+chicago-state,Chicago St.,NEC,,,,,,,,,,,,,,Chicago St.,NEC,353,0.07762750887147553,0,1
+cincinnati,Cincinnati,B12,,,,,,,,,,,,,,Cincinnati,B12,100,0.7037498611222971,0,1
+clemson,Clemson,ACC,,,,,,,,,,,,,,Clemson,ACC,33,0.9273818251647751,0,1
+cleveland-state,Cleveland St.,Horz,,,,,,,,,,,,,,Cleveland St.,Horz,264,0.234087549951778,0,1
+coastal-carolina,Coastal Carolina,SB,,,,,,,,,,,,,,Coastal Carolina,SB,163,0.4693887391686722,0,1
+colgate,Colgate,Pat,,,,,,,,,,,,,,Colgate,Pat,347,0.09537887631482618,0,1
+colorado,Colorado,B12,,,,,,,,,,,,,,Colorado,B12,41,0.9048625483353459,0,1
+colorado-state,Colorado St.,P12,,,,,,,,,,,,,,Colorado St.,P12,91,0.7378966502218453,0,1
+columbia,Columbia,Ivy,,,,,,,,,,,,,,Columbia,Ivy,62,0.8178259842336365,0,1
+coppin-state,Coppin St.,MEAC,,,,,,,,,,,,,,Coppin St.,MEAC,337,0.12051408767701606,0,1
+cornell,Cornell,Ivy,,,,,,,,,,,,,,Cornell,Ivy,261,0.2378247392846051,0,1
+creighton,Creighton,BE,,,,,,,,,,,,,,Creighton,BE,68,0.8018369455906582,0,1
+dartmouth,Dartmouth,Ivy,,,,,,,,,,,,,,Dartmouth,Ivy,250,0.2527097104478914,0,1
+davidson,Davidson,A10,,,,,,,,,,,,,,Davidson,A10,96,0.7173769805759326,0,1
+dayton,Dayton,A10,,,,,,,,,,,,,,Dayton,A10,122,0.589367725788618,0,1
+delaware,Delaware,CUSA,,,,,,,,,,,,,,Delaware,CUSA,278,0.216190744210801,0,1
+delaware-state,Delaware St.,MEAC,,,,,,,,,,,,,,Delaware St.,MEAC,345,0.10310883606660148,0,1
+denver,Denver,WCC,,,,,,,,,,,,,,Denver,WCC,317,0.154639161965315,0,1
+depaul,DePaul,BE,,,,,,,,,,,,,,DePaul,BE,129,0.5725521796286551,0,1
+detroit-mercy,Detroit Mercy,Horz,,,,,,,,,,,,,,Detroit Mercy,Horz,254,0.24506658679940171,0,1
+drake,Drake,MVC,,,,,,,,,,,,,,Drake,MVC,181,0.415013493085389,0,1
+drexel,Drexel,CAA,,,,,,,,,,,,,,Drexel,CAA,179,0.42422384699034993,0,1
+duke,Duke,ACC,,,,,,,,,,,,,,Duke,ACC,9,0.9847990018366153,0,1
+duquesne,Duquesne,A10,,,,,,,,,,,,,,Duquesne,A10,196,0.3952217988673949,0,1
+east-carolina,East Carolina,Amer,,,,,,,,,,,,,,East Carolina,Amer,223,0.3205134664001967,0,1
+east-tennessee-state,East Tennessee St.,SC,,,,,,,,,,,,,,East Tennessee St.,SC,162,0.47000116927202323,0,1
+east-texas-a-and-m,East Texas A&M,Slnd,,,,,,,,,,,,,,East Texas A&M,Slnd,248,0.2567673417344727,0,1
+eastern-illinois,Eastern Illinois,OVC,,,,,,,,,,,,,,Eastern Illinois,OVC,298,0.183622420265013,0,1
+e-kentucky,Eastern Kentucky,UAC,,,,,,,,,,,,,,Eastern Kentucky,UAC,154,0.5037196894468592,0,1
+eastern-michigan,Eastern Michigan,MAC,,,,,,,,,,,,,,Eastern Michigan,MAC,201,0.37692287264128405,0,1
+eastern-washington,Eastern Washington,BSky,,,,,,,,,,,,,,Eastern Washington,BSky,193,0.40192404244450536,0,1
+elon,Elon,CAA,,,,,,,,,,,,,,Elon,CAA,172,0.4414540631949522,0,1
+evansville,Evansville,MVC,,,,,,,,,,,,,,Evansville,MVC,334,0.1258000086507196,0,1
+fairfield,Fairfield,Metro,,,,,,,,,,,,,,Fairfield,Metro,66,0.810841177502381,0,1
+fdu,FDU,NEC,,,,,,,,,,,,,,Fairleigh Dickinson,NEC,169,0.45040070208846106,0,1
+fiu,FIU,CUSA,,,,,,,,,,,,,,FIU,CUSA,230,0.3013221506047103,0,1
+florida,Florida,SEC,,,,,,,,,,,,,,Florida,SEC,48,0.8789802091266702,0,1
+florida-a-and-m,Florida A&M,SWAC,,,,,,,,,,,,,,Florida A&M,SWAC,340,0.11770926726399426,0,1
+florida-atlantic,Florida Atlantic,Amer,,,,,,,,,,,,,,Florida Atlantic,Amer,150,0.5092232201924726,0,1
+florida-gulf-coast,Florida Gulf Coast,ASun,,,,,,,,,,,,,,Florida Gulf Coast,ASun,104,0.6770643331121867,0,1
+florida-state,Florida St.,ACC,,,,,,,,,,,,,,Florida St.,ACC,40,0.9083684491649251,0,1
+fordham,Fordham,A10,,,,,,,,,,,,,,Fordham,A10,170,0.44363829595429644,0,1
+fresno-state,Fresno St.,P12,,,,,,,,,,,,,,Fresno St.,P12,141,0.5419265102285904,0,1
+furman,Furman,SC,,,,,,,,,,,,,,Furman,SC,221,0.32595661721334385,0,1
+gardner-webb,Gardner Webb,BSth,,,,,,,,,,,,,,Gardner Webb,BSth,352,0.07899183387541711,0,1
+george-mason,George Mason,A10,,,,,,,,,,,,,,George Mason,A10,102,0.6889194286489753,0,1
+george-washington,George Washington,A10,,,,,,,,,,,,,,George Washington,A10,94,0.7301870406370523,0,1
+georgetown,Georgetown,BE,,,,,,,,,,,,,,Georgetown,BE,82,0.7735705510675132,0,1
+georgia,Georgia,SEC,,,,,,,,,,,,,,Georgia,SEC,44,0.8910629227259096,0,1
+georgia-southern,Georgia Southern,SB,,,,,,,,,,,,,,Georgia Southern,SB,214,0.34907119880701537,0,1
+georgia-state,Georgia St.,SB,,,,,,,,,,,,,,Georgia St.,SB,316,0.15776237737061197,0,1
+georgia-tech,Georgia Tech,ACC,,,,,,,,,,,,,,Georgia Tech,ACC,71,0.795434584086787,0,1
+gonzaga,Gonzaga,P12,,,,,,,,,,,,,,Gonzaga,P12,76,0.7848630417306447,0,1
+grambling-state,Grambling St.,SWAC,,,,,,,,,,,,,,Grambling St.,SWAC,292,0.19276517397006418,0,1
+grand-canyon,Grand Canyon,MWC,,,,,,,,,,,,,,Grand Canyon,MWC,70,0.7998334695080711,0,1
+green-bay,Green Bay,Horz,,,,,,,,,,,,,,Green Bay,Horz,90,0.7423183747576798,0,1
+hampton,Hampton,CAA,,,,,,,,,,,,,,Hampton,CAA,263,0.23670695765073463,0,1
+harvard,Harvard,Ivy,,,,,,,,,,,,,,Harvard,Ivy,65,0.8135701744631757,0,1
+hawaii,Hawaii,MWC,,,,,,,,,,,,,,Hawaii,MWC,187,0.4077299294533346,0,1
+high-point,High Point,BSth,,,,,,,,,,,,,,High Point,BSth,78,0.7843271143345215,0,1
+hofstra,Hofstra,CAA,,,,,,,,,,,,,,Hofstra,CAA,137,0.5455818644926593,0,1
+holy-cross,Holy Cross,Pat,,,,,,,,,,,,,,Holy Cross,Pat,226,0.3135885064488755,0,1
+houston,Houston,B12,,,,,,,,,,,,,,Houston,B12,72,0.7948453407162891,0,1
+houston-christian,Houston Christian,Slnd,,,,,,,,,,,,,,Houston Christian,Slnd,331,0.12894802511902895,0,1
+howard,Howard,MEAC,,,,,,,,,,,,,,Howard,MEAC,185,0.40993965187327347,0,1
+idaho,Idaho,BSky,,,,,,,,,,,,,,Idaho,BSky,143,0.5290400832387381,0,1
+idaho-state,Idaho St.,BSky,,,,,,,,,,,,,,Idaho St.,BSky,188,0.40619412578601577,0,1
+illinois,Illinois,B10,,,,,,,,,,,,,,Illinois,B10,23,0.9602194882081674,0,1
+illinois-chicago,Illinois Chicago,MVC,,,,,,,,,,,,,,Illinois Chicago,MVC,120,0.5978569620251794,0,1
+illinois-state,Illinois St.,MVC,,,,,,,,,,,,,,Illinois St.,MVC,103,0.6819816830651902,0,1
+incarnate-word,Incarnate Word,Slnd,,,,,,,,,,,,,,Incarnate Word,Slnd,312,0.16428273194476994,0,1
+indiana,Indiana,B10,,,,,,,,,,,,,,Indiana,B10,35,0.9219368315739991,0,1
+indiana-state,Indiana St.,MVC,,,,,,,,,,,,,,Indiana St.,MVC,283,0.2085250033077103,0,1
+iona,Iona,Metro,,,,,,,,,,,,,,Iona,Metro,303,0.17578807519078304,0,1
+iowa,Iowa,B10,,,,,,,,,,,,,,Iowa,B10,4,0.9882313450420642,0,1
+iowa-state,Iowa St.,B12,,,,,,,,,,,,,,Iowa St.,B12,54,0.8430570402272379,0,1
+iu-indy,IU Indy,Horz,,,,,,,,,,,,,,IU Indy,Horz,218,0.33342497341782834,0,1
+jackson-state,Jackson St.,SWAC,,,,,,,,,,,,,,Jackson St.,SWAC,349,0.08788353232865125,0,1
+jacksonville,Jacksonville,ASun,,,,,,,,,,,,,,Jacksonville,ASun,217,0.3341547193463866,0,1
+jacksonville-state,Jacksonville St.,CUSA,,,,,,,,,,,,,,Jacksonville St.,CUSA,274,0.22057377500503583,0,1
+james-madison,James Madison,SB,,,,,,,,,,,,,,James Madison,SB,77,0.7845130809258487,0,1
+kansas,Kansas,B12,,,,,,,,,,,,,,Kansas,B12,42,0.8980588815439752,0,1
+kansas-state,Kansas State,B12,,,,,,,,,,,,,,Kansas St.,B12,59,0.8316710570026773,0,1
+kennesaw-state,Kennesaw St.,CUSA,,,,,,,,,,,,,,Kennesaw St.,CUSA,252,0.25091481457381326,0,1
+kent-state,Kent St.,MAC,,,,,,,,,,,,,,Kent St.,MAC,203,0.37635632820284387,0,1
+kentucky,Kentucky,SEC,,,,,,,,,,,,,,Kentucky,SEC,15,0.9687071245469026,0,1
+la-salle,La Salle,A10,,,,,,,,,,,,,,La Salle,A10,225,0.31364810916820524,0,1
+la-tech,La. Tech,SB,,,,,,,,,,,,,,Louisiana Tech,SB,99,0.7088099093809332,0,1
+lafayette,Lafayette,Pat,,,,,,,,,,,,,,Lafayette,Pat,256,0.24395036103226372,0,1
+lamar,Lamar,Slnd,,,,,,,,,,,,,,Lamar,Slnd,220,0.3271896029787172,0,1
+le-moyne,Le Moyne,NEC,,,,,,,,,,,,,,Le Moyne,NEC,343,0.10770316830306674,0,1
+lehigh,Lehigh,Pat,,,,,,,,,,,,,,Lehigh,Pat,146,0.5165979162035145,0,1
+liberty,Liberty,CUSA,,,,,,,,,,,,,,Liberty,CUSA,106,0.6557704320972351,0,1
+lindenwood,Lindenwood,OVC,,,,,,,,,,,,,,Lindenwood,OVC,289,0.19700592955016455,0,1
+lipscomb,Lipscomb,ASun,,,,,,,,,,,,,,Lipscomb,ASun,255,0.24404607170823606,0,1
+little-rock,Little Rock,UAC,,,,,,,,,,,,,,Little Rock,UAC,287,0.19867026707766586,0,1
+liu,LIU,NEC,,,,,,,,,,,,,,LIU,NEC,304,0.1749926246877277,0,1
+long-beach-state,Long Beach St.,BW,,,,,,,,,,,,,,Long Beach St.,BW,326,0.13749487207150382,0,1
+longwood,Longwood,BSth,,,,,,,,,,,,,,Longwood,BSth,279,0.21317521513761112,0,1
+louisiana,Louisiana,SB,,,,,,,,,,,,,,Louisiana,SB,291,0.19317628932596875,0,1
+louisiana-monroe,Louisiana Monroe,SB,,,,,,,,,,,,,,Louisiana Monroe,SB,327,0.1365773405231605,0,1
+louisville,Louisville,ACC,,,,,,,,,,,,,,Louisville,ACC,7,0.9859565437302911,0,1
+loyola-chicago,Loyola Chicago,A10,,,,,,,,,,,,,,Loyola Chicago,A10,267,0.22930806665966072,0,1
+loyola-marymount,Loyola Marymount,WCC,,,,,,,,,,,,,,Loyola Marymount,WCC,98,0.7090267597831275,0,1
+loyola-md,Loyola MD,Pat,,,,,,,,,,,,,,Loyola MD,Pat,311,0.16641952635662596,0,1
+lsu,LSU,SEC,,,,,,,,,,,,,,LSU,SEC,5,0.9874576954873692,0,1
+maine,Maine,AE,,,,,,,,,,,,,,Maine,AE,228,0.3094053913709346,0,1
+manhattan,Manhattan,Metro,,,,,,,,,,,,,,Manhattan,Metro,306,0.17351305436925352,0,1
+marist,Marist,Metro,,,,,,,,,,,,,,Marist,Metro,257,0.24392645512078465,0,1
+marquette,Marquette,BE,,,,,,,,,,,,,,Marquette,BE,81,0.7762254438247257,0,1
+marshall,Marshall,SB,,,,,,,,,,,,,,Marshall,SB,176,0.4358285214724486,0,1
+maryland,Maryland,B10,,,,,,,,,,,,,,Maryland,B10,18,0.9657047643710568,0,1
+maryland-eastern-shore,Maryland Eastern Shore,MEAC,,,,,,,,,,,,,,Maryland Eastern Shore,MEAC,338,0.1191697243826204,0,1
+massachusetts,Massachusetts,MAC,,,,,,,,,,,,,,Massachusetts,MAC,118,0.6055839673060519,0,1
+mcneese-state,McNeese St,Slnd,,,,,,,,,,,,,,McNeese St.,Slnd,186,0.4087473741921024,0,1
+memphis,Memphis,Amer,,,,,,,,,,,,,,Memphis,Amer,109,0.6454166931840049,0,1
+mercer,Mercer,SC,,,,,,,,,,,,,,Mercer,SC,285,0.20434222339294617,0,1
+mercyhurst,Mercyhurst,NEC,,,,,,,,,,,,,,Mercyhurst,NEC,310,0.16717935478831009,0,1
+merrimack,Merrimack,Metro,,,,,,,,,,,,,,Merrimack,Metro,324,0.1395298004084982,0,1
+miami-oh,Miami (OH),MAC,,,,,,,,,,,,,,Miami OH,MAC,86,0.7520087318160253,0,1
+miami-fl,Miami FL,ACC,,,,,,,,,,,,,,Miami FL,ACC,30,0.930420813428272,0,1
+michigan,Michigan,B10,,,,,,,,,,,,,,Michigan,B10,6,0.9859599545837827,0,1
+michigan-state,Michigan St.,B10,,,,,,,,,,,,,,Michigan St.,B10,24,0.9496121973796796,0,1
+middle-tennessee,Middle Tennessee,CUSA,,,,,,,,,,,,,,Middle Tennessee,CUSA,152,0.5069663608188761,0,1
+milwaukee,Milwaukee,Horz,,,,,,,,,,,,,,Milwaukee,Horz,243,0.2669523645421086,0,1
+minnesota,Minnesota,B10,,,,,,,,,,,,,,Minnesota,B10,28,0.9384741464051161,0,1
+mississippi-state,Mississippi St.,SEC,,,,,,,,,,,,,,Mississippi St.,SEC,43,0.8980096699346087,0,1
+mississippi-valley-state,Mississippi Valley St.,SWAC,,,,,,,,,,,,,,Mississippi Valley St.,SWAC,361,0.037127585528210376,0,1
+missouri,Missouri,SEC,,,,,,,,,,,,,,Missouri,SEC,61,0.8299645594879357,0,1
+missouri-state,Missouri St.,CUSA,,,,,,,,,,,,,,Missouri St.,CUSA,83,0.7669256268905507,0,1
+monmouth,Monmouth,CAA,,,,,,,,,,,,,,Monmouth,CAA,142,0.5309648702557127,0,1
+montana,Montana,BSky,,,,,,,,,,,,,,Montana,BSky,191,0.4041504319330339,0,1
+montana-state,Montana St.,BSky,,,,,,,,,,,,,,Montana St.,BSky,57,0.8388359956633542,0,1
+morehead-state,Morehead St.,OVC,,,,,,,,,,,,,,Morehead St.,OVC,308,0.17066384320145125,0,1
+morgan-state,Morgan St.,MEAC,,,,,,,,,,,,,,Morgan St.,MEAC,346,0.10044796774844866,0,1
+mount-state-mary-s,Mount St. Mary's,Metro,,,,,,,,,,,,,,Mount St. Mary's,Metro,354,0.07736572477178474,0,1
+murray-state,Murray St.,MVC,,,,,,,,,,,,,,Murray St.,MVC,95,0.7275191486540489,0,1
+n-dakota-state,N Dakota St,Sum,,,,,,,,,,,,,,North Dakota St.,Sum,89,0.7483781904188671,0,1
+navy,Navy,Pat,,,,,,,,,,,,,,Navy,Pat,115,0.6109654770799093,0,1
+north-carolina-state,NC State,ACC,,,,,,,,,,,,,,N.C. State,ACC,26,0.9471925445935848,0,1
+nebraska,Nebraska,B10,,,,,,,,,,,,,,Nebraska,B10,21,0.963163441939559,0,1
+nebraska-omaha,Nebraska Omaha,Sum,,,,,,,,,,,,,,Nebraska Omaha,Sum,266,0.23159189048327802,0,1
+nevada,Nevada,MWC,,,,,,,,,,,,,,Nevada,MWC,213,0.3559952718647711,0,1
+new-hampshire,New Hampshire,AE,,,,,,,,,,,,,,New Hampshire,AE,265,0.23295703124293762,0,1
+new-haven,New Haven,NEC,,,,,,,,,,,,,,New Haven,NEC,355,0.07729972850823986,0,1
+new-mexico,New Mexico,MWC,,,,,,,,,,,,,,New Mexico,MWC,131,0.5653508271706066,0,1
+new-mexico-state,New Mexico St.,CUSA,,,,,,,,,,,,,,New Mexico St.,CUSA,286,0.20329383535675521,0,1
+new-orleans,New Orleans,Slnd,,,,,,,,,,,,,,New Orleans,Slnd,330,0.13427765784525061,0,1
+niagara,Niagara,Metro,,,,,,,,,,,,,,Niagara,Metro,363,0.029029360382500785,0,1
+nicholls-state,Nicholls St.,Slnd,,,,,,,,,,,,,,Nicholls St.,Slnd,207,0.3685741684461906,0,1
+njit,NJIT,AE,,,,,,,,,,,,,,NJIT,AE,192,0.40253433871365063,0,1
+norfolk-state,Norfolk St.,MEAC,,,,,,,,,,,,,,Norfolk St.,MEAC,302,0.17870859244652287,0,1
+north-alabama,North Alabama,UAC,,,,,,,,,,,,,,North Alabama,UAC,315,0.15793083856941909,0,1
+north-carolina,North Carolina,ACC,,,,,,,,,,,,,,North Carolina,ACC,16,0.9673780264134954,0,1
+north-carolina-a-and-t,North Carolina A&T,CAA,,,,,,,,,,,,,,North Carolina A&T,CAA,241,0.2697330668109014,0,1
+north-carolina-central,North Carolina Central,MEAC,,,,,,,,,,,,,,North Carolina Central,MEAC,348,0.09155679026581538,0,1
+north-dakota,North Dakota,Sum,,,,,,,,,,,,,,North Dakota,Sum,342,0.11109834450225065,0,1
+north-florida,North Florida,ASun,,,,,,,,,,,,,,North Florida,ASun,204,0.3742954134309267,0,1
+north-texas,North Texas,Amer,,,,,,,,,,,,,,North Texas,Amer,147,0.5114959640570292,0,1
+northeastern,Northeastern,CAA,,,,,,,,,,,,,,Northeastern,CAA,229,0.3060906405447302,0,1
+northern-ariz,Northern Ariz.,BSky,,,,,,,,,,,,,,Northern Arizona,BSky,276,0.2191997729786611,0,1
+northern-colo,Northern Colo.,BSky,,,,,,,,,,,,,,Northern Colorado,BSky,173,0.4403355497723619,0,1
+northern-illinois,Northern Illinois,Horz,,,,,,,,,,,,,,Northern Illinois,Horz,253,0.2452762595972929,0,1
+northern-iowa,Northern Iowa,MVC,,,,,,,,,,,,,,Northern Iowa,MVC,160,0.4749501783894627,0,1
+northern-kentucky,Northern Kentucky,Horz,,,,,,,,,,,,,,Northern Kentucky,Horz,280,0.21182962147971404,0,1
+northwestern,Northwestern,B10,,,,,,,,,,,,,,Northwestern,B10,111,0.6312712303683082,0,1
+northwestern-state,Northwestern St.,Slnd,,,,,,,,,,,,,,Northwestern St.,Slnd,321,0.14402145404296077,0,1
+notre-dame,Notre Dame,ACC,,,,,,,,,,,,,,Notre Dame,ACC,17,0.9662653524611129,0,1
+oakland,Oakland,Horz,,,,,,,,,,,,,,Oakland,Horz,205,0.3707007024536666,0,1
+ohio,Ohio,MAC,,,,,,,,,,,,,,Ohio,MAC,168,0.45226915865014794,0,1
+ohio-state,Ohio St.,B10,,,,,,,,,,,,,,Ohio St.,B10,11,0.9828315341625848,0,1
+oklahoma,Oklahoma,SEC,,,,,,,,,,,,,,Oklahoma,SEC,13,0.973380574874523,0,1
+oklahoma-state,Oklahoma St,B12,,,,,,,,,,,,,,Oklahoma St.,B12,25,0.9482744349826877,0,1
+old-dominion,Old Dominion,SB,,,,,,,,,,,,,,Old Dominion,SB,224,0.31587143626138364,0,1
+ole-miss,Ole Miss,SEC,,,,,,,,,,,,,,Mississippi,SEC,27,0.9468200936861886,0,1
+oral-roberts,Oral Roberts,Sum,,,,,,,,,,,,,,Oral Roberts,Sum,239,0.2707904249050205,0,1
+oregon,Oregon,B10,,,,,,,,,,,,,,Oregon,B10,38,0.9132548801347634,0,1
+oregon-state,Oregon St.,P12,,,,,,,,,,,,,,Oregon St.,P12,88,0.7484191053465743,0,1
+pacific,Pacific,WCC,,,,,,,,,,,,,,Pacific,WCC,166,0.462235737610705,0,1
+penn,Penn,Ivy,,,,,,,,,,,,,,Penn,Ivy,105,0.6696605949040574,0,1
+penn-state,Penn St.,B10,,,,,,,,,,,,,,Penn St.,B10,138,0.5455708545321314,0,1
+pepperdine,Pepperdine,WCC,,,,,,,,,,,,,,Pepperdine,WCC,158,0.4816401970658498,0,1
+pittsburgh,Pittsburgh,ACC,,,,,,,,,,,,,,Pittsburgh,ACC,73,0.7939926484287824,0,1
+portland,Portland,WCC,,,,,,,,,,,,,,Portland,WCC,107,0.6517435330087159,0,1
+portland-state,Portland St.,BSky,,,,,,,,,,,,,,Portland St.,BSky,290,0.1943687732294866,0,1
+prairie-view-a-and-m,Prairie View A&M,SWAC,,,,,,,,,,,,,,Prairie View A&M,SWAC,360,0.04355352807874823,0,1
+presbyterian,Presbyterian,BSth,,,,,,,,,,,,,,Presbyterian,BSth,356,0.059228995592773725,0,1
+princeton,Princeton,Ivy,,,,,,,,,,,,,,Princeton,Ivy,63,0.8167074730347345,0,1
+providence,Providence,BE,,,,,,,,,,,,,,Providence,BE,144,0.529036127194542,0,1
+purdue,Purdue,B10,,,,,,,,,,,,,,Purdue,B10,74,0.7912111271957848,0,1
+purdue-fort-wayne,Purdue Fort Wayne,Horz,,,,,,,,,,,,,,Purdue Fort Wayne,Horz,297,0.1845437432861372,0,1
+queens,Queens,ASun,,,,,,,,,,,,,,Queens,ASun,277,0.21724785817682743,0,1
+quinnipiac,Quinnipiac,Metro,,,,,,,,,,,,,,Quinnipiac,Metro,293,0.1921177825380709,0,1
+radford,Radford,BSth,,,,,,,,,,,,,,Radford,BSth,177,0.4353961382827729,0,1
+rhode-island,Rhode Island,A10,,,,,,,,,,,,,,Rhode Island,A10,87,0.7513065146740008,0,1
+rice,Rice,Amer,,,,,,,,,,,,,,Rice,Amer,101,0.702569903553079,0,1
+richmond,Richmond,A10,,,,,,,,,,,,,,Richmond,A10,134,0.5600469917224765,0,1
+rider,Rider,Metro,,,,,,,,,,,,,,Rider,Metro,300,0.18105903116696526,0,1
+robert-morris,Robert Morris,Horz,,,,,,,,,,,,,,Robert Morris,Horz,114,0.6116994675743436,0,1
+rutgers,Rutgers,B10,,,,,,,,,,,,,,Rutgers,B10,56,0.8417644709499043,0,1
+sacramento-state,Sacramento St.,BW,,,,,,,,,,,,,,Sacramento St.,BW,159,0.4814467627529071,0,1
+sacred-heart,Sacred Heart,Metro,,,,,,,,,,,,,,Sacred Heart,Metro,305,0.1747649390384833,0,1
+saint-joseph-s,Saint Joseph's,A10,,,,,,,,,,,,,,Saint Joseph's,A10,84,0.7578808316405098,0,1
+saint-louis,Saint Louis,A10,,,,,,,,,,,,,,Saint Louis,A10,136,0.5515981958369626,0,1
+saint-mary-s,Saint Mary's,WCC,,,,,,,,,,,,,,Saint Mary's,WCC,184,0.4128108837960847,0,1
+saint-peter-s,Saint Peter's,Metro,,,,,,,,,,,,,,Saint Peter's,Metro,336,0.12291720528033048,0,1
+sam-houston-state,Sam Houston St.,CUSA,,,,,,,,,,,,,,Sam Houston St.,CUSA,182,0.4146030332648355,0,1
+samford,Samford,SC,,,,,,,,,,,,,,Samford,SC,232,0.29310058836467845,0,1
+san-diego,San Diego,WCC,,,,,,,,,,,,,,San Diego,WCC,195,0.39586224596988406,0,1
+san-diego-state,San Diego St.,P12,,,,,,,,,,,,,,San Diego St.,P12,79,0.782028604651486,0,1
+san-francisco,San Francisco,WCC,,,,,,,,,,,,,,San Francisco,WCC,132,0.5629900969661153,0,1
+san-jose-state,San Jose St.,MWC,,,,,,,,,,,,,,San Jose St.,MWC,275,0.22048596395065187,0,1
+santa-clara,Santa Clara,WCC,,,,,,,,,,,,,,Santa Clara,WCC,75,0.7905573381785399,0,1
+seattle,Seattle,WCC,,,,,,,,,,,,,,Seattle,WCC,236,0.285469631928877,0,1
+seton-hall,Seton Hall,BE,,,,,,,,,,,,,,Seton Hall,BE,93,0.7319868780426647,0,1
+siena,Siena,Metro,,,,,,,,,,,,,,Siena,Metro,206,0.37058130088493063,0,1
+siu-edwardsville,SIU Edwardsville,OVC,,,,,,,,,,,,,,SIU Edwardsville,OVC,227,0.31274862855817653,0,1
+smu,SMU,ACC,,,,,,,,,,,,,,SMU,ACC,80,0.7770533098271117,0,1
+south-alabama,South Alabama,SB,,,,,,,,,,,,,,South Alabama,SB,269,0.2232921656034368,0,1
+south-carolina,South Carolina,SEC,,,,,,,,,,,,,,South Carolina,SEC,2,0.9947239557957791,0,1
+south-carolina-state,South Carolina State,MEAC,,,,,,,,,,,,,,South Carolina St.,MEAC,357,0.05718345154294384,0,1
+south-dakota,South Dakota,Sum,,,,,,,,,,,,,,South Dakota,Sum,164,0.4646900281410083,0,1
+south-dakota-state,South Dakota St,Sum,,,,,,,,,,,,,,South Dakota St.,Sum,55,0.8425041423840753,0,1
+south-fla,South Fla.,Amer,,,,,,,,,,,,,,South Florida,Amer,53,0.8454521792438908,0,1
+southeast-missouri-state,Southeast Missouri St.,OVC,,,,,,,,,,,,,,Southeast Missouri St.,OVC,333,0.12617855235808,0,1
+southeastern-louisiana,Southeastern Louisiana,Slnd,,,,,,,,,,,,,,Southeastern Louisiana,Slnd,313,0.16022669405605486,0,1
+southern,Southern,SWAC,,,,,,,,,,,,,,Southern,SWAC,222,0.3249118992033497,0,1
+southern-illinois,Southern Illinois,MVC,,,,,,,,,,,,,,Southern Illinois,MVC,235,0.28589592068505904,0,1
+southern-indiana,Southern Indiana,OVC,,,,,,,,,,,,,,Southern Indiana,OVC,175,0.43883436372570844,0,1
+southern-miss,Southern Miss,SB,,,,,,,,,,,,,,Southern Miss,SB,194,0.39745685638989725,0,1
+southern-utah,Southern Utah,BSky,,,,,,,,,,,,,,Southern Utah,BSky,157,0.4928026669656824,0,1
+state-bonaventure,St. Bonaventure,A10,,,,,,,,,,,,,,St. Bonaventure,A10,238,0.2731504958047608,0,1
+state-john-s,St. John's,BE,,,,,,,,,,,,,,St. John's,BE,47,0.8820730537228535,0,1
+state-thomas,St. Thomas,Sum,,,,,,,,,,,,,,St. Thomas,Sum,189,0.4051316054352638,0,1
+stanford,Stanford,ACC,,,,,,,,,,,,,,Stanford,ACC,52,0.8457962865125892,0,1
+stephen-f-austin,Stephen F. Austin,Slnd,,,,,,,,,,,,,,Stephen F. Austin,Slnd,140,0.542098811763712,0,1
+stetson,Stetson,ASun,,,,,,,,,,,,,,Stetson,ASun,323,0.1395344856311798,0,1
+stonehill,Stonehill,NEC,,,,,,,,,,,,,,Stonehill,NEC,335,0.12434712254061361,0,1
+stony-brook,Stony Brook,CAA,,,,,,,,,,,,,,Stony Brook,CAA,233,0.2903203179407868,0,1
+syracuse,Syracuse,ACC,,,,,,,,,,,,,,Syracuse,ACC,60,0.8302544702041394,0,1
+tarleton-state,Tarleton St.,UAC,,,,,,,,,,,,,,Tarleton St.,UAC,271,0.2223241696981348,0,1
+tcu,TCU,B12,,,,,,,,,,,,,,TCU,B12,19,0.9653763840228732,0,1
+temple,Temple,Amer,,,,,,,,,,,,,,Temple,Amer,113,0.6232171381264812,0,1
+tennessee,Tennessee,SEC,,,,,,,,,,,,,,Tennessee,SEC,22,0.9625004198838666,0,1
+tennessee-martin,Tennessee Martin,OVC,,,,,,,,,,,,,,Tennessee Martin,OVC,318,0.1540609373275142,0,1
+tennessee-state,Tennessee St.,OVC,,,,,,,,,,,,,,Tennessee St.,OVC,288,0.1980959549035522,0,1
+tennessee-tech,Tennessee Tech,SC,,,,,,,,,,,,,,Tennessee Tech,SC,246,0.26105930284986795,0,1
+texas,Texas,SEC,,,,,,,,,,,,,,Texas,SEC,8,0.9855926004027171,0,1
+texas-a-and-m,Texas A&M,SEC,,,,,,,,,,,,,,Texas A&M,SEC,49,0.8768815140579461,0,1
+texas-a-and-m-corpus-chris,Texas A&M Corpus Chris,Slnd,,,,,,,,,,,,,,Texas A&M Corpus Chris,Slnd,322,0.13983418149875057,0,1
+texas-southern,Texas Southern,SWAC,,,,,,,,,,,,,,Texas Southern,SWAC,358,0.05601383687416742,0,1
+texas-state,Texas St.,P12,,,,,,,,,,,,,,Texas St.,P12,123,0.5879024488321525,0,1
+texas-tech,Texas Tech,B12,,,,,,,,,,,,,,Texas Tech,B12,45,0.8880577953984921,0,1
+toledo,Toledo,MAC,,,,,,,,,,,,,,Toledo,MAC,119,0.5992082813676806,0,1
+towson,Towson,CAA,,,,,,,,,,,,,,Towson,CAA,161,0.4704194226982817,0,1
+troy,Troy,SB,,,,,,,,,,,,,,Troy,SB,174,0.439955489417646,0,1
+tulane,Tulane,Amer,,,,,,,,,,,,,,Tulane,Amer,130,0.569774801021664,0,1
+tulsa,Tulsa,Amer,,,,,,,,,,,,,,Tulsa,Amer,97,0.7133648766946847,0,1
+uab,UAB,Amer,,,,,,,,,,,,,,UAB,Amer,208,0.3684559224627179,0,1
+uc-davis,UC Davis,MWC,,,,,,,,,,,,,,UC Davis,MWC,156,0.4971765638892637,0,1
+uc-irvine,UC Irvine,BW,,,,,,,,,,,,,,UC Irvine,BW,125,0.5843971819118269,0,1
+uc-riverside,UC Riverside,BW,,,,,,,,,,,,,,UC Riverside,BW,329,0.1354403218592476,0,1
+uc-san-diego,UC San Diego,BW,,,,,,,,,,,,,,UC San Diego,BW,133,0.5609761434709033,0,1
+uc-santa-barbara,UC Santa Barbara,BW,,,,,,,,,,,,,,UC Santa Barbara,BW,117,0.6062483440415073,0,1
+ucf,UCF,B12,,,,,,,,,,,,,,UCF,B12,110,0.6402812146435546,0,1
+ucla,UCLA,B10,,,,,,,,,,,,,,UCLA,B10,10,0.9837673731254164,0,1
+uconn,UConn,BE,,,,,,,,,,,,,,Connecticut,BE,1,0.9960238092909237,0,1
+umass-lowell,UMass Lowell,AE,,,,,,,,,,,,,,UMass Lowell,AE,332,0.12708222411366374,0,1
+umbc,UMBC,AE,,,,,,,,,,,,,,UMBC,AE,151,0.5087734000035553,0,1
+umkc,UMKC,Sum,,,,,,,,,,,,,,UMKC,Sum,212,0.3564963602152417,0,1
+unc-asheville,UNC Asheville,BSth,,,,,,,,,,,,,,UNC Asheville,BSth,328,0.1358998204573179,0,1
+unc-greensboro,UNC Greensboro,SC,,,,,,,,,,,,,,UNC Greensboro,SC,314,0.15992724138228726,0,1
+unc-wilmington,UNC Wilmington,CAA,,,,,,,,,,,,,,UNC Wilmington,CAA,171,0.44207972544236146,0,1
+unlv,UNLV,MWC,,,,,,,,,,,,,,UNLV,MWC,85,0.7564214791522446,0,1
+usc,USC,B10,,,,,,,,,,,,,,USC,B10,3,0.9911252534015667,0,1
+usc-upstate,USC Upstate,BSth,,,,,,,,,,,,,,USC Upstate,BSth,309,0.16801064692646153,0,1
+ut-arlington,UT Arlington,UAC,,,,,,,,,,,,,,UT Arlington,UAC,210,0.35832011106937117,0,1
+ut-rio-grande-valley,UT Rio Grande Valley,Slnd,,,,,,,,,,,,,,UT Rio Grande Valley,Slnd,244,0.2659460408708651,0,1
+utah,Utah,B12,,,,,,,,,,,,,,Utah,B12,58,0.8327288610719877,0,1
+utah-state,Utah St.,P12,,,,,,,,,,,,,,Utah St.,P12,200,0.3798088178295523,0,1
+utah-tech,Utah Tech,BSky,,,,,,,,,,,,,,Utah Tech,BSky,325,0.13862418004660876,0,1
+utah-valley,Utah Valley,BW,,,,,,,,,,,,,,Utah Valley,BW,167,0.4545567723522499,0,1
+utep,UTEP,MWC,,,,,,,,,,,,,,UTEP,MWC,268,0.22350437025411798,0,1
+utsa,UTSA,Amer,,,,,,,,,,,,,,UTSA,Amer,128,0.5760268469239411,0,1
+valparaiso,Valparaiso,MVC,,,,,,,,,,,,,,Valparaiso,MVC,299,0.18218460354530258,0,1
+vanderbilt,Vanderbilt,SEC,,,,,,,,,,,,,,Vanderbilt,SEC,12,0.9750937379634925,0,1
+vcu,VCU,A10,,,,,,,,,,,,,,VCU,A10,116,0.6076030012559243,0,1
+vermont,Vermont,AE,,,,,,,,,,,,,,Vermont,AE,197,0.39363076082558757,0,1
+villanova,Villanova,BE,,,,,,,,,,,,,,Villanova,BE,29,0.9373215368404636,0,1
+virginia,Virginia,ACC,,,,,,,,,,,,,,Virginia,ACC,36,0.9178193484677183,0,1
+virginia-tech,Virginia Tech,ACC,,,,,,,,,,,,,,Virginia Tech,ACC,39,0.9100103488597084,0,1
+wagner,Wagner,NEC,,,,,,,,,,,,,,Wagner,NEC,359,0.0545364280553903,0,1
+wake-forest,Wake Forest,ACC,,,,,,,,,,,,,,Wake Forest,ACC,112,0.6311629669759626,0,1
+washington,Washington,B10,,,,,,,,,,,,,,Washington,B10,20,0.9636279367198577,0,1
+washington-state,Washington St.,P12,,,,,,,,,,,,,,Washington St.,P12,124,0.5856792022470194,0,1
+weber-state,Weber St.,BSky,,,,,,,,,,,,,,Weber St.,BSky,249,0.25360291775865984,0,1
+west-florida,West Florida,ASun,,,,,,,,,,,,,,West Florida,ASun,341,0.11270120273386011,0,1
+west-georgia,West Georgia,UAC,,,,,,,,,,,,,,West Georgia,UAC,242,0.26704371120331094,0,1
+west-virginia,West Virginia,B12,,,,,,,,,,,,,,West Virginia,B12,32,0.9281918271122184,0,1
+western-carolina,Western Carolina,SC,,,,,,,,,,,,,,Western Carolina,SC,245,0.26257965976346553,0,1
+western-illinois,Western Illinois,OVC,,,,,,,,,,,,,,Western Illinois,OVC,202,0.376578890222663,0,1
+western-kentucky,Western Kentucky,CUSA,,,,,,,,,,,,,,Western Kentucky,CUSA,215,0.3460237881597851,0,1
+western-michigan,Western Michigan,MAC,,,,,,,,,,,,,,Western Michigan,MAC,247,0.26088478229637746,0,1
+wichita-state,Wichita St.,Amer,,,,,,,,,,,,,,Wichita St.,Amer,234,0.2860655643317455,0,1
+william-and-mary,William & Mary,CAA,,,,,,,,,,,,,,William & Mary,CAA,219,0.3290354926006193,0,1
+winthrop,Winthrop,BSth,,,,,,,,,,,,,,Winthrop,BSth,262,0.23705888674238473,0,1
+wisconsin,Wisconsin,B10,,,,,,,,,,,,,,Wisconsin,B10,51,0.8507975764036037,0,1
+wofford,Wofford,SC,,,,,,,,,,,,,,Wofford,SC,231,0.29771632472596404,0,1
+wright-state,Wright St.,Horz,,,,,,,,,,,,,,Wright St.,Horz,240,0.2698225750637424,0,1
+wyoming,Wyoming,MWC,,,,,,,,,,,,,,Wyoming,MWC,199,0.3801877352761484,0,1
+xavier,Xavier,BE,,,,,,,,,,,,,,Xavier,BE,127,0.5786991940119119,0,1
+yale,Yale,Ivy,,,,,,,,,,,,,,Yale,Ivy,180,0.42293185510630077,0,1
+youngstown-state,Youngstown St.,Horz,,,,,,,,,,,,,,Youngstown St.,Horz,145,0.5191954590955642,0,1
