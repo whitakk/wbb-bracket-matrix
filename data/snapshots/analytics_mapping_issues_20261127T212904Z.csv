@@ -1,0 +1,364 @@
+issue_type,source,team_raw,canonical_slug,detail
+missing_in_ncaa,ncaa_nitty_gritty,Abilene Christian,abilene-christian,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Air Force,air-force,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Akron,akron,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Alabama,alabama,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Alabama A&M,alabama-a-and-m,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Alabama St.,alabama-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Albany,albany,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Alcorn St.,alcorn-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,American,american,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Appalachian St.,appalachian-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Arizona,arizona,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Arizona St.,arizona-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Arkansas,arkansas,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Arkansas Pine Bluff,arkansas-pine-bluff,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Arkansas St.,arkansas-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Army,army-west-point,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Auburn,auburn,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Austin Peay,austin-peay,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Ball St.,ball-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Baylor,baylor,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Bellarmine,bellarmine,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Belmont,belmont,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Bethune Cookman,bethune-cookman,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Binghamton,binghamton,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Boise St.,boise-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Boston College,boston-college,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Boston University,boston-university,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Bowling Green,bowling-green,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Bradley,bradley,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Brown,brown,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Bryant,bryant,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Bucknell,bucknell,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Buffalo,buffalo,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Butler,butler,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,BYU,byu,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Cal Baptist,ca-baptist,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Cal Poly,cal-poly,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Cal St. Bakersfield,cal-state-bakersfield,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Cal St. Fullerton,cal-state-fullerton,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Cal St. Northridge,cal-state-northridge,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,California,california,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Campbell,campbell,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Canisius,canisius,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Central Arkansas,central-arkansas,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Central Connecticut,central-connecticut,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Central Michigan,central-michigan,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Charleston,charleston,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Charleston Southern,charleston-southern,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Charlotte,charlotte,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Chattanooga,chattanooga,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Chicago St.,chicago-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Cincinnati,cincinnati,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Clemson,clemson,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Cleveland St.,cleveland-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Coastal Carolina,coastal-carolina,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Colgate,colgate,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Colorado,colorado,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Colorado St.,colorado-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Columbia,columbia,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Connecticut,uconn,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Coppin St.,coppin-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Cornell,cornell,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Creighton,creighton,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Dartmouth,dartmouth,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Davidson,davidson,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Dayton,dayton,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Delaware,delaware,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Delaware St.,delaware-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Denver,denver,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,DePaul,depaul,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Detroit Mercy,detroit-mercy,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Drake,drake,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Drexel,drexel,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Duke,duke,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Duquesne,duquesne,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,East Carolina,east-carolina,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,East Tennessee St.,east-tennessee-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,East Texas A&M,east-texas-a-and-m,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Eastern Illinois,eastern-illinois,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Eastern Kentucky,e-kentucky,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Eastern Michigan,eastern-michigan,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Eastern Washington,eastern-washington,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Elon,elon,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Evansville,evansville,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Fairfield,fairfield,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Fairleigh Dickinson,fdu,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,FIU,fiu,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Florida,florida,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Florida A&M,florida-a-and-m,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Florida Atlantic,florida-atlantic,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Florida Gulf Coast,florida-gulf-coast,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Florida St.,florida-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Fordham,fordham,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Fresno St.,fresno-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Furman,furman,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Gardner Webb,gardner-webb,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,George Mason,george-mason,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,George Washington,george-washington,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Georgetown,georgetown,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Georgia,georgia,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Georgia Southern,georgia-southern,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Georgia St.,georgia-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Georgia Tech,georgia-tech,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Gonzaga,gonzaga,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Grambling St.,grambling-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Grand Canyon,grand-canyon,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Green Bay,green-bay,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Hampton,hampton,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Harvard,harvard,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Hawaii,hawaii,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,High Point,high-point,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Hofstra,hofstra,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Holy Cross,holy-cross,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Houston,houston,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Houston Christian,houston-christian,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Howard,howard,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Idaho,idaho,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Idaho St.,idaho-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Illinois,illinois,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Illinois Chicago,illinois-chicago,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Illinois St.,illinois-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Incarnate Word,incarnate-word,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Indiana,indiana,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Indiana St.,indiana-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Iona,iona,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Iowa,iowa,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Iowa St.,iowa-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,IU Indy,iu-indy,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Jackson St.,jackson-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Jacksonville,jacksonville,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Jacksonville St.,jacksonville-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,James Madison,james-madison,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Kansas,kansas,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Kansas St.,kansas-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Kennesaw St.,kennesaw-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Kent St.,kent-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Kentucky,kentucky,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,La Salle,la-salle,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Lafayette,lafayette,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Lamar,lamar,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Le Moyne,le-moyne,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Lehigh,lehigh,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Liberty,liberty,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Lindenwood,lindenwood,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Lipscomb,lipscomb,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Little Rock,little-rock,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,LIU,liu,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Long Beach St.,long-beach-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Longwood,longwood,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Louisiana,louisiana,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Louisiana Monroe,louisiana-monroe,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Louisiana Tech,la-tech,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Louisville,louisville,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Loyola Chicago,loyola-chicago,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Loyola Marymount,loyola-marymount,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Loyola MD,loyola-md,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,LSU,lsu,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Maine,maine,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Manhattan,manhattan,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Marist,marist,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Marquette,marquette,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Marshall,marshall,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Maryland,maryland,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Maryland Eastern Shore,maryland-eastern-shore,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Massachusetts,massachusetts,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,McNeese St.,mcneese-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Memphis,memphis,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Mercer,mercer,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Mercyhurst,mercyhurst,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Merrimack,merrimack,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Miami FL,miami-fl,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Miami OH,miami-oh,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Michigan,michigan,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Michigan St.,michigan-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Middle Tennessee,middle-tennessee,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Milwaukee,milwaukee,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Minnesota,minnesota,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Mississippi,ole-miss,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Mississippi St.,mississippi-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Mississippi Valley St.,mississippi-valley-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Missouri,missouri,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Missouri St.,missouri-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Monmouth,monmouth,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Montana,montana,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Montana St.,montana-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Morehead St.,morehead-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Morgan St.,morgan-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Mount St. Mary's,mount-state-mary-s,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Murray St.,murray-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,N.C. State,north-carolina-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Navy,navy,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Nebraska,nebraska,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Nebraska Omaha,nebraska-omaha,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Nevada,nevada,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,New Hampshire,new-hampshire,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,New Haven,new-haven,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,New Mexico,new-mexico,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,New Mexico St.,new-mexico-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,New Orleans,new-orleans,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Niagara,niagara,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Nicholls St.,nicholls-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,NJIT,njit,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Norfolk St.,norfolk-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,North Alabama,north-alabama,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,North Carolina,north-carolina,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,North Carolina A&T,north-carolina-a-and-t,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,North Carolina Central,north-carolina-central,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,North Dakota,north-dakota,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,North Dakota St.,n-dakota-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,North Florida,north-florida,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,North Texas,north-texas,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Northeastern,northeastern,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Northern Arizona,northern-ariz,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Northern Colorado,northern-colo,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Northern Illinois,northern-illinois,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Northern Iowa,northern-iowa,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Northern Kentucky,northern-kentucky,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Northwestern,northwestern,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Northwestern St.,northwestern-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Notre Dame,notre-dame,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Oakland,oakland,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Ohio,ohio,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Ohio St.,ohio-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Oklahoma,oklahoma,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Oklahoma St.,oklahoma-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Old Dominion,old-dominion,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Oral Roberts,oral-roberts,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Oregon,oregon,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Oregon St.,oregon-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Pacific,pacific,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Penn,penn,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Penn St.,penn-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Pepperdine,pepperdine,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Pittsburgh,pittsburgh,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Portland,portland,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Portland St.,portland-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Prairie View A&M,prairie-view-a-and-m,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Presbyterian,presbyterian,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Princeton,princeton,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Providence,providence,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Purdue,purdue,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Purdue Fort Wayne,purdue-fort-wayne,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Queens,queens,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Quinnipiac,quinnipiac,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Radford,radford,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Rhode Island,rhode-island,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Rice,rice,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Richmond,richmond,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Rider,rider,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Robert Morris,robert-morris,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Rutgers,rutgers,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Sacramento St.,sacramento-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Sacred Heart,sacred-heart,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Saint Joseph's,saint-joseph-s,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Saint Louis,saint-louis,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Saint Mary's,saint-mary-s,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Saint Peter's,saint-peter-s,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Sam Houston St.,sam-houston-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Samford,samford,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,San Diego,san-diego,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,San Diego St.,san-diego-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,San Francisco,san-francisco,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,San Jose St.,san-jose-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Santa Clara,santa-clara,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Seattle,seattle,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Seton Hall,seton-hall,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Siena,siena,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,SIU Edwardsville,siu-edwardsville,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,SMU,smu,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,South Alabama,south-alabama,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,South Carolina,south-carolina,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,South Carolina St.,south-carolina-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,South Dakota,south-dakota,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,South Dakota St.,south-dakota-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,South Florida,south-fla,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Southeast Missouri St.,southeast-missouri-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Southeastern Louisiana,southeastern-louisiana,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Southern,southern,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Southern Illinois,southern-illinois,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Southern Indiana,southern-indiana,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Southern Miss,southern-miss,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Southern Utah,southern-utah,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,St. Bonaventure,state-bonaventure,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,St. John's,state-john-s,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,St. Thomas,state-thomas,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Stanford,stanford,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Stephen F. Austin,stephen-f-austin,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Stetson,stetson,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Stonehill,stonehill,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Stony Brook,stony-brook,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Syracuse,syracuse,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Tarleton St.,tarleton-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,TCU,tcu,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Temple,temple,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Tennessee,tennessee,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Tennessee Martin,tennessee-martin,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Tennessee St.,tennessee-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Tennessee Tech,tennessee-tech,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Texas,texas,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Texas A&M,texas-a-and-m,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Texas A&M Corpus Chris,texas-a-and-m-corpus-chris,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Texas Southern,texas-southern,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Texas St.,texas-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Texas Tech,texas-tech,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Toledo,toledo,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Towson,towson,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Troy,troy,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Tulane,tulane,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Tulsa,tulsa,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UAB,uab,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UC Davis,uc-davis,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UC Irvine,uc-irvine,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UC Riverside,uc-riverside,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UC San Diego,uc-san-diego,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UC Santa Barbara,uc-santa-barbara,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UCF,ucf,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UCLA,ucla,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UMass Lowell,umass-lowell,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UMBC,umbc,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UMKC,umkc,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UNC Asheville,unc-asheville,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UNC Greensboro,unc-greensboro,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UNC Wilmington,unc-wilmington,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UNLV,unlv,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,USC,usc,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,USC Upstate,usc-upstate,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UT Arlington,ut-arlington,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UT Rio Grande Valley,ut-rio-grande-valley,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Utah,utah,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Utah St.,utah-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Utah Tech,utah-tech,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Utah Valley,utah-valley,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UTEP,utep,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,UTSA,utsa,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Valparaiso,valparaiso,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Vanderbilt,vanderbilt,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,VCU,vcu,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Vermont,vermont,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Villanova,villanova,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Virginia,virginia,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Virginia Tech,virginia-tech,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Wagner,wagner,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Wake Forest,wake-forest,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Washington,washington,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Washington St.,washington-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Weber St.,weber-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,West Florida,west-florida,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,West Georgia,west-georgia,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,West Virginia,west-virginia,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Western Carolina,western-carolina,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Western Illinois,western-illinois,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Western Kentucky,western-kentucky,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Western Michigan,western-michigan,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Wichita St.,wichita-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,William & Mary,william-and-mary,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Winthrop,winthrop,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Wisconsin,wisconsin,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Wofford,wofford,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Wright St.,wright-state,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Wyoming,wyoming,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Xavier,xavier,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Yale,yale,Present in Bart only
+missing_in_ncaa,ncaa_nitty_gritty,Youngstown St.,youngstown-state,Present in Bart only
